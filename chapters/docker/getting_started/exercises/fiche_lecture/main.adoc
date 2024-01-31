@@ -1,0 +1,5 @@
+:_exercise_title: Fiche lecture
+:_exercise_id: [[exercise_fiche_lecture]]
+:_duration_in_hours: 0.5
+include::../../../../../config/includes/include_base.adoc[]
+

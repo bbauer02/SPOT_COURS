@@ -1,0 +1,17 @@
+//ATTENTION : le présent fichier doit être placé à la même profondeur que le fichier `book.adoc`.
+//Si le fichier `book.adoc` est dans un sous dossier du dossier `books`, alors le présent fichier devra être placé dans un sous dossier du dossier `config`.
+//C'est indispensable pour que le chemin relatif vers le chapitre à inclure
+
+:_relative_path_to_root: ../../
+
+:_relative_path_to_chapter: {_relative_path_to_root}{_chapter_folder_path}
+
+//chemin relatif vers les images du chapitre (asciidoc cherche par défaut dans le dossier "images" ce pourquoi je ne le précise pas
+:imagesdir: {_relative_path_to_chapter}
+
+//récupération des informations propres au chapitre
+// include::{_relative_path_to_chapter}/info.adoc[]
+
+
+//inclusion du chapitre
+include::{_relative_path_to_chapter}/main.adoc[]

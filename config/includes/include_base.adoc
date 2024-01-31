@@ -1,0 +1,198 @@
+// -----------------------------------------------------------------------------
+// Définition du titre et des éléments propres à la partie chargée (book, chapter, exercise)
+// -----------------------------------------------------------------------------
+ifdef::_book_title[]
+:_title: {_book_title}
+endif::_book_title[]
+
+ifdef::_chapter_title[]
+:_title: {_chapter_title}
+endif::_chapter_title[]
+
+ifdef::_exercise_title[]
+:_title: {_exercise_title}
+endif::_exercise_title[]
+
+// -----------------------------------------------------------------------------
+// Récupération du hash utile à la distribution des assets d'un chapitre ou d'un exercice
+// -----------------------------------------------------------------------------
+ifdef::_chapter_title,_exercise_title[]
+// //j'inclus le fichier afin d'avoir accès à l'attribut " _hash " entre autres attributs (à venir tel que la version, la dernière mise à jour)
+// include::info.adoc[]
+//
+endif::_chapter_title,_exercise_title[]
+
+
+// -----------------------------------------------------------------------------
+// Actions spécifiques à faire lorsqu'il ne s'agit pas d'une première inclusion du présent fichier (cas d'un livre qui inclut des chapitres et / ou des exercises
+// -----------------------------------------------------------------------------
+
+//contexte avec le présent fichier déjà inclus une fois
+//si l'attribut "_main_loaded" est connu, c'est que l'on cherche à charger un chapitre ou un exercice
+//attention, cette condition est à placer avant le test de la non définition de "_main_loaded"
+ifdef::_main_loaded[]
+
+ifdef::_chapter_title[]
+
+//si on était dans un contexte d'exercice, on remonte au niveau d'un chapitre et on indique que la section des exercises est terminée
+ifdef::_exercise_section[]
+
+:leveloffset: -2
+
+:_exercise_section!:
+
+endif::_exercise_section[]
+
+endif::_chapter_title[]
+
+//contexte d'un exercice
+ifdef::_exercise_title[]
+
+//on affiche le titre de la partie Exercices si cela n'a pas déjà été fait
+ifndef::_exercise_section[]
+
+== Pour s'entraîner
+
+//on précise que l'on est dans la section "Exercices"
+:_exercise_section:
+
+//on ajoute deux niveaux pour que l'exercice soit une sous partie de la partie "Exercices". On utilise +2 car il faut un décalage relatif de 2 niveaux par rapport au niveau d'un chapitre
+:leveloffset: +2
+
+endif::_exercise_section[]
+
+
+endif::_exercise_title[]
+
+//affichage du titre du chapitre ou de l'exercice
+= {_title}
+//affichage des infos de version du chapitre ou de l'exercice
+{_chapter_id} Version
+//affichage de l'auteur du chapitre (s'il est indéfini, c'est l'auteur du niveau global qui est utilisé)
+ifdef::_chapter_title[]
+du chapitre : X | Auteur du chapitre :
+ifdef::_chapter_author[]
+{_chapter_author} +
+endif::_chapter_author[]
+ifndef::_chapter_author[]
+{_document_author} +
+endif::_chapter_author[]
+endif::_chapter_title[]
+//affichage de l'auteur de l'exercice (s'il est indéfini, c'est l'auteur du niveau global qui est utilisé)
+ifdef::_exercise_title[]
+de l'exercice : X | Auteur de l'exercice :
+ifdef::_exercise_author[]
+{_exercise_author} +
+endif::_exercise_author[]
+ifndef::_exercise_author[]
+{_document_author} +
+endif::_exercise_author[]
+endif::_exercise_title[]
+Dernière mise à jour : Y
+ifdef::_hash[]
+| hash : {_hash}
+endif::_hash[]
+
+:_unit_of_time: heure
+ifdef::_duration_in_hours[]
+ifeval::["{_duration_in_hours}" != ""]
+ifeval::[{_duration_in_hours} > 1]
+:_unit_of_time: heures
+//end eval _duration_in_hours
+endif::[]
+Durée de réalisation : {_duration_in_hours} {_unit_of_time}
+//end eval _duration_in_hours
+endif::[]
+ifeval::["{_duration_in_hours}" == ""]
+#La durée de réalisation en heures n'a pas été précisée au niveau de l'attribut `:_duration_in_hours:`#
+//end eval _duration_in_hours
+endif::[]
+endif::_duration_in_hours[]
+ifndef::_duration_in_hours[]
+Durée de réalisation : #attribut `:_duration_in_hours:` non déclaré#
+L'attribut `:_duration_in_hours:` permettant de préciser la durée de réalisation a été déclaré sans valeur de temps (en heures).
+endif::_duration_in_hours[]
+
+
+//suppression de l'auteur afin de permettre une redéfinition dans le prochain chapitre ou exercice inclus
+:_book_author!:
+:_chapter_author!:
+:_exercice_author!:
+
+//suppression des titres afin de permettre une redéfinition dans le prochain chapitre ou exercice inclus
+:_book_title!:
+:_chapter_title!:
+:_exercise_title!:
+
+endif::_main_loaded[]
+
+// -----------------------------------------------------------------------------
+// Actions spécifiques à faire lorsque le présent fichier est inclus pour la première fois
+// -----------------------------------------------------------------------------
+
+//on charge les attributs et le titre du document si cela n'a pas déjà été fait
+ifndef::_main_loaded[]
+
+:doctype: book
+
+//chemin vers le dossier qui contient les fichiers de thèmes (depuis un fichier book.adoc)
+:_relative_path_to_themes_folder: ../../config/themes/
+//chargement des attributs
+include::../attributes/app_attributes.adoc[]
+
+//modification de l'auteur défini au niveau global si un auteur est défini au niveau du document
+ifdef::_book_author[]
+:_document_author: {_book_author}
+endif::_book_author[]
+ifdef::_chapter_author[]
+:_document_author: {_chapter_author}
+endif::_chapter_author[]
+ifdef::_exercice_author[]
+:_document_author: {_exercice_author}
+endif::_exercice_author[]
+
+//suppression de l'auteur afin de permettre une redéfinition au niveau d'une sous partie
+:_book_author!:
+:_chapter_author!:
+:_exercice_author!:
+
+//définition du titre à utiliser et du type de support
+ifdef::_book_title[]
+// :_title: {_book_title}
+:_type_document: Livre
+:_global_context: book
+endif::_book_title[]
+
+ifdef::_chapter_title[]
+// :_title: {_chapter_title}
+:_type_document: Chapitre
+//si la génération vient d'un chapitre, il faut remonter d'un dossier supplémentaire pour trouver le fichier de thème
+:_relative_path_to_themes_folder: ../{_relative_path_to_themes_folder}
+:_global_context: chapter
+endif::_chapter_title[]
+
+ifdef::_exercise_title[]
+// :_title: {_exercise_title}
+:_type_document: Exercice
+//si la génération vient d'un chapitre, il faut remonter de deux dossiers supplémentaires pour trouver le fichier de thème
+:_relative_path_to_themes_folder: ../../{_relative_path_to_themes_folder}
+:_global_context: exercise
+endif::_exercise_title[]
+
+= {_title}
+//ne surtout pas laisser une ligne vide entre le titre et l'inclusion des attributs d'entête
+include::../attributes/header_attributes.adoc[]
+
+//on définit "_main_loaded" pour ne pas inclure une fois supplémentaire les attributs, le titre, etc
+:_main_loaded:
+//on décale le niveau de section d'une unité pour que les chapitres inclus soient décalés d'un niveau.
+ifdef::_book_title[]
+:leveloffset: +1
+endif::_book_title[]
+
+endif::_main_loaded[]
+
+// suppression des attributs qui permettent de déterminer le contexte afin de pouvoir tester l'existence de l'un d'eux sans effet de bord
+:_book_title!:
+:_chapter_title!:
+:_exercise_title!:

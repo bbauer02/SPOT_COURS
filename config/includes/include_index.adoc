@@ -1,0 +1,9 @@
+//
+ifeval::[{_show_index} == 1]
+
+:leveloffset: 0
+
+[index]
+= Index
+
+endif::[]

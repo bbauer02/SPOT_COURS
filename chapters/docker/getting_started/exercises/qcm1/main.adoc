@@ -1,0 +1,130 @@
+:_exercise_title: QCM - Introduction à Docker
+:_exercise_id: [[exercise_qcm_intro_docker_1]]
+:_duration_in_hours: 0.5
+include::../../../../../config/includes/include_base.adoc[]
+
+[[exercise_qcm_intro_docker_1]]
+== Questionnaire de fin de chapitre
+
+---
+. *Qu'est-ce qu'un environnement de développement ?*
++
+--
+- [ ] Une machine virtuelle qui permet de tester une application
+- [ ] Un conteneur qui contient tout ce dont une application a besoin pour fonctionner
+- [x] Un ensemble de logiciels et de configurations nécessaires pour exécuter une application
+--
+---
+. *Qu'est-ce qu'un environnement de Production ?*
++
+--
+- [ ] Une machine virtuelle qui est utilisée pour déployer une application
+- [ ] Un conteneur qui est utilisé pour exécuter une application
+- [ ] Un ensemble de logiciels et de configurations nécessaires pour exécuter une application
+--
+---
+. *Comment les conteneurs peuvent-ils aider à créer des environnements de développement et de production identiques ?*
++
+--
+- [ ] En permettant de créer des conteneurs à partir de la même image de conteneur
+- [x] En garantissant que tous les conteneurs contiennent les mêmes logiciels et configurations
+- [x] En facilitant le déploiement des applications en production
+--
+---
+. *Quel est l'avantage des conteneurs par rapport aux machines virtuelles ?*
++
+--
+- [x] Les conteneurs sont plus légers et consomment moins de ressources
+- [x] Les conteneurs sont plus rapides à démarrer et à mettre en œuvre
+- [x] Les conteneurs sont plus faciles à gérer
+--
+---
+. *Qu'est-ce que Docker ?*
++
+--
+- [ ] Un langage de programmation
+- [x] Un outil de conteneurisation
+- [ ] Une base de données
+- [ ] Un système d'exploitation
+--
+---
+. *Quelle est la principale fonction d'un conteneur dans le contexte de Docker ?*
++
+--
+- [ ] Stocker des données
+- [x] Exécuter des applications dans des environnements isolés
+- [ ] Gérer les réseaux
+- [ ] Compiler des programmes
+--
+---
+. *Pourquoi utiliserait-on des librairies dans le développement d'applications ?*
++
+--
+- [ ] Pour réduire les coûts
+- [ ] Pour augmenter la complexité du code
+- [x] Pour gagner du temps et utiliser des fonctionnalités testées
+- [ ] Pour augmenter la taille du fichier de l'application
+--
+---
+. *Que signifie le choix d'une librairie compatible avec PHP >= 7.2 ?*
++
+--
+- [x] La librairie fonctionnera uniquement avec une version de PHP >= 7.2
+- [x] Il est nécessaire de vérifier la compatibilité pour éviter des bugs
+- [ ] Toutes les librairies fonctionnent avec n'importe quelle version de PHP
+- [ ] PHP 7.2 est la version la plus récente de PHP
+--
+---
+. *Quel est le défi associé à l'exécution de deux applications nécessitant différentes versions de PHP sur le même serveur ?*
++
+--
+- [ ] Il faut s'arranger pour migrer les applications sur la même version de PHP en modifiant le code source.
+- [ ] Cela est impossible !
+- [x] Nécessité de configurer et maintenir des environnements séparés
+- [ ] Aucun défi, c'est facile !
+--
+---
+. *Quelle analogie est utilisée pour expliquer le concept de conteneur dans Docker ?*
++
+--
+- [ ] Un livre dans une bibliothèque
+- [x] Un panier de pique-nique
+- [ ] Un véhicule
+- [ ] Une maison
+--
+---
+. *Quel est le parallèle entre un conteneur physique et un conteneur Docker ?*
++
+--
+- [x] Les deux stockent des informations
+- [x] Les deux isolent leur contenu du monde extérieur
+- [ ] Les deux sont principalement utilisés dans le transport maritime
+- [ ] Les deux nécessitent une alimentation électrique
+--
+---
+. *Quels éléments peuvent être inclus dans un conteneur Docker ?*
++
+--
+- [ ] Uniquement des applications web
+- [x] Des applications, des librairies spécifiques, et des services essentiels
+- [ ] Uniquement des données
+- [ ] Seulement des systèmes d'exploitation
+--
+---
+. Quelle affirmation est vraie à propos de Docker ?
++
+--
+- [ ] Docker ne fonctionne que sur Windows
+- [ ] Docker est limité à la création de conteneurs pour PHP
+- [x] Docker peut être utilisé sur tous les systèmes d'exploitation modernes
+- [ ] Docker ne permet pas la duplication de conteneurs
+--
+---
+. *Quel est l'avantage principal de l'utilisation de Docker pour les conteneurs ?*
++
+--
+- [ ] Il augmente la sécurité des applications
+- [x] Il simplifie la création et la gestion des conteneurs
+- [ ] Il réduit la taille des applications
+- [ ] Il remplace les systèmes d'exploitation traditionnels
+--
