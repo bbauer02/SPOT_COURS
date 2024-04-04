@@ -1,0 +1,65 @@
+// ****************************************************************************
+// Fichier qui charge tous les attributs utiles à la génération d'un support
+//et les initialise
+// ****************************************************************************
+//
+ifndef::_system_start[]
+// Pour éviter un faux positif dans l'IDE sur les chemins d'inclusion, j'inclus le fichier des attributs système
+ifndef::run_app[]
+include::../attributes/system_attributes.adoc[]
+endif::run_app[]
+//
+// ----------------------------------------------------------------------------
+// Chargement des attributs de contenu global de l'utilisateur
+// ----------------------------------------------------------------------------
+include::{_relative_file_path_attributes_content_global}[]
+//
+// ----------------------------------------------------------------------------
+// Afin de s'assurer que les attributs personnalisés de l'utilisateur
+// n'écrasent pas des attributs systèmes et des attributs d'application, les
+// attributs système sont chargés une nouvelle fois
+// ----------------------------------------------------------------------------
+include::{_relative_file_path_attributes_system}[]
+//
+// ----------------------------------------------------------------------------
+// fusion des attributs d'application
+// ----------------------------------------------------------------------------
+include::{_relative_file_path_attributes_application_merged}[]
+//
+// ----------------------------------------------------------------------------
+// Résolution des attributs nécessitant une logique pour déterminer leur valeur
+// ----------------------------------------------------------------------------
+include::{_relative_file_path_attributes_resolver}[]
+//
+// ----------------------------------------------------------------------------
+// Attribut d'entête du document
+// ----------------------------------------------------------------------------
+include::{_relative_file_path_attributes_header}[]
+endif::_system_start[]
+//
+// ----------------------------------------------------------------------------
+// Injection des informations de support (auteurs, version, etc) (seulement
+//pour les chapitres et les exercices
+// ----------------------------------------------------------------------------
+ifdef::_persist_context[]
+ifeval::["{_context}" != "book"]
+ifeval::[{_show_metadata} == 1]
+include::{_relative_file_path_template_support_info}[]
+//end eval _show_metadata
+endif::[]
+//end eval _context
+endif::[]
+endif::_persist_context[]
+// ----------------------------------------------------------------------------
+// Injection du template d'entête
+// ----------------------------------------------------------------------------
+include::{_relative_file_path_template_header_resolver}[]
+// ----------------------------------------------------------------------------
+// Suppression des attributs de métadonnées qui doivent être initialisés au niveau du chapitre
+//ou d'un exercice
+// ----------------------------------------------------------------------------
+:!_author:
+:!_duration:
+:!_duration_of_correction:
+:!_version_number:
+:!_version_date:

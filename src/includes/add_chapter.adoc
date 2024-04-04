@@ -1,0 +1,70 @@
+// ***************************************************************
+// Ce fichier gère l'inclusion d'un chapitre depuis un livre
+// ***************************************************************
+//
+//
+// S'il s'agit d'un livre ne contenant qu'un chapitre et ses exercices, le fichier "start_book" n'est pas appelé et le contexte n'est pas défini
+ifndef::_context[]
+//pour que le démarrage du chapitre soit réalisé, je simule l'absence d'appel des attributs systèmes
+:!_system_start:
+//on indique que l'on est dans le cadre de la génération d'un chapitre seul ou avec ses exercices
+:_single_chapter_mode:
+endif::_context[]
+//
+:_relative_path_to_chapter: {_relative_path_to_root}{_chapter_folder_path}
+//si l'on passe par un livre en mode "lonely" (qui n'est constitué que d'un dossier unique), l'attribut _current_depth n'est pas défini. Il est normalement définit dans le fichier "attributes_resolver.adoc"
+ifndef::_current_depth[]
+:_current_depth: {_depth_default}
+endif::_current_depth[]
+:_relative_path_to_chapter_images: {_current_depth}{_chapter_folder_path}
+//
+// Pour éviter qu'une inclusion utilisant _relative_path_to_chapter construit avec _chapter_folder_path indéfini génère une erreur dans l'IDE, je crée un chemin qui mène vers un fichier vide dans le répertoire de configuration
+ifndef::_chapter_folder_path[]
+:_relative_path_to_chapter: .
+:_relative_path_to_chapter_images: .
+:_filename_main_content: main.adoc
+endif::_chapter_folder_path[]
+//
+//
+//on garde le nom du chapitre en mémoire car l'attribut défini par l'utilisateur et contenant le chapitre va être supprimé à la fin de l'ajout
+//cela va être utile pour l'ajout d'exercices.
+:_last_chapter_added: {_chapter_folder_path}
+//chemin relatif vers les images_docker du chapitre (asciidoc cherche par défaut dans le dossier "images_docker" ce pourquoi je ne le précise pas). Asciidoc cherche le dossier des images_docker par rapport au fichier depuis lequel la génération du pdf est appelée. C'est pourquoi le chemin est défini à ce niveau et pas dans un chapitre
+:imagesdir: {_relative_path_to_chapter_images}
+//chemin de stockage des images_docker des diagrammes asciidoc-diagram
+:imagesoutdir: {imagesdir}/{_foldername_diagrams_images}
+//chemin du dossier de cache des diagrammes asciidoc-diagram
+:diagram-cachedir: {imagesoutdir}/{_foldername_diagrams_cache}
+//
+//le niveau de titre doit être modifié dans le cas où le chapitre est une partie d'un livre (ce n'est pas le cas lorsqu'il s'agit d'un support qui contient un chapitre avec les exercices qui lui sont liés
+ifdef::_context[]
+// ifeval::["{_context}" == "book"]
+//niveau de titre à utiliser pour un chapitre inclus dans un livre
+:leveloffset: 1
+//end eval _context
+endif::[]
+// endif::_context[]
+ifdef::_single_chapter_added[]
+
+= #!!! ERREUR D'UTILISATION ASCIIDOCPRO !!!#
+
+#Vous ne pouvez ajouter un chapitre supplémentaire au support car vous n'avez pas défini de titre au livre. Vous êtes sur un support de type "chapitre avec ses exercices"#
+endif::_single_chapter_added[]
+//
+ifndef::_single_chapter_added[]
+//inclusion du chapitre
+include::{_relative_path_to_chapter}/{_filename_main_content}[]
+//la ligne qui suit l'inclusion doit être laissée vide
+
+//la ligne précédent la présente ligne doit être laissée vide
+endif::_single_chapter_added[]
+//
+//
+ifdef::_single_chapter_mode[]
+:_single_chapter_added:
+endif::_single_chapter_mode[]
+//
+//on efface le chapitre courant pour éviter que l'utilisateur ajoute un autre chapitre sans spécifier le chemin.
+//De plus, cela est utile pour gérer l'ajout d'exercices
+:!_chapter_folder_path:
+:!_exercise_added:

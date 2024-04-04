@@ -85,7 +85,7 @@ include::custom_attributes.adoc[]
 //répertoire contenant la configuration du projet
 :_folder_config: config
 
-//répertoire qui va contenir les images des diagrammes (utilisé par l'attribut :imagesoutdir: du gem qui gère le rendu des diagrammes)
+//répertoire qui va contenir les images_docker des diagrammes (utilisé par l'attribut :imagesoutdir: du gem qui gère le rendu des diagrammes)
 :_folder_diagram_images: assets/diagram_images
 
 //name du dossier contenant les books (sans le slash de fin)
@@ -107,7 +107,7 @@ include::custom_attributes.adoc[]
 //attribut compteur utilisé pour numéroter les questions. La valeur spécifiée sera la valeur de la première question
 :_question: 0
 
-//chemin relatif vers le répertoire qui contient les images des diagrammes (le rendre relatif à chaque chapitre)
+//chemin relatif vers le répertoire qui contient les images_docker des diagrammes (le rendre relatif à chaque chapitre)
 :_relative_path_to_folder_diagram_images: ../{_folder_diagram_images}/
 
 //préfixe automatique avant chaque title de tableau (ne pas mettre de valeur pour qu'il n'y ait pas de préfixe. Le numéro de table sera tout de même rendu)
@@ -139,10 +139,10 @@ endif::_main_loaded[]
 
 // *** plugin de génération des diagrammes UML ***/
 
-// fichiers des métadonnées des images des diagrammes générés avec asciidoctor diagram (lorsque cet attribut n'est pas défini, le dossier par défaut est .asciidoctor/diagram) : https://docs.asciidoctor.org/diagram-extension/latest/
+// fichiers des métadonnées des images_docker des diagrammes générés avec asciidoctor diagram (lorsque cet attribut n'est pas défini, le dossier par défaut est .asciidoctor/diagram) : https://docs.asciidoctor.org/diagram-extension/latest/
 :diagram-cachedir: cache/diagram
 
-//emplacement des images générées par asciidoctor diagram (https://docs.asciidoctor.org/diagram-extension/latest/)
+//emplacement des images_docker générées par asciidoctor diagram (https://docs.asciidoctor.org/diagram-extension/latest/)
 :imagesoutdir: {_folder_diagram_images}
 
 // *** plugin de ... ***/

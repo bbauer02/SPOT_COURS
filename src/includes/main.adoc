@@ -1,0 +1,1 @@
+//fichier factice permettant de faire pointer les chemins non résolus par l'IDE vers un fichier réel. Cela évite les faux positifs dans l'explorateur du projet.

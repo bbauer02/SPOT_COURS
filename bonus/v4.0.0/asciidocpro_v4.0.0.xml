@@ -1,0 +1,128 @@
+<templateSet group="asciidocpro">
+  <template name="start_chapter" value="//:_author: &#10;:_duration: &#10;:_duration_of_correction: &#10;:_version_number: &#10;:_version_date: &#10;:_chapter:&#10;[[chapitre_$titleId$]]&#10;= $title$&#10;include::../../../run_app.adoc[]&#10;&#10;$END$&#10;" description="éléments de début de chapitre" toReformat="false" toShortenFQNames="true">
+    <variable name="title" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="titleId" expression="groovyScript(&quot;import java.text.Normalizer; def chaineSansAccents = Normalizer.normalize(_1, Normalizer.Form.NFD).replaceAll('[\\\\p{InCombiningDiacriticalMarks}\\\\p{Punct}]', '').trim().replaceAll('\\s+', '_').toLowerCase(); return chaineSansAccents;&quot;, title) " defaultValue="" alwaysStopAt="false" />
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="start_exercise" value="//:_author: &#10;:_duration: &#10;:_duration_of_correction: &#10;:_version_number: &#10;:_version_date: &#10;:_exercise:&#10;[[exercice_$titleId$]]&#10;= $title$&#10;include::../../../../../run_app.adoc[]&#10;&#10;$END$&#10;" description="éléments de début d'un exercice" toReformat="false" toShortenFQNames="true">
+    <variable name="title" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="titleId" expression="groovyScript(&quot;import java.text.Normalizer; def chaineSansAccents = Normalizer.normalize(_1, Normalizer.Form.NFD).replaceAll('[\\\\p{InCombiningDiacriticalMarks}\\\\p{Punct}]', '').trim().replaceAll('\\s+', '_').toLowerCase(); return chaineSansAccents;&quot;, title) " defaultValue="" alwaysStopAt="false" />
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="start_book" value="//:_author: &#10;:_duration: &#10;:_duration_of_correction: &#10;:_version_number: &#10;:_version_date: &#10;//:_use_local_application_attributes:&#10;:_book:&#10;[[book_$titleId$]]&#10;= $title$&#10;include::../../../run_app.adoc[]&#10;&#10;$END$&#10;" description="éléments de début d'un livre" toReformat="false" toShortenFQNames="true">
+    <variable name="title" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="titleId" expression="groovyScript(&quot;import java.text.Normalizer; def chaineSansAccents = Normalizer.normalize(_1, Normalizer.Form.NFD).replaceAll('[\\\\p{InCombiningDiacriticalMarks}\\\\p{Punct}]', '').trim().replaceAll('\\s+', '_').toLowerCase(); return chaineSansAccents;&quot;, title) " defaultValue="" alwaysStopAt="false" />
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="hc" value="[[chapitre_$id$]]&#10;= $title$" description="titre de niveau 1 pour un chapitre asciidocpro" toReformat="false" toShortenFQNames="true">
+    <variable name="title" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="id" expression="groovyScript(&quot;import java.text.Normalizer; def chaineSansAccents = Normalizer.normalize(_1, Normalizer.Form.NFD).replaceAll('[\\\\p{InCombiningDiacriticalMarks}\\\\p{Punct}]', '').trim().replaceAll('\\s+', '_'); return 'chapitre_' + chaineSansAccents;&quot;, title) " defaultValue="" alwaysStopAt="false" />
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="he" value="[[exercice_$id$]]&#10;= $title$" description="titre de niveau 1 pour un exercice asciidocpro" toReformat="false" toShortenFQNames="true">
+    <variable name="title" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="id" expression="groovyScript(&quot;import java.text.Normalizer; def chaineSansAccents = Normalizer.normalize(_1, Normalizer.Form.NFD).replaceAll('[\\\\p{InCombiningDiacriticalMarks}\\\\p{Punct}]', '').trim().replaceAll('\\s+', '_'); return 'chapitre_' + chaineSansAccents;&quot;, title) " defaultValue="" alwaysStopAt="false" />
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="add_chapter" value=":_chapter_folder_path: $chapterPath$&#10;include::{_add_chapter}[]&#10;$END$" description="Code d'ajout d'un chapitre à utiliser depuis un livre" toReformat="false" toShortenFQNames="true">
+    <variable name="chapterPath" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="add_exercise" value=":_exercise_folder_name: $exerciseFolderName$&#10;include::{_add_exercise}[]&#10;$END$&#10;&#10;$END$" description="Code d'ajout d'un exercice à utiliser depuis un livre" toReformat="false" toShortenFQNames="true">
+    <variable name="exerciseFolderName" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="end_book" value="include::{_end_book}[]" description="élément de fin d'un livre" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="q" value="[.question]&#10;****&#10;*Q{counter:_question})*&#10;$END$&#10;//end question&#10;****" description="génère un bloc pour une question numérotée" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="r" value="ifeval::[{_show_correction} == 1]&#10;[.answer]&#10;****&#10;_Correction de Q{_question}_&#10;&#10;$END$&#10;//end answer&#10;****&#10;//end _show_correction&#10;endif::[]" description="génère un bloc pour une reponse" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="note_prof" value="ifeval::[{_show_note_prof} == 1]&#10;[.noteprof]&#10;****&#10;*Note pour le professeur*&#10;&#10;$END$&#10;//end noteprof&#10;****&#10;//end _show_note_prof&#10;endif::[]" description="crée un bloc pour une note à destination du seul professeur" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="def" value="[.definition] &#10;$END$" description="prépare un bloc de définition" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="kkk" value="[[keyword_$k$]][.keyword]#(($keyword$))#" description="wrapper d'un mot clé avec une ancre" toReformat="false" toShortenFQNames="true">
+    <variable name="keyword" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="k" expression="groovyScript(&quot;import java.text.Normalizer; def chaineSansAccents = Normalizer.normalize(_1, Normalizer.Form.NFD).replaceAll('[\\\\p{InCombiningDiacriticalMarks}\\\\p{Punct}]', '').trim().replaceAll('\\s+', '_').toLowerCase(); return chaineSansAccents;&quot;, keyword) " defaultValue="" alwaysStopAt="false" />
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="kk" value="[.keyword]#(($keyword$))#" description="wrapper d'un mot clé" toReformat="false" toShortenFQNames="true">
+    <variable name="keyword" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="kkk_surround" value="[[keyword_$k$]][.keyword]#(($SELECTION$))#$END$" description="enveloppe la sélection pour le marquer comme mot clé avec une ancre" toReformat="false" toShortenFQNames="true">
+    <variable name="k" expression="groovyScript(&quot;import java.text.Normalizer; def chaineSansAccents = Normalizer.normalize(_1, Normalizer.Form.NFD).replaceAll('[\\\\p{InCombiningDiacriticalMarks}\\\\p{Punct}]', '').trim().replaceAll('\\s+', '_').toLowerCase(); return chaineSansAccents;&quot;, SELECTION) " defaultValue="" alwaysStopAt="false" />
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="kk_surround" value="[.keyword]#(($SELECTION$))#$END$" description="enveloppe la sélection pour le marquer comme mot clé" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="skill" value="[skill]&#10;****&#10;$END$&#10;//end skill&#10;****&#10;" description="génère le nom d'un bloc de compétences" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="linkid" value="&lt;&lt;$target$,$SELECTION$$text$&gt;&gt;$END$" description="lien vers une ancre / identifiant" toReformat="true" toShortenFQNames="true">
+    <variable name="target" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="text" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="start_book_lonely" value="//:_use_local_application_attributes:&#10;:_book: lonely&#10;include::../../../run_app.adoc[]&#10;:_chapter_folder_path: $path$&#10;include::{_add_chapter}[]&#10;$END$&#10;" description="éléments de début d'un livre constitué d'un seul chapitre ou exercice" toReformat="false" toShortenFQNames="true">
+    <variable name="path" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="hb" value="[[book_$id$]]&#10;= $title$" description="titre de niveau 1 pour un livre asciidocpro" toReformat="false" toShortenFQNames="true">
+    <variable name="title" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="id" expression="groovyScript(&quot;import java.text.Normalizer; def chaineSansAccents = Normalizer.normalize(_1, Normalizer.Form.NFD).replaceAll('[\\\\p{InCombiningDiacriticalMarks}\\\\p{Punct}]', '').trim().replaceAll('\\s+', '_'); return 'chapitre_' + chaineSansAccents;&quot;, title) " defaultValue="" alwaysStopAt="false" />
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+  <template name="todo" value="ifeval::[{_show_todo}==1]&#10;[.todo]&#10;****&#10;$END$&#10;//end todo&#10;****&#10;//end eval _show_todo&#10;endif::[]" description="ajoute le marqueur de choses à faire &quot;todo&quot;" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="AsciiDoc" value="true" />
+    </context>
+  </template>
+</templateSet>

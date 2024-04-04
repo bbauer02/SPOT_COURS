@@ -1,0 +1,30 @@
+// ****************************************************************************
+// Ce fichier permet de déterminer le template d'entête à charger selon le
+//contexte (livre, chapitre ou exercice)
+// ****************************************************************************
+ifeval::[{_show_header_templates} == 1]
+//
+ifeval::["{_context}" == "book"]
+ifeval::["{_header_book_template_filename}" != ""]
+include::{_relative_path_to_root}{_folder_path_templates_custom}{_header_book_template_filename}[]
+//end eval _context
+endif::[]
+//end eval _context
+endif::[]
+ifeval::["{_context}" == "chapter"]
+ifeval::["{_header_chapter_template_filename}" != ""]
+include::{_relative_path_to_root}{_folder_path_templates_custom}{_header_chapter_template_filename}[]
+//end eval _context
+endif::[]
+//end eval _context
+endif::[]
+ifeval::["{_context}" == "exercise"]
+ifeval::["{_header_exercise_template_filename}" != ""]
+include::{_relative_path_to_root}{_folder_path_templates_custom}{_header_exercise_template_filename}[]
+//end eval _context
+endif::[]
+//end eval _context
+endif::[]
+//
+//end eval _show_header_templates
+endif::[]

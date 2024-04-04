@@ -1,0 +1,2 @@
+:_asciidocpro_version: 4.0.0-rc.1
+:_asciidocpro_version_update_date: 05/03/24 à 20:40

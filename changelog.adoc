@@ -1,0 +1,99 @@
+// ****************************************************************************
+// Ce fichier de changelog répertorie toutes les modifications notables
+//apportées à ce projet, organisées par version. Il fournit un aperçu des
+//nouvelles fonctionnalités ajoutées, des bogues corrigés, des modifications
+//apportées aux fonctionnalités existantes, des évolutions du cœur du framework,
+//ainsi que des instructions de mise à jour pour les utilisateurs qui souhaitent
+//migrer leur version actuelle vers une nouvelle version.
+//
+//Utilisez ce fichier pour suivre l'évolution du logiciel et pour vous aider
+//lors de la mise à jour de votre projet.
+// ****************************************************************************
+
+
+
+*v3.0.0 -> v4.0.0 [22/02/24 à 09:58]*
+
+* *Fonctionnalités ajoutées*
+** prise en charge d'une image de couverture via le nouvel attribut d'application `_user_cover_image_filename`
+** prise en charge d'une image de fond sur toutes les pages (sauf la couverture) via le nouvel attribut d'application `_user_background_image_for_all_pages`
+** prise en charge des informations de version (numéro de version, date de version)
+** possibilité de désactiver ou de personnaliser, sur la couverture, l'affichage du type de support sous l'auteur via le nouvel attribut d'application `_user_type_support`
+** ajout d'un nouvel attribut de métadonnée `_duration_of_correction` permettant de préciser une durée de correction.
+** ajout d'un nouveau rôle `[.todo]` permettant de préciser une tâche à faire ou une liste de tâches à faire en rapport avec la rédaction du contenu.
+
+* *Fonctionnalités modifiées*
+** la personnalisation d'un livre a été simplifiée
+** le code qui permet d'écrire une question a évolué afin de faciliter sa personnalisation et les évolutions futures.
+** le code qui permet d'écrire une réponse a évolué afin de faciliter sa personnalisation et les évolutions futures.
+** le code qui permet d'écrire une "note du professeur" a évolué afin de faciliter sa personnalisation et les évolutions futures.
+
+* *Fonctionnalités dépréciées*
+
+* *Fonctionnalités retirées*
+
+* *Correction de bogues*
+** correction d'un bogue ignorant le chargement des attributs définis au niveau d'un livre dont l'objectif est de ne rendre qu'un et un seul chapitre.
+
+* *Evolutions au cœur du framework*
+** adoption d'une convention de nommage des attributs système et modification de leur nom en conséquence, refactorisation.
+** restructuration du projet (séparation du noyau et de la configuration de l'utilisateur)
+** réécriture de la logique d'ajout de chapitres et d'exercices afin de grandement faciliter les futures mises à jour du framwork Asciidocpro par les utilisateurs.
+
+
+* *Instructions de mise à jour du projet pour passer de la version 3.0.0 à la version 4.0.0*
+** comme la mise à jour est majeure, le mieux est de récupérer la structure complète de la version 4.0.0 d'Asciidocpro.
+** copier tout le contenu du dossier `chapters` de votre ancienne version dans le dossier `chapters` de la nouvelle version
+** copier tout le contenu du dossier `books` de votre ancienne version dans le dossier `books` de la nouvelle version
+** Pour tous les chapitres (dans leur fichier `main.adoc`) :
+*** il faut remplacer la ligne située sous le titre `include::../../../config/application/includes/start_chapter.adoc[]` par la ligne `include::../../../run_app.adoc[]`
+*** l'attribut de métadonnée `:_chapter:` doit être précisé avant le titre (ou du moins avant la ligne `include::../../../run_app.adoc[]`)
+*** Se reporter à la documentation (partie "Mise à jour") pour les astuces permettant de faire cela rapidement.
+** Pour tous les exercices (dans leur fichier `main.adoc`) :
+*** il faut remplacer la ligne située sous le titre `include::../../../../config/application/includes/start_exercise.adoc[]` par la ligne `include::../../../../../run_app.adoc[]`
+*** l'attribut de métadonnée `:_exercise:` doit être précisé avant le titre (ou du moins avant la ligne `include::../../../../../run_app.adoc[]`)
+*** Se reporter à la documentation (partie "Mise à jour") pour les astuces permettant de faire cela rapidement.
+** Pour tous les livres (dans leur fichier `main.adoc`) :
+*** il faut remplacer la ligne située sous le titre `include::../../../config/application/includes/start_book.adoc[]` par la ligne `include::../../../run_app.adoc[]`
+*** l'attribut de métadonnée `:_book:` doit être précisé avant le titre (ou du moins avant la ligne `include::../../../run_app.adoc[]`)
+*** chaque ligne permettant d'ajouter un chapitre `include::../../../config/application/includes/add_chapter.adoc[]` doit être remplacée par `include::\{_add_chapter}[]`
+*** chaque ligne permettant d'ajouter un exercice `include::../../../config/application/includes/add_exercise.adoc[]` doit être remplacée par `include::\{_add_exercise}[]`
+*** la ligne située en fin de livre qui permet notamment d'inclure l'index `include::../../../config/application/includes/end.adoc[]` doit être remplacée par la ligne `include::\{_end_book}[]`
+*** Se reporter à la documentation (partie "Mise à jour") pour les astuces permettant de faire cela rapidement.
+** Pour récupérer la personnalisation globale ou au niveau d'un livre, lire la documentation sur Asciidocpro 4.0.0. Une fois la nouvelle structure comprise, il sera facile de copier coller le contenu des fichiers concernés.
+** Modifier les blocs de code encadrant une question, une réponse et une note du professeur car ces derniers ont évolué. (Se reporter à la documentation (partie "Mise à jour") pour les astuces permettant de faire cela rapidement.)
+
+* *Bonus*
+** mise à jour des live templates utilisables avec les IDE Jetbrains (fichier `asciidocpro.xml` dans le dossier `bonus`) a été mis à jour pour être compatible avec la version 4.0.0 d'Asciidocpro.
+** ajout de nouveaux live templates au fichier `asciidocpro.xml`
+
+
+// ****************************************************************************
+
+*v2.0.0 -> v3.0.0 [22/02/24 à 10:01]*
+
+* *Fonctionnalités ajoutées*
+** Insertion automatique de templates d'entête
+** personnalisation au niveau d'un livre
+** partage de composants entre des chapitres, des exercices ou des livres
+** prise en charge d'une configuration spécifique à asciidoctor-diagram
+** l'application est configurée par défaut pour répondre aux usages les plus courants
+
+* *Fonctionnalités modifiées*
+
+* *Fonctionnalités dépréciées*
+
+* *Fonctionnalités retirées*
+
+* *Correction de bogues*
+
+* *Evolutions au cœur du framework*
+** Réécriture complète du framework
+
+* *Instructions de mise à jour du projet pour passer de la version 2.0.0 à la version 3.0.0*
+. Récupérer la nouvelle structure du projet Asciidocpro v3.0.0
+. Copier les chapitres qui existent dans le projet Asciidocpro v2.0.0 vers le nouveau projet v3.0.0
+. Mettre à jour le début de fichier de chaque chapitre et exercice conformément à la documentation (fichier : `Asciidocpro_3.0.0_documentation_v1.pdf`, , partie "Créer un livre" et "Créer un exercice")
+. Copier les livres de l'ancien projet vers le nouveau en veillant à créer un sous-répertoire permettant de regrouper des livres (fichier : `Asciidocpro_3.0.0_documentation_v1.pdf`, partie "Créer un livre")
+
+// ****************************************************************************

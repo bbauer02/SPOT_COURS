@@ -1,0 +1,23 @@
+// ****************************************************************************
+// Fichier à appeler immédiatement sous le titre d'un chapitre.
+//
+// Ce fichier permet de charger la configuration du projet et le contexte
+//d'exécution pour générer un fichier pdf
+//
+// Ce fichier ne doit jamais être modifié par un utilisateur
+// ****************************************************************************
+//
+// ----------------------------------------------------------------------------
+// Contexte d'exécution
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+// On définit le contexte d'exécution sur chapitre
+// ----------------------------------------------------------------------------
+:_context: chapter
+//
+//
+// ----------------------------------------------------------------------------
+// Chargement des différents fichiers utiles au démarrage
+// ----------------------------------------------------------------------------
+include::start.adoc[]

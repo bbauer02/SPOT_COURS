@@ -1,0 +1,148 @@
+// ***************************************************************
+// Ce fichier permet d'initialiser les attributs d'application
+//avec les valeurs par défaut et les valeurs de l'utilisateur
+//
+// Un utilisateur ne doit jamais modifier ce fichier
+//
+// Ce fichier doit être appelé après le fichier des attributs
+//système (system_attributes.adoc)
+// ***************************************************************
+//
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ATTENTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// Ce fichier ne doit contenir aucune ligne vide, ni entre les éléments, ni à
+//la fin du fichier !
+// Veillez à laisser un espace entre un attribut et sa valeur.
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//
+//ce test n'est utile que pour l'IDE afin qu'il soit en mesure de résoudre les
+//chemins utilisés dans ce fichier
+ifndef::_system_start[]
+include::system_attributes.adoc[]
+endif::_system_start[]
+// ----------------------------------------------------------------------------
+// Import des valeurs d'attribut définies par défaut
+// ----------------------------------------------------------------------------
+include::{_relative_file_path_attributes_application_default_values}[]
+//
+// ----------------------------------------------------------------------------
+// Import des valeurs globales d'attribut d'application définies par l'utilisateur
+// ----------------------------------------------------------------------------
+include::{_relative_file_path_attributes_application_global_user}[]
+//si une image de couverture est définie au niveau global, alors on définit un attribut _global_cover_image qui sera utile pour le fichier attributes_resolver.adoc au moment de déterminer le chemin vers l'image à utiliser
+ifeval::["{_user_cover_image_filename}" != ""]
+//cet attribut indique que l'image de couverture est définie au niveau global
+:_global_cover_image: {_user_cover_image_filename}
+//end eval _user_cover_image_filename
+endif::[]
+//si une image de fond à appliquer sur toutes les pages est définie au niveau global, alors on définit un attribut _global_page_image qui sera utile pour le fichier attributes_resolver.adoc au moment de déterminer le chemin vers l'image à utiliser
+ifeval::["{_user_background_image_for_all_pages}" != ""]
+:_global_page_image: {_user_background_image_for_all_pages}
+//end eval _user_background_image_for_all_pages
+endif::[]
+//
+// ----------------------------------------------------------------------------
+// Import des valeurs locales d'attribut d'application définies au niveau du livre
+// ----------------------------------------------------------------------------
+ifdef::_use_local_application_attributes[]
+include::{_file_path_attributes_application_local_user}[]
+//
+//
+//s'il n'est pas défini d'image de couverture au niveau global et qu'une image est définie au niveau local, alors il faut utiliser le répertoire des images_docker d'un livre.
+ifndef::_global_cover_image[]
+ifeval::["{_user_cover_image_filename}" != ""]
+//il faut indiquer que l'image de couverture sera locale
+:_local_cover_image:
+//end eval _user_cover_image_filename
+endif::[]
+endif::_global_cover_image[]
+//Si l'image est définie au niveau global et que le nom de l'image n'est pas le même après inclusion de la valeur définie localement, alors, c'est qu'il faut utiliser l'image locale (définie au niveau d'un livre)
+ifdef::_global_cover_image[]
+ifeval::["{_global_cover_image}" != "{_user_cover_image_filename}"]
+:_local_cover_image:
+//end eval _global_cover_image
+endif::[]
+endif::_global_cover_image[]
+endif::_use_local_application_attributes[]
+//
+//
+//s'il n'est pas défini d'image de fond pour toutes les pages au niveau global et qu'une image est définie au niveau local, alors il faut utiliser le répertoire des images_docker d'un livre.
+ifndef::_global_page_image[]
+ifeval::["{_user_background_image_for_all_pages}" != ""]
+//il faut indiquer que l'image de fond est locale
+:_local_page_image:
+//end eval _user_background_image_for_all_pages
+endif::[]
+endif::_global_page_image[]
+//Si l'image est définie au niveau global et que le nom de l'image n'est pas le même après inclusion de la valeur définie localement, alors, c'est qu'il faut utiliser l'image de fond locale (définie au niveau d'un livre)
+ifdef::_global_page_image[]
+ifeval::["{_global_page_image}" != "{_user_background_image_for_all_pages}"]
+:_local_page_image:
+//end eval
+endif::[]
+endif::_global_page_image[]
+//
+//
+// ----------------------------------------------------------------------------
+// Affectation des valeurs des attributs d'application
+// ----------------------------------------------------------------------------
+//
+:_background_image_for_all_pages: {_user_background_image_for_all_pages}
+//
+:_chapter_label: {_user_chapter_label}{_user_chapter_label}{_user_chapter_label}
+//
+:_cover_image_filename: {_user_cover_image_filename}
+//
+:_default_author: {_user_default_author}
+//
+:_enable_cache_diagrams: {_user_enable_cache_diagrams}
+//
+:_exercise_title: {_user_exercise_title}
+//
+:_pdf_theme_filename: {_user_pdf_theme_filename}
+//
+:_header_book_template_filename: {_user_header_book_template_filename}
+//
+:_header_chapter_template_filename: {_user_header_chapter_template_filename}
+//
+:_header_exercise_template_filename: {_user_header_exercise_template_filename}
+//
+:_show_correction: {_user_show_correction}
+//
+:_show_header_templates: {_user_show_header_templates}
+//
+:_show_index: {_user_show_index}
+//
+:_show_metadata: {_user_show_metadata}
+//
+:_show_note_prof: {_user_show_note_prof}
+//
+:_show_title_numbers: {_user_show_title_numbers}
+//
+:_show_toc: {_user_show_toc}
+//
+:_title_level_number: {_user_title_level_number}
+//
+:_toc_levels: {_user_toc_levels}
+//
+:_toc_title: {_user_toc_title}
+//
+:_type_support: {_user_type_support}
+//
+:_show_todo: {_user_show_todo}
+//
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Attributs non contrôlés par l'utilisateur
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+// Suppression de l'étiquette de version
+:!version-label:
+// Suppression de l'étiquette de numéro de version
+:!revnumber:
+// Suppression de l'étiquette de date de version
+:!revdate:
+// Suppression de l'étiquette de remarque quant à la version
+:!revremark:
+//Il ne doit surtout pas y avoir de ligne vide après cette ligne
+//Il ne doit surtout pas y avoir de ligne vide après cette ligne
+//Il ne doit surtout pas y avoir de ligne vide après cette ligne

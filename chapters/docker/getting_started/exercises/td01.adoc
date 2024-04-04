@@ -1,2 +1,0 @@
-# TD 1 : Etude des ressources d'une VM.
-

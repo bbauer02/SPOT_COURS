@@ -1,0 +1,220 @@
+// ****************************************************************************
+// Ce fichier permet d'initialiser les attributs d'application avec une valeur
+//par défaut.
+//
+// L'objectif est d'avoir un comportement par défaut lors de l'édition et la
+// génération du support.
+// Ce fichier ne doit jamais être modifié par l'utilisateur.
+// ****************************************************************************
+//
+// tag::attributes_list[]
+//
+// ----------------------------------------------------------------------------
+// Image de fond pour toutes les pages (sauf la couverture).
+//
+// Valeur : nom de l'image avec son extension. L'image doit être placée dans le
+//dossier "images_docker" du dossier du livre concerné
+//
+// Aucune valeur par défaut.
+// ----------------------------------------------------------------------------
+:_user_background_image_for_all_pages:
+//
+// ----------------------------------------------------------------------------
+// Préfix automatique avant chaque titre de chapitre
+//
+// A laisser vide pour qu'il n'y ait aucun préfixe.
+// ----------------------------------------------------------------------------
+:_user_chapter_label:
+//
+// ----------------------------------------------------------------------------
+// Image de fond de la page de couverture.
+//
+// L'image est centrée sur la page de couverture
+//
+// Valeur : nom de l'image avec son extension. L'image doit être placée dans le
+//dossier "images_docker" du dossier du livre concerné
+//
+// Aucune valeur par défaut.
+// ----------------------------------------------------------------------------
+:_user_cover_image_filename:
+//
+// ----------------------------------------------------------------------------
+// Auteur par défaut
+//
+// Auteur à utiliser lorsque aucun auteur n'est spécifié au niveau d'un livre,
+//d'un chapitre ou d'un exercice.
+// ----------------------------------------------------------------------------
+:_user_default_author:
+//
+// ----------------------------------------------------------------------------
+// Activation du cache des diagrammes asciidoc-diagram
+// https://docs.asciidoctor.org/diagram-extension/latest/generate/#diagram_caching
+// 1 pour activer le cache, 0 pour le désactiver
+// ----------------------------------------------------------------------------
+:_user_enable_cache_diagrams: 1
+//
+// ----------------------------------------------------------------------------
+// Titre de la partie qui regroupe des exercices qui suivent un chapitre
+//
+// Une valeur doit être spécifiée
+// ----------------------------------------------------------------------------
+:_user_exercise_title: Exercices
+//
+// ----------------------------------------------------------------------------
+// Nom du fichier asciidoc qui peut être inséré au début de chaque livre, après
+// la table des matières.
+//
+// Aucune valeur par défaut
+//
+// Si la valeur est définie, le fichier doit être placé dans le répertoire config/custom/templates/
+// ----------------------------------------------------------------------------
+:_user_header_book_template_filename:
+//
+// ----------------------------------------------------------------------------
+// Nom du fichier asciidoc de template d'entête pouvant être injecté automatiquement
+//sous le titre du chapitre. A laisser vide si vous n'en avez pas besoin.
+//
+// Aucune valeur par défaut
+//
+// Si la valeur est définie, le fichier doit être placé dans le répertoire config/custom/templates/
+// ----------------------------------------------------------------------------
+:_user_header_chapter_template_filename:
+//
+// ----------------------------------------------------------------------------
+// Nom du fichier asciidoc de template d'entête pouvant être injecté
+//automatiquement sous le titre d'un exercice.
+//
+// Aucune valeur par défaut
+//
+// Si la valeur est définie, le fichier doit être placé dans le répertoire config/custom/templates/
+// ----------------------------------------------------------------------------
+:_user_header_exercise_template_filename:
+//
+//----------------------------------------
+// Nom du fichier de thème qui personnalise le rendu du fichier pdf
+//
+//Le fichier de thème doit être placé dans le dossier config/custom/themes/. Son nom doit avoir un suffixe *-theme.yml. (ex : mon-joli-style-theme.yml)
+//
+// Aucune valeur par défaut (le thème par défaut d'Asciidoctor-pdf est utilisé)
+//----------------------------------------
+:_user_pdf_theme_filename:
+//
+// ----------------------------------------------------------------------------
+// Affichage des réponses (à la condition d'utiliser le pattern de la documentation)
+//
+// 1 pour afficher les réponses, 0 pour les masquer
+//
+// Valeur par défaut : 1
+// ----------------------------------------------------------------------------
+:_user_show_correction: 1
+//
+// ----------------------------------------------------------------------------
+// Afficher les templates d'entête
+//
+// 1 pour afficher, 0 pour masquer
+//
+// Valeur par défaut : 0
+// ----------------------------------------------------------------------------
+:_user_show_header_templates: 0
+//
+// ----------------------------------------------------------------------------
+// Afficher l'index
+//
+// 1 pour afficher, 0 pour masquer
+//
+// Valeur par défaut : 0
+// ----------------------------------------------------------------------------
+:_user_show_index: 1
+//
+// ----------------------------------------------------------------------------
+// Affichage des métadonnées sous les titres des chapitres et des exercices
+//
+// 1 pour afficher les métadonnées, 0 pour les masquer
+//
+// Valeur par défaut : 1
+// ----------------------------------------------------------------------------
+:_user_show_metadata: 1
+//
+// ----------------------------------------------------------------------------
+// Affichage des notes du professeur (à la condition d'utiliser le pattern de la documentation)
+//
+// 1 pour afficher, 0 pour les masquer
+//
+// Valeur par défaut : 1
+// ----------------------------------------------------------------------------
+:_user_show_note_prof: 1
+//
+// ----------------------------------------------------------------------------
+// Affichage de la numérotation des titres
+//
+// 1 pour afficher, 0 pour masquer
+//
+// Valeur par défaut : 1
+// ----------------------------------------------------------------------------
+:_user_show_title_numbers: 1
+//
+// ----------------------------------------------------------------------------
+// Afficher la table des matières (table of content)
+//
+// 1 pour afficher, 0 pour masquer
+//
+// Valeur par défaut : 1
+// ----------------------------------------------------------------------------
+:_user_show_toc: 1
+//
+// ----------------------------------------------------------------------------
+// Afficher les tâches à faire
+//
+// 1 pour afficher, 0 pour masquer
+//
+// Valeur par défaut : 0
+// ----------------------------------------------------------------------------
+:_user_show_todo: 0
+//
+// ----------------------------------------------------------------------------
+// Afficher les tâches à faire
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+// Numérotation des titres jusqu'au niveau N
+//
+// Valeur utilisable : de 1 à 5 (ex avec la valeur 2 : les titres de section des niveaux
+//3 à 5 ne sont pas numérotés)
+//
+// Valeur par défaut : 5 (tous les niveaux de titre sont numérotés)
+// ----------------------------------------------------------------------------
+:_user_title_level_number: 5
+//
+// ----------------------------------------------------------------------------
+// Niveaux de titre à afficher dans la table des matières
+//
+// Valeur : de 1 à 5
+//
+// Valeur par défaut : 5 (tous les niveaux de titre sont repris dans la table des matières
+// ----------------------------------------------------------------------------
+:_user_toc_levels: 5
+//
+// ----------------------------------------------------------------------------
+// Titre de la table des matières
+//
+// Valeur par défaut : Table des matières
+// ----------------------------------------------------------------------------
+:_user_toc_title: Table des matières
+//
+// ----------------------------------------------------------------------------
+// Nom du type de support affiché sur la page de couverture
+//
+// Valeurs automatiquement générées : Livre / Chapitre / Exercice
+//
+// Valeur par défaut : auto (pour profiter des valeurs automatiquement générées)
+// Si aucune valeur n'est précisée, le type de support ne sera pas affiché
+//
+// ----------------------------------------------------------------------------
+:_user_type_support: auto
+// end::attributes_list[]
+//
+//
+// ****************************************************************************
+//    Attributs non présents dans la documentation
+// ****************************************************************************
+//

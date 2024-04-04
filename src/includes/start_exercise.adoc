@@ -1,0 +1,39 @@
+// ****************************************************************************
+// Fichier à appeler immédiatement sous le titre d'un exercice.
+//
+// Ce fichier permet de charger la configuration du projet et le contexte
+//d'exécution pour générer un fichier pdf
+//
+// Ce fichier ne doit jamais être modifié par un utilisateur
+// ****************************************************************************
+//
+// ----------------------------------------------------------------------------
+// Contexte d'exécution
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+// Si l'exercice fait suite à un chapitre, alors il faut l'inclure dans une
+//sous partie (à faire seulement pour le premier exercice)
+// ----------------------------------------------------------------------------
+// ifndef::_exercise_title_rendered[]
+// ifeval::["{_context}" == "chapter"]
+// = {_exercise_title}
+// //
+// // ----------------------------------------------------------------------------
+// // Les titres utilisés dans les exercices doivent être décalé d'un niveau
+// // ----------------------------------------------------------------------------
+// :leveloffset: +1
+// //end eval _context
+// endif::[]
+// :_exercise_title_rendered:
+// endif::_exercise_title_rendered[]
+//
+// ----------------------------------------------------------------------------
+// On définit le contexte d'exécution sur exercice
+// ----------------------------------------------------------------------------
+:_context: exercise
+//
+// ----------------------------------------------------------------------------
+// Chargement des différents fichiers utiles au démarrage
+// ----------------------------------------------------------------------------
+include::start.adoc[]

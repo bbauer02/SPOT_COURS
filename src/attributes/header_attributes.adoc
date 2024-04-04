@@ -1,0 +1,25 @@
+//attributs d'entête de document
+{_version_number_text} {_version_date_text} {_document_author}
+{_type_support_text}{_duration_text} {_duration_of_correction_text}
+//cette ligne de commentaire est nécessaire pour séparer les attributs qui suivent.
+:doctype: book
+:icons: font
+ifeval::[{_show_title_numbers} == 1]
+:sectnums:
+:sectnumlevels: {_title_level_number}
+//end eval _show_title_numbers
+endif::[]
+:chapter-signifier: {_chapter_label}
+:source-highlighter: rouge
+//:rouge-style: monokai
+:experimental:
+// :backend: html5
+ifeval::[{_show_toc}==1]
+:toc:
+//end eval _show_toc
+:toclevels: {_toc_levels}
+:toc-title: {_toc_title}
+endif::[]
+:pdf-theme: {_path_to_pdf_theme}
+
+//une ligne vide doit précéder ce commentaire afin de s'assurer que le contenu du support ne soit pas collé aux attributs d'entête.

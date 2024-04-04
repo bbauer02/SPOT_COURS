@@ -1,0 +1,212 @@
+// ****************************************************************************
+// Ce fichier détermine la valeur de certains attributs qui dépend d'une logique
+// ****************************************************************************
+//
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ATTENTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// Ce fichier doit être appelé après le fichier attributes_update_value.adoc
+//
+// Ce fichier ne doit jamais être modifié par l'utilisateur. Toute modification
+// pourrait entraîner le dysfonctionnement du projet.
+//
+//Ce fichier ne doit contenir aucune ligne vide, ni entre les éléments ni à
+//la fin du fichier !
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Détermination de la profondeur du chemin relatif à utiliser
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+:_current_depth: {_depth_default}
+ifeval::["{_context}" == "exercise"]
+//retour à la racine du projet Asciidocpro depuis un exercice (utile pour spécifier le chemin du thème)
+:_current_depth: {_offset_depth_exercise}{_current_depth}
+//end eval _context
+endif::[]
+// //
+//
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Chargement du fichier de thème utilisateur si spécifié
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//il faut remonter jusqu'au dossier racine du projet depuis le fichier header_attributes.adoc
+:_path_to_pdf_theme: {_current_depth}{_file_path_themes_default}
+//si aucun fichier de thème n'est spécifié mais qu'une image de couverture l'est, il faut prendre l'autre thème par défaut
+ifeval::["{_pdf_theme_filename}" == ""]
+//si une image de couverture est spécifiée, on utilise le thème qui permet de déplacer le titre
+ifeval::["{_cover_image_filename}" != ""]
+:_path_to_pdf_theme: {_current_depth}{_file_path_themes_default_with_cover_image}
+//end eval _cover_image_filename
+endif::[]
+//end eval _pdf_theme_filename
+endif::[]
+ifeval::["{_pdf_theme_filename}" != ""]
+:_path_to_pdf_theme: {_current_depth}{_folder_path_themes_user}{_pdf_theme_filename}
+//end eval _pdf_theme
+endif::[]
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Auteur
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// si l'attribut auteur est déclaré mais vide, on n'affiche pas l'auteur. S'il est déclaré et vide, on affiche l'auteur par défaut s'il est défini, sinon on n'affiche rien. Si un auteur spécifique est déclaré, alors c'est ce dernier qui est affiché.
+:_document_author:
+// l'attribut _author est défini ce qui indique que l'auteur doit être affiché
+ifdef::_author[]
+//
+//choix de l'auteur par défaut s'il est spécifié par l'utilisateur
+ifeval::["{_author}" == ""]
+ifeval::["{_default_author}" != ""]
+:_document_author: Auteur : {_default_author}
+//end eval _default_author
+endif::[]
+//end eval _author
+endif::[]
+//
+//choix de l'auteur spécifié au niveau du livre, chapitre ou exercice
+ifeval::["{_author}" != ""]
+:_document_author: Auteur : {_author}
+//end eval _author
+endif::[]
+endif::_author[]
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Type de support (affiché sur la couverture)
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+// Pas de type de support (correspond au cas où l'utilisateur à spécifié une valeur vide pour le _type_support)
+:_type_support_text:
+//
+// si le type de support est personnalisé par l'utilisateur, on utilise sa valeur
+ifeval::["{_type_support}" != ""]
+ifeval::["{_type_support}" != "auto"]
+:_type_support_text: {_type_support}
+//end eval _type_support
+endif::[]
+//end eval _type_support
+endif::[]
+// si le type de support est en automatique, on utilise la valeur qui dépend du contexte
+ifeval::["{_type_support}" == "auto"]
+ifeval::["{_context}" == "book"]
+:_type_support_text: Livre
+//end eval _context
+endif::[]
+ifeval::["{_context}" == "chapter"]
+:_type_support_text: Chapitre
+//end eval _context
+endif::[]
+ifeval::["{_context}" == "exercise"]
+:_type_support_text: Exercice
+//end eval _context
+endif::[]
+//end eval _type_support
+endif::[]
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Durée de réalisation
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:_duration_text:
+ifdef::_duration[]
+ifeval::["{_duration}" != ""]
+:_duration_text: | Durée de réalisation : {_duration}
+//end eval _duration
+endif::[]
+endif::_duration[]
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Durée de correction
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:_duration_of_correction_text:
+ifdef::_duration_of_correction[]
+ifeval::["{_duration_of_correction}" != ""]
+:_duration_of_correction_text: | Durée de correction : {_duration_of_correction}
+//end eval _duration
+endif::[]
+endif::_duration_of_correction[]
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Date de version / révision
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:_version_date_text:
+ifdef::_version_date[]
+ifeval::["{_version_date}" != ""]
+:_version_date_text: {_version_date}
+ifeval::["{_document_author}" != ""]
+:_version_date_text: {_version_date_text} |
+//end eval _document_author
+endif::[]
+//end eval _version_date
+endif::[]
+endif::_version_date[]
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Numéro de version / révision
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:_version_number_text:
+ifdef::_version_number[]
+ifeval::["{_version_number}" != ""]
+:_version_number_text: v{_version_number}
+ifeval::["{_version_date_text}" != ""]
+:_version_number_text: {_version_number_text} |
+//end eval _version_date_text
+endif::[]
+//end eval _version_number
+endif::[]
+endif::_version_number[]
+//
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Répertoire des images_docker de diagrammes et du cache (pour les diagrammes gérés
+//avec asciidoc-diagram
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ifndef::_persist_context[]
+:imagesoutdir: {_foldername_diagrams_images}
+:diagram-cachedir: {_foldername_diagrams_images}/{_foldername_diagrams_cache}
+endif::_persist_context[]
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Désactivation du cache des diagrammes (asciidoc-diagram)
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ifeval::[{_enable_cache_diagrams}==0]
+:diagram-nocache-option:
+//end eval _enable_cache_diagrams
+endif::[]
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Image de fond sur la première page
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ifeval::["{_cover_image_filename}" != ""]
+//si l'image de couverture a été définie localement (au niveau d'un livre par exemple), il faut utiliser le répertoire des images_docker de ce dernier
+ifdef::_local_cover_image[]
+:title-page-background-image: image:{_folder_path_images_local}{_cover_image_filename}[]
+endif::_local_cover_image[]
+//si l'image à utiliser est définie globalement, il faut la récupérer dans le dossier des images_docker globales
+ifndef::_local_cover_image[]
+:title-page-background-image: image:{_current_depth}{_foldername_container_config_user}/{_foldername_container_images}/{_cover_image_filename}[]
+endif::_local_cover_image[]
+//end eval _cover_image_filename
+endif::[]
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Image de fond sur toutes les pages (sauf la couverture)
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ifeval::["{_background_image_for_all_pages}" != ""]
+//si l'image de fond de page a été définie localement (au niveau d'un livre par exemple), il faut utiliser le répertoire des images_docker de ce dernier
+ifdef::_local_page_image[]
+:page-background-image: image:{_folder_path_images_local}{_background_image_for_all_pages}[]
+endif::_local_page_image[]
+//si l'image de fond de page à utiliser est définie globalement, il faut la récupérer dans le dossier des images_docker globales
+ifndef::_local_page_image[]
+:page-background-image: image:{_current_depth}{_foldername_container_config_user}/{_foldername_container_images}/{_background_image_for_all_pages}[]
+endif::_local_page_image[]
+//end eval _background_image_for_all_pages
+endif::[]
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Définition de la version courante utilisable dans le fichier de thème
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ifdef::_version_number[]
+ifeval::["{_version_number}" != ""]
+:_current_version: | v{_version_number}
+//end eval _version_number
+endif::[]
+endif::_version_number[]

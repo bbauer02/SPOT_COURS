@@ -1,0 +1,49 @@
+// ***************************************************************
+// Ce fichier gère l'inclusion d'un chapitre depuis un livre
+// ***************************************************************
+//
+//
+//si l'attribut _chapter_folder_path est connu, c'est qu'il faut ajouter
+//l'exercice sans qu'il n'y ait eu d'ajout du chapitre auquel il est lié.
+//Effectivement, cet attribut est supprimé à la fin de l'ajout d'un chapitre
+ifdef::_chapter_folder_path[]
+
+:_chapter_folder_path_to_use: {_chapter_folder_path}
+
+endif::_chapter_folder_path[]
+
+//si l'attribut _chapter_folder_path est inconnu, c'est qu'il faut ajouter l'exercice dans un chapitre car cet attribut est supprimé après ajout d'un chapitre
+ifndef::_chapter_folder_path[]
+//lors de l'ajout du chapitre lié à l'exercice, son chemin a été stocké dans _last_chapter_added.
+:_chapter_folder_path_to_use: {_last_chapter_added}
+//si c'est le premier exercice lié au chapitre, il faut créer une section qui va contenir les exercices liés
+ifndef::_exercise_added[]
+
+//étant donné que leveloffset est à 1, en ajout un titre de niveau 2, j'obtiens un titre au niveau d'un chapitre
+== {_exercise_title}
+//les titres d'un exercice doivent être insérés dans un niveau 3 de titre
+:leveloffset: 3
+endif::_exercise_added[]
+endif::_chapter_folder_path[]
+//
+//
+// chemin vers l'exercice à inclure
+:_relative_path_to_exercise: {_relative_path_to_root}{_chapter_folder_path_to_use}/{_foldername_container_exercises}/{_exercise_folder_name}
+:_relative_path_to_exercise_images: {_depth_book}{_chapter_folder_path_to_use}/{_foldername_container_exercises}/{_exercise_folder_name}
+//
+//chemin relatif vers les images_docker de l'exercice (pour les images_docker, asciidoc utilise comme point de départ le fichier depuis lequel est appelée la génération)
+:imagesdir: {_relative_path_to_exercise_images}
+//
+//Pour éviter que l'inclusion de l'exercice génère un fausse erreur dans l'IDE, j'affecte des valeurs par défaut
+ifndef::_exercise_folder_name[]
+:_relative_path_to_exercise: .
+:_filename_main_content: main.adoc
+endif::_exercise_folder_name[]
+// inclusion de l'exercice
+include::{_relative_path_to_exercise}/{_filename_main_content}[]
+// include::../../chapters/version_info/changelog/exercices/test/main.adoc[]
+// include::{_relative_path_to_root}{_chapter_folder_path}/{_exercise_folder_name}/test/main.adoc[]
+// il est indispensable de laisser une ligne vide après l'inclusion du chapitre afin de bien marquer la fin de l'instruction asciidoc du fichier inclus
+
+//la ligne précédent la présente ligne doit être laissée vide
+:_exercise_added:

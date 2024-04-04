@@ -1,0 +1,23 @@
+:_use_local_application_attributes:
+:_book:
+[[docker_guide_pratique]]
+= Docker - Guide pratique
+include::../../../run_app.adoc[]
+
+
+:_chapter_folder_path: chapters/docker/introduction
+include::{_add_chapter}[]
+
+:_chapter_folder_path: chapters/docker/installation
+include::{_add_chapter}[]
+
+
+:_chapter_folder_path: chapters/docker/images_docker
+include::{_add_chapter}[]
+
+:_chapter_folder_path: chapters/docker/management
+include::{_add_chapter}[]
+
+
+
+include::{_end_book}[]

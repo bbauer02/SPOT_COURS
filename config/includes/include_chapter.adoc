@@ -6,12 +6,11 @@
 
 :_relative_path_to_chapter: {_relative_path_to_root}{_chapter_folder_path}
 
-//chemin relatif vers les images du chapitre (asciidoc cherche par défaut dans le dossier "images" ce pourquoi je ne le précise pas
+//chemin relatif vers les images_docker du chapitre (asciidoc cherche par défaut dans le dossier "images_docker" ce pourquoi je ne le précise pas
 :imagesdir: {_relative_path_to_chapter}
 
 //récupération des informations propres au chapitre
 // include::{_relative_path_to_chapter}/info.adoc[]
-
 
 //inclusion du chapitre
 include::{_relative_path_to_chapter}/main.adoc[]

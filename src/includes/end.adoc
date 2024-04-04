@@ -1,0 +1,8 @@
+ifeval::[{_show_index}==1]
+//on force le saut de page
+<<<
+:leveloffset: 0
+[index]
+== Index
+//end eval _show_index
+endif::[]

@@ -1,0 +1,27 @@
+// ****************************************************************************
+//
+// Fichier des attributs de contenu
+//
+// Ce fichier contient les attributs que vous souhaitez rendre disponibles
+// dans le contenu de vos supports (livres, chapitres, exercices)
+// ****************************************************************************
+//
+//
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ATTENTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// Les attributs utilisés par asciidoc sont  préfixés par le caractère
+// underscore "_". Il faut donc éviter d'utiliser la même convention de nommage.
+// Il est recommandé d'utilisé un préfixe qui vous est propre (par exemple vos
+//initiales.
+//
+// Même si aucun attribut de contenu n'est déclaré par l'utilisateur, ce
+//fichier doit tout de même être présent.
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ATTENTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// Ce fichier ne doit contenir aucune ligne vide y compris à la fin du fichier
+// Ce fichier ne doit contenir aucune ligne vide y compris à la fin du fichier
+// Ce fichier ne doit contenir aucune ligne vide y compris à la fin du fichier
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//
+//Déclarez ci-dessous vos propres attributs.
+//:foo_mon_attribut: la valeur de l'attribut

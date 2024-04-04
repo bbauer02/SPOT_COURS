@@ -1,0 +1,55 @@
+// ****************************************************************************
+// Point d'entrée principal d'Asciidocpro
+// ****************************************************************************
+//
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ATTENTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// Il ne faut laisser aucune ligne vide dans ce fichier, y compris à la fin
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//
+//chargement des attributs système
+ifndef::run_app[]
+include::src/attributes/system_attributes.adoc[]
+:!_system_start:
+:run_app:
+endif::run_app[]
+//
+//s'il s'agit d'un livre
+//
+ifdef::_book[]
+//il faut vérifier que _book est vide avant de tester avec la valeur "lonely" car ce dernier test supprime _book ce qui revient à tester une valeur vide. Le test sera alors toujours vrai
+ifeval::["{_book}" == ""]
+include::{_file_path_book_start}[]
+//end eval _book
+endif::[]
+//le livre n'est composé que d'un seul chapitre
+ifeval::["{_book}" == "lonely"]
+//end eval _book
+endif::[]
+//on ne fait rien. mais comme run_app va être appelé par un chapitre ou un exercice, il faut supprimer l'attribut qui indique un contexte de livre
+:!_book:
+:_success_run:
+endif::_book[]
+//
+//s'il s'agit d'un chapitre
+//
+ifdef::_chapter[]
+//en cas de nouvel appel du présent fichier (ajout d'un autre chapitre ou exercice), il faut supprimer le type de support qui est à l'origine de l'appel
+:!_chapter:
+include::{_file_path_chapter_start}[]
+:_success_run:
+endif::_chapter[]
+//
+//s'il s'agit d'un exercice
+//
+ifdef::_exercise[]
+//en cas de nouvel appel du présent fichier (ajout d'un autre chapitre ou exercice), il faut supprimer le type de support qui est à l'origine de l'appel
+:!_exercise:
+include::{_file_path_exercise_start}[]
+:_success_run:
+endif::_exercise[]
+//
+//si l'utilisateur n'a pas spécifié de type de document, il faut l'en informer
+//
+ifndef::_success_run[]
+#Un de ces attributs de métadonnées doit être obligatoirement déclaré au début de votre fichier `:_book:`, `:_chapter:` ou `:_exercise:`#
+endif::_success_run[]

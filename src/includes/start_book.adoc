@@ -1,0 +1,24 @@
+// ****************************************************************************
+// Fichier à appeler immédiatement sous le titre d'un livre.
+//
+// Ce fichier permet de charger la configuration du projet et le contexte
+//d'exécution pour générer un fichier pdf
+//
+// Ce fichier ne doit jamais être modifié par un utilisateur
+// ****************************************************************************
+//
+// ----------------------------------------------------------------------------
+// Contexte d'exécution
+// ----------------------------------------------------------------------------
+//contexte d'exécution qui va être écrasé par le contexte d'appel d'un chapitre
+:_context: book
+//contexte d'exécution persistant (non écrasé)
+:_persist_context: book
+//
+// ----------------------------------------------------------------------------
+// Chargement des différents fichiers utiles au démarrage
+// ----------------------------------------------------------------------------
+include::start.adoc[]
+//
+//
+:leveloffset: 1

@@ -6,7 +6,7 @@
 
 :_relative_path_to_exercise: {_relative_path_to_root}{_chapter_folder_path}/exercises/{_exercise_folder_name}
 
-//chemin relatif vers les images du chapitre (asciidoc cherche par défaut dans le dossier "images" ce pourquoi je ne le précise pas
+//chemin relatif vers les images_docker du chapitre (asciidoc cherche par défaut dans le dossier "images_docker" ce pourquoi je ne le précise pas
 :imagesdir: {_relative_path_to_exercise}
 
 //récupération des informations propres au dossier d'exercice

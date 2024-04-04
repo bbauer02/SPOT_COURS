@@ -1,0 +1,1 @@
+:_user_cover_image_filename: bg.png

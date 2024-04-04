@@ -1,0 +1,311 @@
+// ***************************************************************
+// Ce fichier contient les attributs "système"
+// ***************************************************************
+//
+//
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Convention de nommage à adopter pour nommer les attributs
+//
+// Dans tous les cas, voir les noms d'attributs déjà formés ci-dessous
+//
+// * nom de dossier : _foldername_ puis compléter en fonction du poids des mots clés
+// * nom de fichier : _filename_ puis compléter en fonction du poids des mots clés
+// * chemin vers un dossier : _folder_path_ puis compléter en fonction du poids des mots clés
+// * chemin vers un fichier : _file_path_ puis compléter en fonction du poids des mots clés
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ATTENTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// Ces attributs ne devraient jamais être modifiés par les utilisateurs
+// Toute modification pourrait conduire à un dysfonctionnement
+//
+// Ce fichier ne doit contenir aucune ligne vide.
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//
+//
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Nom des types de bloc utilisés dans les conventions rédactionnelles
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+// :_block_type_skill: skill
+// :_block_type_todo: todo
+// :_block_type_definition: definition
+// :_block_type_question: question
+// :_block_type_answer: answer
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Profondeur des répertoires des livres, chapitres et exercice
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// nombre de répertoire à remonter depuis un livre ou un chapitre pour arriver à la racine du projet. Comme les livres et les dossiers sont à une profondeur de 3, il faut remonter trois dossiers. C'est utile pour trouver le dossier des images_docker et le dossier des templates de thème car pour ces éléments, il faut utiliser un chemin qui part du fichier depuis lequel est généré le pdf
+:_depth_default: ../../../
+//profondeur à ajouter à la profondeur de chapitre dans le cas d'un exercice
+:_offset_depth_exercise: ../../
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Attributs non classés
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Permet de savoir si un premier chargement des attributs système a été réalisé
+:_system_start:
+//
+// chemin à remonter depuis un fichier situé dans src ou dans config pour arriver à la racine du projet. (attention, ce chemin relatif n'est pas applicable pour les chemins d'images_docker et de thèmes, ces derniers étant relatifs au fichier qui fait l'objet d'une génération pdf)
+:_relative_path_to_root: ../../
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Nom des dossiers composant la structure du framework
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+// nom du dossier qui contient les livres
+:_foldername_container_books: books
+//
+// nom du dossier qui contient les chapitres
+:_foldername_container_chapters: chapters
+//
+// nom du dossier qui contient les exercices dans un chapitre
+:_foldername_container_exercises: exercises
+//
+// nom du dossier qui contient les exercices dans un chapitre
+:_foldername_container_shared_components: _shared_components
+//
+// nom du dossier qui contient la logique du framework
+:_foldername_container_src: src
+//
+// nom du dossier qui contient la configuration globale de l'utilisateur
+:_foldername_container_config_user: config
+//
+// nom du dossier qui contient la configuration locale de l'utilisateur (au niveau d'un livre)
+:_foldername_container_config_local: config
+//
+// nom du dossier qui contient la configuration globale de l'utilisateur
+:_foldername_container_bonus: bonus
+//
+// nom des dossiers de thèmes
+:_foldername_container_themes: themes
+//
+// nom des dossiers contenant des fichiers d'attributs
+:_foldername_container_attributes: attributes
+//
+// nom des dossiers contenant des templates
+:_foldername_container_templates: templates
+//
+// nom des dossiers contenant des images_docker
+:_foldername_container_images: images
+//
+// nom des dossiers contenant des inclusions
+:_foldername_container_includes: includes
+//
+// nom du dossier qui doit contenir les images_docker des diagrammes asciidoc-diagram
+:_foldername_diagrams_images: diagram_images
+//
+// nom du dossier de cache pour les diagrammes asciidoc-diagram
+:_foldername_diagrams_cache: cache
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Nom des fichiers utilisés dans la structure du framework
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+// nom du fichier principal dans lequel est écrit le contenu d'un "livre", d'un chapitre ou d'un "exercice"
+:_filename_main_content: main.adoc
+//
+// nom du fichier de démarrage à utiliser dans le cadre d'un "livre"
+:_filename_book_start: start_book.adoc
+//
+// nom du fichier de démarrage à utiliser dans le cadre d'un "livre"
+:_filename_book_end: end_book.adoc
+//
+// nom du fichier de démarrage à utiliser dans le cadre d'un chapitre
+:_filename_chapter_start: start_chapter.adoc
+//
+// nom du fichier de démarrage à utiliser dans le cadre d'un exercice
+:_filename_exercise_start: start_exercise.adoc
+//
+// nom du fichier permettant d'ajouter un chapitre depuis un livre
+:_filename_chapter_add: add_chapter.adoc
+//
+// nom du fichier permettant d'ajouter un exercice depuis un livre
+:_filename_exercise_add: add_exercise.adoc
+//
+//nom du fichier de démarrage
+:_filename_run: run_app.adoc
+//
+//nom du fichier de changelog
+:_filename_changelog: changelog.adoc
+//
+//nom du fichier de changelog
+:_filename_version_info: version_info.adoc
+//
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Chemins vers les fichiers à inclure depuis un livre, un chapitre ou un exercice
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//chemin vers le fichier de démarrage d'un livre
+:_file_path_book_start: {_foldername_container_src}/{_foldername_container_includes}/{_filename_book_start}
+//
+//chemin vers le fichier de démarrage d'un chapitre
+:_file_path_chapter_start: {_foldername_container_src}/{_foldername_container_includes}/{_filename_chapter_start}
+//
+//chemin vers le fichier de démarrage d'un exercice
+:_file_path_exercise_start: {_foldername_container_src}/{_foldername_container_includes}/{_filename_exercise_start}
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Chemin à utiliser pour l'ajout de chapitre, d'exercice, d'index depuis un livre
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+:_depth_book: ../../../
+//
+//chemin d'inclusion pour l'ajout d'un chapitre depuis un livre
+:_file_path_chapter_add: {_foldername_container_src}/{_foldername_container_includes}/{_filename_chapter_add}
+:_relative_file_path_chapter_add: {_depth_book}{_file_path_chapter_add}
+//
+//chemin d'inclusion pour l'ajout d'un exercice depuis un livre
+:_file_path_exercise_add: {_foldername_container_src}/{_foldername_container_includes}/{_filename_exercise_add}
+:_relative_file_path_exercise_add: {_depth_book}{_file_path_exercise_add}
+//
+//chemin vers le fichier de fin d'un livre
+:_file_path_book_end: {_foldername_container_src}/{_foldername_container_includes}/{_filename_book_end}
+:_relative_file_path_book_end: {_depth_book}{_file_path_book_end}
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Instructions à utiliser au démarrage d'une unité de support (livre, chapitre, exercice)
+//
+// Elles sont utiles à la documentation mais il n'est pas possible de faire une inclusion dynamique
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+// directive à utiliser au démarrage d'un livre
+:_directive_book_start: include::../../../{_filename_run}[]
+//
+// directive à utiliser à la fin d'un livre
+:_directive_book_end: include::\{_end_book}[]
+//
+// directive à utiliser au démarrage d'un chapitre
+:_directive_chapter_start: include::../../../{_filename_run}[]
+//
+// directive à utiliser au démarrage d'un exercice
+:_directive_exercise_start: include::../../../../../{_filename_run}[]
+//
+//directive d'ajout d'un chapitre depuis un "livre"
+:_directive_chapter_add: include::\{_add_chapter}[]
+//
+//directive d'ajout d'un exercice depuis un "livre"
+:_directive_exercise_add: include::\{_add_exercise}[]
+//
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Chemins vers les templates - ok
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+// chemin du dossier des templates personnalisés injectables par rapport à la racine du projet
+:_folder_path_templates_custom: {_foldername_container_config_user}/{_foldername_container_templates}/
+//
+//chemin vers le fichier qui permet de déterminer le template d'entête à inclure
+:_file_path_template_header_resolver: {_foldername_container_src}/{_foldername_container_templates}/header_template_resolver.adoc
+:_relative_file_path_template_header_resolver: {_relative_path_to_root}{_file_path_template_header_resolver}
+//
+//chemin vers le fichier de template d'entête d'un exercice
+// :_path_to_application_template_header_chapter: {_foldername_container_src}/{_foldername_container_templates}/header_chapter_template.adoc
+//
+//chemin vers le fichier de template des informations d'un support inséré sous chaque titre de chapitre ou d'exercice
+:_file_path_template_support_info: {_foldername_container_src}/{_foldername_container_templates}/support_info_template.adoc
+:_relative_file_path_template_support_info: {_relative_path_to_root}{_file_path_template_support_info}
+//
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Chemin vers les fichiers des attributs définis dans src
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+// chemin vers les attributs système (le présent fichier)
+:_file_path_attributes_system: {_foldername_container_src}/{_foldername_container_attributes}/system_attributes.adoc
+:_relative_file_path_attributes_system: {_relative_path_to_root}{_file_path_attributes_system}
+//
+//chemin vers le fichier des attributs système
+// :_path_to_system_attributes_filename: {_foldername_container_src}/{_foldername_container_attributes}/system_attributes.adoc
+//
+//chemin vers le fichier de résolution des valeurs par défaut des attributs d'kernel
+:_file_path_attributes_application_default_values: {_foldername_container_src}/{_foldername_container_attributes}/attributes_default_value.adoc
+:_relative_file_path_attributes_application_default_values: {_relative_path_to_root}{_file_path_attributes_application_default_values}
+//
+//chemin vers le fichier qui résout la valeur de certains attributs en fonction d'une logique de contexte
+:_file_path_attributes_resolver: {_foldername_container_src}/{_foldername_container_attributes}/attributes_resolver.adoc
+:_relative_file_path_attributes_resolver: {_relative_path_to_root}{_file_path_attributes_resolver}
+//
+//chemin vers le fichier des attributs d'entête du document
+:_file_path_attributes_header: {_foldername_container_src}/{_foldername_container_attributes}/header_attributes.adoc
+:_relative_file_path_attributes_header: {_relative_path_to_root}{_file_path_attributes_header}
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Chemin vers les fichiers des attributs définis par l'utilisateur
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//
+//chemin vers le fichier des valeurs pour les attributs d'application de l'utilisateur -ok
+:_file_path_attributes_application_global_user: {_foldername_container_config_user}/{_foldername_container_attributes}/global_application_attributes.adoc
+:_relative_file_path_attributes_application_global_user: {_relative_path_to_root}{_file_path_attributes_application_global_user}
+//
+//chemin vers le fichier des attributs définis dans src qui utilise les valeurs de _path_to_user_application_attributes_values
+:_file_path_attributes_application_merged: {_foldername_container_src}/{_foldername_container_attributes}/attributes_merged_value.adoc
+:_relative_file_path_attributes_application_merged: {_relative_path_to_root}{_file_path_attributes_application_merged}
+//
+//chemin vers le fichier global des attributs de contenu
+:_file_path_attributes_content_global: {_foldername_container_config_user}/{_foldername_container_attributes}/global_content_attributes.adoc
+:_relative_file_path_attributes_content_global: {_relative_path_to_root}{_file_path_attributes_content_global}
+//
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Elements liés à la configuration au niveau d'un livre
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//chemin vers le fichier des attributs définis au niveau d'un dossier de livre
+:_folder_path_attributes_local: {_foldername_container_attributes}/
+//
+// nom du fichier qui contient les attributs définis au niveau d'un livre
+:_filename_attributes_application_local_user: local_application_attributes.adoc
+//
+// chemin du fichier des attributs d'application locaux
+:_file_path_attributes_application_local: {_folder_path_attributes_local}{_filename_attributes_application_local_user}
+//
+//chemin absolu du fichier des attributs d'application défini au niveau d'un livre
+:_file_path_attributes_application_local_user: {docdir}/{_folder_path_attributes_local}{_filename_attributes_application_local_user}
+//
+//nom du fichier qui contient les attributs de l'utilisateur définis au niveau d'un livre
+:_filename_attributes_content_local: local_content_attributes.adoc
+//
+//chemin absolu vers le fichier local des attributs de contenu (c'est-à-dire par rapport au livre courant)
+:_file_path_attributes_content_local: {docdir}/{_folder_path_attributes_local}{_filename_attributes_content_local}
+//
+// chemin absolu vers le répertoire local des images_docker d'un livre (c'est-à-dire par rapport au livre courant)
+:_folder_path_images_local: {docdir}/{_foldername_container_images}/
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Chemins vers les thèmes et ce qui est lié aux thèmes
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//chemin du dossier de thèmes de l'utilisateur
+:_folder_path_themes_user: {_foldername_container_config_user}/{_foldername_container_themes}/
+//
+//chemin du fichier de thème pdf par défaut par rapport à la racine du projet
+:_file_path_themes_default: {_foldername_container_src}/{_foldername_container_themes}/default-theme.yml
+//
+//chemin du dossier de thèmes par défaut prévoyant une image en couverture par rapport à la racine du projet
+:_file_path_themes_default_with_cover_image: {_foldername_container_src}/{_foldername_container_themes}/default-with-cover-image-theme.yml
+//
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Alias pour faciliter l'utilisation du framework
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+// alias utilisé depuis un livre pour spécifier le chemin d'inclusion d'ajout d'un chapitre
+:_add_chapter: {_relative_file_path_chapter_add}
+//
+// alias utilisé depuis un livre pour spécifier le chemin d'inclusion d'ajout d'un exercice
+:_add_exercise: {_relative_file_path_exercise_add}
+//
+// alias utilisé depuis un livre pour spécifier le chemin d'inclusion du fichier de fin de livre
+:_end_book: {_relative_file_path_book_end}
+//il ne doit y avoir aucune ligne vide après cette ligne
+//il ne doit y avoir aucune ligne vide après cette ligne
+//il ne doit y avoir aucune ligne vide après cette ligne
+//
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Nom des attributs de métadonnées
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

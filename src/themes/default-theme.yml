@@ -1,0 +1,4 @@
+extends: default
+title-page:
+    title:
+        font-color: #4f545b
