@@ -1,0 +1,507 @@
+:_chapter:
+[[data_volumes]]
+= Data et Volumes
+include::../../../run_app.adoc[]
+
+== Introduction
+
+Jusqu'à présent dans ce cours, nous avons beaucoup appris sur les images et les conteneurs Docker. Nous disposons maintenant d'une base solide pour aller plus loin et explorer ces concepts de manière plus approfondie.
+
+Ce chapitre va se concentrer sur la gestion des données à l'intérieur des images et des conteneurs. Cela peut sembler étrange au début, car nous avions déjà des données dans ces éléments, n'est-ce pas ? Par exemple, notre code y était stocké.
+
+En fait, il existe *différents types de données*. Jusqu'à présent, nous ne pouvions en gérer qu'un seul type dans nos images et conteneurs. Or, pour une utilisation courante, cela pose des problèmes.
+
+Nous allons donc découvrir comment les images et les conteneurs peuvent gérer les données de différentes manières. Nous verrons comment se connecter à différents dossiers et bien plus encore. Nous nous pencherons plus particulièrement sur un concept clé de Docker : *les volumes*.
+
+Enfin, vers la fin du chapitre, nous explorerons également une notion complémentaire : les *arguments* et *les variables d'environnement*. Nous verrons comment les utiliser dans les images et les conteneurs Docker, et pourquoi ces éléments sont utiles.
+
+== Différents types de données
+
+image::images/01.png[]
+Comme je l'ai mentionné, il existe différents types de données. Afin de comprendre les problèmes que nous pourrions rencontrer et les solutions que nous aborderons dans ce chapitre, il est important de distinguer ces types.
+
+* *Données de l'application (code source et environnements ):*
+
+Ce sont les éléments dont nous avons le plus parlé dans les chapîtres précédents. Cela comprend notre code source et l'environnement d'exécution de l'application. Ce code peut inclure des paquets tiers, comme les dépendances d'une application `Node.js` spécifiées dans un fichier `package.json`.
+
+Ces données sont ajoutées à l'image pendant *la phase de construction*.
+Une fois l'image créée, le code est fixé et ne peut plus être modifié.
+
+[IMPORTANT]
+====
+C'est pourquoi on les stocke dans une image : *le code source de l'application et son environnement doivent être en lecture seule.*
+====
+
+* *Données applicatives temporaires :*
+
+Il s'agit des données générées pendant l'exécution de l'application.
+Par exemple, pour un site web, les données saisies par un utilisateur dans un forum.
+
+Ces données peuvent être stockées temporairement en mémoire, dans des variables ou dans un fichier/base de données.
+Il est acceptable de perdre ces données à l'arrêt du conteneur, car elles ne sont pas critiques.
+
+Ces données sont stockées en *lecture-écriture* dans les conteneurs (pas dans les images,) car les images sont en *lecture seule*.
+
+Docker gère efficacement ces données en combinant le système de fichiers de l'image avec les modifications effectuées dans le conteneur (couche supplémentaire en lecture-écriture).
+
+* *Données applicatives permanentes :*
+
+Ces données doivent persister même après l'arrêt et le redémarrage du conteneur.
+
+*Exemple* : comptes utilisateurs dans une application d'inscription.
+
+
+On ne veut pas perdre les données applicatives lors de la mise à jour du code dans le conteneur.
+Ces données sont en *lecture-écriture* et stockées dans des volumes, un concept clé que nous allons explorer en détail dans ce chapitre.
+
+== Mise en pratique : Manipulation de données temporaires et permanentes
+=== Analyse d'une application de démonstration
+
+Voici une application de démonstration `Node.js` qui permettra d'étudier la manipulation de données temporaires et permanentes.
+
+Ce projet nous servira à illustrer la gestion de différents types de données avec Docker.
+
+Le code source de l'application Node.js est fourni dans les assets de ce chapitre sous le nom : `data-volumes-01-starting-setup.zip`.
+
+L'application est simple et repose sur un serveur *Node.js* qui gère *plusieurs routes* et *requêtes*. Une fois lancée, elle présente un formulaire permettant la saisie de commentaires. Ces commentaires sont ensuite stockés dans un fichier.
+
+
+Plus précisément, deux fichiers sont utilisés :
+
+* Un fichier *temporaire*, stocké dans un emplacement temporaire.
+
+* Un fichier *final*, destiné au stockage permanent des commentaires.
+
+[source,javascript]
+.Fichier server.js
+----
+// Extrait de code
+//...
+include::./code/data-volumes-01-starting-setup/server.js[lines=34..42]
+//...
+----
+
+L'application vérifie d'abord si le fichier final existe déjà. Si ce n'est pas le cas, le fichier temporaire est copié vers l'emplacement final. Le fichier final contiendra uniquement le commentaire soumis.
+
+En plus du fichier principal du serveur *Node.js* (`server.js`), l'application comprend plusieurs dossiers :
+
+* `pages` : contient les pages HTML renvoyées par le serveur en réponse aux requêtes.
+* `feedback` : stocke définitivement les fichiers de commentaires générés.
+* `temp` : sert d'emplacement temporaire pour les fichiers de commentaires avant leur validation.
+* `public` : héberge les fichiers de style de l'application.
+
+Initialement, les dossiers `temp` et `feedback` sont vides. Le dossier temp sert à stocker temporairement les fichiers de commentaires, avant de vérifier leur existence dans le dossier feedback. Si le fichier n'existe pas encore, il est copié vers l'emplacement final.
+
+Ce projet a été conçu pour mettre en évidence *la gestion de trois types de données* :
+
+* *Code source* : l'application *Node.js* elle-même.
+* **Données temporaires **: les fichiers stockés dans le dossier `temp`, pouvant être supprimés sans perte critique.
+* *Stockage permanent* : les fichiers de commentaires définitifs stockés dans le dossier `feedback`.
+
+Nous allons maintenant conteneuriser cette application pour découvrir les défis rencontrés et les résoudre à l'aide des outils Docker.
+
+=== Comprendre la problématique
+
+Nous allons maintenant conteneuriser l'application en créant à la racine du projet un fichier `Dockerfile`:
+
+[source,bash]
+----
+FROM node:14 // <1>
+WORKDIR /app // <2>
+COPY package.json . // <3>
+RUN npm install // <4>
+COPY . . // <5>
+EXPOSE 80 // <6>
+CMD [ "node", "server.js" ] // <7>
+----
+<1> Nous créons une image basée sur Node version 14.
+<2> Le répertoire de travail sera `/app`.
+<3> On copie le fichier `package.json` dans le répertoire de travail.
+<4> On lance la commande`` npm install`` afin de télécharger les packages de notre application dans l'image (Cela va créer une couche sur l'image spécialement pour les dépendances).
+<5> On copie tous les fichiers du répertoire dans le répertoire de travail.
+<6> On expose le port 80
+<7> Lorsque le conteneur sera monté et lancé, on exécutera la commande `node server.js`.
+
+
+Maintenant que nous avons notre `Dockerfile`, nous allons pouvoir créer l'image et démarrer le conteneur pour tester l'application.
+
+[source,bash]
+----
+
+docker build -t feedback-node .
+----
+
+Puis démarrons un conteneur basé sur cette image :
+
+[source,bash]
+----
+
+docker container run -p 3000:80 -d --name feedback-app --rm  feedback-node
+----
+
+* `--rm` : Quand le conteneur sera éteint, il sera supprimé automatiquement
+*  `-d` : Mode détaché
+
+Ouvrez un navigateur, et allez sur : http://localhost:3000
+
+image::images/02.png[]
+
+Écrivez du contenu et cliquez sur "save".
+
+
+image::images/03.png[]
+
+[TIP]
+====
+Si vous choisissez comme titre : "*Super*", un fichier nommé `super.txt` sera créé.
+
+Nous pourrons consulter son contenu à l'adresse : http://localhost:3000//feedback/super.txt
+
+image::images/04.png[]
+
+====
+
+Ce fichier n'existe seulement que dans le conteneur, pas en local sur notre machine hôte.
+
+*Pourquoi le fichier texte "awesome.txt" n'est-il pas visible dans le dossier "feedback" sur la machine locale ?*
+
+Si vous consultez le dossier `feedback` sur votre machine locale, vous ne trouverez pas le fichier `awesome.txt`. Il n'existe qu'à l'intérieur du conteneur *Docker*, c'est pourquoi nous pouvons le voir là-bas, mais pas ici.
+
+La raison en est que, dans le *Dockerfile*, nous copions notre dossier local dans l'image, et le conteneur est ensuite basé sur cette image. Cela signifie que l'image, et donc aussi le conteneur, possède son propre système de fichiers, basé sur notre dossier local ici, car nous le copions dedans.
+
+[IMPORTANT]
+====
+Après cela, il n'y a plus de connexion entre notre dossier local et ce système de fichiers interne de l'image.
+====
+
+Les conteneurs** doivent être isolés**. Cela serait plutôt mal si des fichiers étaient créés à l'intérieur du conteneur et se retrouveraient soudainement quelque part sur notre disque dur, sur notre machine hôte. *Ce n'est pas du tout l'idée derrière Docker.*
+
+Et c'est d'ailleurs la même chose qu'auparavant dans ce cours lorsque nous avons changé quelque chose dans notre code source localement sur notre machine hôte et que la modification n'a pas été reflétée dans le conteneur Docker en cours d'exécution.
+Vous vous souvenez peut-être que nous avons dû : 
+
+* Reconstruire l'image, copier le code modifié,
+* Créer une nouvelle image basée sur celle-ci, et ensuite les conteneurs fonctionnant sur la base de cette image modifiée auraient nos changements de code.
+
+Pour la même raison, nous copions du code dans une image, il se trouve alors dans un système de *fichiers spécial à l'intérieur de l'image*, il est verrouillé, il n'y a pas de *connexion au dossier hôte ou à la machine hôte et au conteneur*.
+
+[IMPORTANT]
+====
+Il n'y a pas de connexion entre votre conteneur ou votre image et votre système de fichiers local.
+====
+
+Vous avez juste initialisé son image une fois, vous pouvez copier un instantané de vos dossiers et fichiers locaux, mais après cela, c'est tout. Il n'y a pas de connexion, et c'est pourquoi nous ne voyons pas le fichier texte dans le dossier "feedback" ici sur notre machine hôte, dans ce dossier. Nous ne l'avons disponible qu'à l'intérieur du conteneur Docker en cours d'exécution. Là, nous pouvons y accéder, il existe là.
+
+En résumé :
+
+* Les conteneurs Docker ont leur propre système de fichiers, isolé de votre système local.
+* Les fichiers copiés dans une image Docker sont "gelés" et ne sont pas synchronisés avec les fichiers sur votre ordinateur local.
+* C'est pourquoi vous ne pouvez pas voir le fichier "awesome.txt" du conteneur Docker dans le dossier "feedback" sur votre machine locale.
+* Pour que les modifications apportées aux fichiers locaux soient reflétées dans les conteneurs, vous devez recréer les images Docker correspondantes.
+
+[IMPORTANT]
+====
+L'isolation des conteneurs est un concept fondamental de Docker. En comprenant ce concept, vous serez en mesure d'utiliser Docker de manière plus efficace et sécurisée.
+====
+
+Poursuivons les essais et arrêtons le conteneur :
+
+[source,bash]
+----
+docker container stop feedback-app
+----
+
+Puis, lançons un nouveau conteneur puisque le précédent a été supprimé, mais cette fois-ci sans le paramètre `--rm` :
+
+[source,bash]
+----
+docker container run -p 3000:80 -d --name feedback-app feedback-node
+----
+
+Si nous essayons de consulter le fichier précédemment créé, nous obtenons une erreur, car *il n'existe plus* !
+
+Dans ce cas, écrivez un nouveau feedback.
+
+image::images/05.png[]
+
+On retrouve le contenu du fichier `awesome.txt` créé :
+
+image::images/06.png[]
+
+Maintenant, arrêtons le conteneur, et gardons à l'esprit que cette fois, **il ne sera pas supprimé ! **
+
+[source,bash]
+----
+docker container stop feedback-app
+----
+
+Puis relançons-le :
+
+[source,bash]
+----
+docker container start feedback-app
+----
+
+image::images/06.png[]
+
+Nous constatons que le fichier est toujours présent !
+
+[IMPORTANT]
+====
+Un conteneur qui est seulement stoppé, conserve les données qui sont stockées dans son système de fichier.
+
+Chaque fichier créé, va rajouter une nouvelle couche (layer) dans le conteneur
+====
+
+image::images/07.png[]
+
+Le système de fichiers d'un conteneur est situé à *l'intérieur de celui-ci*. Lorsque nous arrêtons et redémarrons un conteneur, le système de fichiers reste inchangé, car le conteneur lui-même n'est pas modifié. Cependant, lorsque nous supprimons un conteneur, toutes les données contenues dans celui-ci sont effacées, parce que le conteneur est supprimé dans son ensemble.
+
+Si nous exécutons un nouveau conteneur basé sur la même image, toutes les données créées et stockées dans le conteneur précédent sont perdues, car l'image est en *lecture seule*. En effet, lorsqu'un fichier est généré dans un conteneur,** il n'est pas écrit dans l'image**, mais dans une couche en *lecture-écriture* qui est ajoutée par-dessus. Ainsi, *si le conteneur est supprimé*, nous ne disposons plus que de l'image originale, qui n'a jamais été modifiée. Lorsque nous démarrons un nouveau conteneur, celui-ci démarre avec le même système de fichiers de base, sans les modifications apportées par le conteneur précédent.
+
+Cette isolation des conteneurs est *un concept fondamental de Docker*. Cependant, cela peut poser un problème dans certaines situations. En effet, lorsque nous supprimons un conteneur, nous perdons également toutes les données qui y étaient stockées. Dans de nombreuses applications, il est important de conserver ces données, même si le conteneur est supprimé. Par exemple, si nous gérons des comptes utilisateur ou des données produites soumises par les utilisateurs, nous ne voulons pas que ces données disparaissent soudainement.
+
+*En pratique, il est courant de supprimer des conteneurs et d'en créer de nouveaux.*
+
+Par exemple, si nous modifions notre code et créons une nouvelle image, nous n'allons pas redémarrer l'ancien conteneur, mais plutôt utiliser *le nouveau conteneur* qui utilise le dernier instantané de code. Dans ce cas, nous perdrions toutes les données stockées dans l'ancien conteneur.
+
+Maintenant que nous avons compris le problème et que nous savons que les données stockées dans un conteneur sont perdues lorsque celui-ci est supprimé, il est important de trouver une solution pour conserver ces données importantes.
+
+
+=== Introduction aux `Volumes`
+
+Maintenant que nous connaissons le problème, quelle est la solution ?
+
+Docker dispose d'une fonctionnalité intégrée appelée `volumes`, qui permet de résoudre le problème de perte de données que nous avons vu précédemment.
+Mais comment utiliser les volumes dans notre application ?
+
+
+Tout d'abord, il est important de comprendre ce que sont les *volumes* et comment ils fonctionnent. Les volumes sont des *dossiers* situés *sur la machine hôte*, et non dans le conteneur ou l'image. Ces dossiers sont *montés*, c'est-à-dire qu'ils sont *rendus disponibles ou mappés*, dans les conteneurs.
+
+[NOTE]
+====
+Les volumes sont donc des dossiers sur la machine hôte, que Docker peut utiliser et qui sont ensuite mappés à des dossiers à l'intérieur d'un conteneur Docker.
+====
+
+Cela peut sembler similaire à l'instruction `COPY` du fichier *Dockerfile*, mais il est important de noter que cette instruction ne fait qu'une copie instantanée des fichiers et dossiers spécifiés, qui sont ensuite copiés dans l'image.
+*Il n'y a pas de relation ou de connexion continue.*
+
+Avec les `volumes`, c'est différent. Vous pouvez vraiment *connecter un dossier* à l'intérieur du conteneur à un dossier à l'extérieur du conteneur,** sur la machine hôte**.
+Les modifications apportées à l'un des dossiers seront répercutées dans l'autre.
+
+[NOTE]
+====
+Si vous ajoutez un *fichier sur la machine hôte*, il sera accessible à l'intérieur du conteneur, et si le conteneur ajoute un *fichier dans ce chemin mappé*, il sera disponible à l'extérieur du conteneur, sur la *machine hôte*.
+====
+
+Grâce à ce mécanisme, les volumes permettent de conserver les données. Les volumes continuent d'exister même si un conteneur est arrêté. 
+
+[IMPORTANT]
+====
+C'est important. Si vous ajoutez un volume à un conteneur, le volume ne sera pas supprimé lorsque le conteneur sera supprimé, il survivra, et donc les données contenues dans le volume survivront également.
+====
+
+image::images/08.png[]
+
+Les conteneurs peuvent lire et écrire des données à partir et vers un volume.
+C'est une fonctionnalité puissante que nous pouvons utiliser pour les dossiers que nous
+voulons accéder depuis l'extérieur de notre conteneur, et/ou simplement pour les données
+qui doivent survivre à l'arrêt et à la suppression d'un conteneur.
+
+Car si les données sont également enregistrées à l'extérieur du conteneur, elles survivront à la suppression du conteneur.
+
+=== Un premier essai raté
+
+Comment pouvons-nous maintenant ajouter un volume à notre conteneur ?
+
+L'une des façons les plus simples d'ajouter un volume consiste à ajouter une instruction spéciale au `Dockerfile`. Nous pouvons ajouter l'instruction `VOLUME`.
+
+[source,bash]
+.Extrait du fichier Dockerfile
+----
+
+VOLUME [""]
+
+----
+
+Cette instruction attend un tableau où nous pouvons spécifier différents chemins dans le conteneur. Ceux-ci seront utilisés dans notre code d'application, que nous voulons conserver.
+
+Dans notre application de démonstration, nous enregistrons les fichiers permanents dans le dossier `feedback`.
+
+[source,javascript]
+.Extrait du fichier server.js
+----
+// some code
+const finalFilePath = path.join(__dirname, 'feedback', adjTitle + '.txt');
+// some code
+----
+
+Je sauvegarde également des fichiers dans le dossier `temp`, mais comme le nom l'indique, ce dossier n'est que temporaire. *Il n'a pas besoin d'être sauvegardé.*
+
+[source,javascript]
+.Extrait du fichier server.js
+----
+// some code
+const tempFilePath = path.join(__dirname, 'temp', adjTitle + '.txt');
+// some code
+----
+
+Mais tout ce qui se trouve dans le dossier `feedback` doit être sauvegardé.
+
+
+Dans mon code d'application, j'écris dans le dossier `feedback`, qui se trouve bien sûr à l'intérieur du dossier d'application défini par l'instruction `WORKDIR`, car c'est notre répertoire de travail général où nous avons copié l'ensemble de l'application.
+
+
+Par conséquent, le volume que je souhaite enregistrer est `/app/feedback`.
+
+[source,bash]
+.Extrait du fichier Dockerfile
+----
+......
+VOLUME ["/app/feedback"]
+CMD [ "node", "server.js" ]
+----
+
+Il s'agit du chemin à l'intérieur de mon conteneur, ce qui est important, à l'intérieur de mon conteneur, qui doit être mappé à un dossier à l'extérieur du conteneur où les données doivent donc survivre.
+
+[NOTE]
+.Vous vous demandez peut-être comment définir le dossier de la machine hôte et le faire correspondre avec le volume dans le conteneur ?
+====
+
+Je reviendrai sur ce point plus tard. Pour l'instant, nous laissons Docker contrôler cela, et je reviendrai sur les raisons pour lesquelles cela a du sens.
+====
+
+
+Si j'enregistre le Dockerfile avec cette instruction ajoutée, nous pouvons reconstruire l'image.
+
+[source,bash]
+----
+docker build -t feedback-node:volumes .
+----
+Nous ajoutons le tag `volume` à notre image `feedback-node` pour signifier que c'est la même image qu'auparavant, mais avec cette fonctionnalité de volume supplémentaire.
+
+Supprimons l'ancien conteneur et créons un nouveau basé sur cette nouvelle image :
+[source,bash]
+----
+docker stop feedback-app
+docker rm feedback-app
+docker container run -d -p 3000:80 --rm --name feedback-app feedback-node:volumes
+----
+
+Nous pouvons également ajouter le paramètre `--rm` pour supprimer ce conteneur s'il est arrêté, car grâce aux volumes, cela ne devrait plus poser de problème.
+
+Lançons notre application et créons un nouveau feedback :
+
+image::images/09.png[]
+
+L'application "crash", semble chercher quelque chose à l'infini !
+Il est donc clair que quelque chose s'est mal passé. Et pour voir ce qui s'est mal passé, j'exécuterai `docker logs feedback-app` pour examiner la sortie de ce conteneur.
+
+[source,bash]
+----
+docker logs feedback-app
+----
+
+
+image::images/10.png[]
+
+Il semblerait que l'erreur provienne du fait de vouloir déplacer le fichier `awesome.txt` du dossier `temp` vers le dossier `feedback`.
+
+Et cela doit avoir quelque chose à voir avec notre volume récemment ajouté, car cela fonctionnait auparavant.
+
+Cette erreur que nous rencontrons provient de la méthode de renommage `fs.rename` que j'utilise ici dans *Node* pour être précis.
+
+[source,javascript]
+----
+include::./code/data-volumes-01-starting-setup/server.js[lines=39]
+----
+
+
+*Ce n'est pas un cours Node*, je ne vais donc pas vous ennuyer avec les détails. Mais en fin de compte, la méthode de renommage ne fonctionne pas si le fichier est déplacé sur plusieurs périphériques
+
+Et grâce au volume que nous avons spécifié ici, c'est en quelque sorte ce qui se passe sous le capot.
+
+Docker ne déplace pas simplement le fichier vers un autre dossier à l'intérieur du système de fichiers du conteneur, mais il le déplace hors du conteneur.
+
+Et la méthode `fs.rename` ne tolère pas ce genre d'opération.
+
+La solution de contournement est simple.
+
+Vous pouvez remplacer la méthode `fs.rename` par la méthode `fs.copyFile` et ajouter ensuite simplement une nouvelle ligne où vous appelez `fs.unlink`
+
+[source,javascript]
+.Dans le fichier server.js : REMPLACEZ CECI
+----
+await fs.writeFile(tempFilePath, content);
+  exists(finalFilePath, async (exists) => {
+    if (exists) {
+      res.redirect('/exists');
+    } else {
+      await fs.rename(tempFilePath, finalFilePath);
+      res.redirect('/');
+    }
+  });
+----
+
+[source,javascript]
+.Dans le fichier server.js : PAR CELA
+----
+await fs.writeFile(tempFilePath, content);
+  exists(finalFilePath, async (exists) => {
+    if (exists) {
+      res.redirect('/exists');
+    } else {
+      await fs.copyFile(tempFilePath, finalFilePath);
+      await fs.unlink(tempFilePath);
+      res.redirect('/');
+    }
+  });
+----
+
+Bien sûr, nous devons maintenant reconstruire notre image, car nous avons modifié le code source et cela n'est toujours pas pris en compte automatiquement à ce stade.
+
+Il faut arrêter le conteneur qui utilise l'image :
+[source,bash]
+----
+docker stop feedback-app
+----
+
+Puis, nous supprimerons l'image `feedback-node:volumes`.
+
+[source,bash]
+----
+docker rmi feedback-node:volumes
+----
+
+Et reconstruisons l'image et lançons un conteneur :
+
+[source,bash]
+----
+docker build -t feedback-node:volumes .
+docker container run -d -p 3000:80 --rm --name feedback-app feedback-node:volumes
+----
+
+Démarrons l'application et ajoutons un *feedback* nommé : *awesome* puis allez à l'URL : http://localhost:3000/feedback/awesome.txt
+
+L'application fonctionne désormais correctement !
+
+Faisons un autre test ...
+
+Arrêtons le conteneur encore une fois, puis remontons un autre conteneur :
+
+[source,bash]
+----
+docker stop feedback-app
+docker container run -d -p 3000:80 --rm --name feedback-app feedback-node:volumes
+----
+
+Allons à l'adresse : http://localhost:3000/feedback/awesome.txt
+
+Que se passe-t-il? Nous avons un message d'erreur disant que le fichier n'existe pas !!
+
+Le fichier n'est plus là !
+
+Alors, qu'est-ce qui se passe avec cette affaire de volumes ? Pourquoi est-ce que je vous enseigne des choses qui ne fonctionne pas ou qui casse notre code ? Quelle est l'idée derrière cela ? Pourquoi cela ne fonctionne-t-il pas ?
+
+=== Les volumes nommés à la rescousse !
+
+
