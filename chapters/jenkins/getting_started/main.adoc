@@ -1,0 +1,15 @@
+:_chapter:
+[[getting_started]]
+= Débuter avec Kubernetes
+include::../../../run_app.adoc[]
+
+== Introduction
+
+Kubernetes est un outil supplémentaire, bien que ce ne soit pas vraiment un outil au sens strict. Il s'agit plutôt d'un framework, un ensemble de concepts et de standards. Ce framework va nous aider dans l'orchestration de conteneurs et les déploiements à grande échelle, indépendamment du fournisseur de cloud que nous utilisons.
+
+Mais allons-y étape par étape. Dans ce premier module sur Docker et Kubernetes, nous allons comprendre les défis auxquels nous pouvons être confrontés lors du déploiement de conteneurs, puis nous verrons comment Kubernetes peut nous aider à les surmonter. Nous découvrirons ce qu'est exactement Kubernetes et pourquoi nous voudrions l'utiliser, et nous commencerons à explorer les concepts et les composants clés de Kubernetes.
+
+Comme je l'ai mentionné, ce ne sera pas le seul module sur Kubernetes. Tout comme Docker, il ne s'agit pas d'un outil simple. Il comporte de nombreux aspects. Par conséquent, nous aurons plusieurs modules. Dans ce premier module, nous commencerons par la théorie. Ensuite, dans le module suivant, nous verrons Kubernetes en action. Enfin, nous apprendrons comment utiliser Kubernetes pour mettre des conteneurs en production sur un fournisseur de cloud réel.
+
+Mais prenons les choses étape par étape. Commençons par les bases de Kubernetes dans cette section du cours.
+
