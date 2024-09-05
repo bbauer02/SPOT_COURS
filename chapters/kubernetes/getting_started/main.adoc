@@ -4,7 +4,7 @@
 include::../../../run_app.adoc[]
 
 == Introduction
-
+image::../images/002.png[]
 Kubernetes est un outil supplémentaire, bien que ce ne soit pas vraiment un outil au sens strict. Il s'agit plutôt d'un framework, un ensemble de concepts et de standards. Ce framework va nous aider dans l'orchestration de conteneurs et les déploiements à grande échelle, indépendamment du fournisseur de cloud que nous utilisons.
 
 Mais allons-y étape par étape. Dans ce premier module sur Docker et Kubernetes, nous allons comprendre les défis auxquels nous pouvons être confrontés lors du déploiement de conteneurs, puis nous verrons comment Kubernetes peut nous aider à les surmonter. Nous découvrirons ce qu'est exactement Kubernetes et pourquoi nous voudrions l'utiliser, et nous commencerons à explorer les concepts et les composants clés de Kubernetes.
@@ -14,6 +14,8 @@ Comme je l'ai mentionné, ce ne sera pas le seul module sur Kubernetes. Tout com
 Mais prenons les choses étape par étape. Commençons par les bases de Kubernetes dans cette section du cours.
 
 == D'autres problèmes avec le déploiement manuel
+
+image::../images/003.png[]
 
 Si vous consultez https://kubernetes.io, vous pouvez approfondir vos connaissances sur Kubernetes. Toutefois, il n'est pas indispensable de vous plonger dans leur documentation immédiatement, car cette section, ainsi que la suivante, vous fourniront les bases essentielles de Kubernetes.
 
@@ -47,6 +49,8 @@ Ainsi, il peut s'avérer nécessaire de faire évoluer dynamiquement le nombre d
 
 Lorsqu'il est question de trafic, et plus particulièrement de trafic HTTP entrant, il est également crucial de garantir que ce trafic soit réparti de manière équilibrée entre les différentes instances de conteneurs. Si une seule instance de conteneur est en cours d'exécution, il n'y a rien à répartir. Cependant, dès lors que plusieurs instances d'un même conteneur fonctionnent en parallèle, il devient primordial de distribuer équitablement le trafic entre ces instances, afin d'éviter que certaines soient surchargées tandis que d'autres demeurent inactives.
 
+image::../images/004.png[]
+
 Le concept d'exécution de multiples instances d'un même conteneur peut paraître nouveau à certains. Nous avons mentionné plus tôt dans le cours que la commande docker run peut être exécutée autant de fois que nécessaire pour lancer plusieurs conteneurs à partir d'une même image. Cependant, dans nos exemples précédents, qu'il s'agisse de développement local ou de déploiement, nous avons toujours utilisé un conteneur par image.
 
 Dans un environnement de production réel, que ce soit pour des applications web ou d'autres cas d'usage, il est souvent nécessaire d'exécuter plusieurs instances de conteneurs basées sur une même image. Cela permet de répartir la charge de travail et de garantir qu'il y ait suffisamment de conteneurs disponibles pour traiter des volumes de trafic importants.
@@ -55,12 +59,16 @@ Nous aborderons plus en détail ces concepts de mise à l'échelle dans les modu
 
 === Conclusion
 
+image::../images/001.png[]
+
 Ces défis liés au déploiement manuel des conteneurs, en particulier dans des environnements complexes ou à grande échelle, illustrent clairement la nécessité d'automatiser la gestion des conteneurs. Il devient essentiel d'adopter des systèmes capables de surveiller, de mettre à l'échelle et de répartir les charges de manière efficace. Kubernetes a précisément été conçu pour répondre à ces besoins. Dans les sections à venir, nous allons explorer comment Kubernetes permet de surmonter ces défis et d'optimiser la gestion des conteneurs.
 
 
 == Pourquoi Kubernetes ?
 
 Les services comme *ECS (Elastic Container Service)* que nous avons utilisé dans la section déploiement peuvent nous aider à résoudre plusieurs des problèmes rencontrés. Dans une certaine mesure, nous avons déjà bénéficié des fonctionnalités d'AWS ECS sans forcément nous en rendre compte.
+
+image::../images/005.png[]
 
 Par exemple, le service ECS vérifie automatiquement l'état de santé de nos conteneurs. Il s'assure que ceux-ci sont toujours en cours d'exécution et redémarre automatiquement les conteneurs en cas de panne. Nous avons pu observer cela en action lors du déploiement, notamment lorsque notre conteneur échouait à se connecter à une base de données et était redémarré à plusieurs reprises. AWS nous propose cette fonctionnalité, et l'utilisation d'ECS permet d'en tirer parti très facilement.
 
@@ -76,13 +84,19 @@ En outre, il est possible de définir des fichiers de configuration où nous pou
 
 Cette dépendance signifie qu’en adoptant *AWS ECS*, nous devons maîtriser les spécificités du service, les terminologies et les options de configuration disponibles. Si nous souhaitons changer de fournisseur, il faudra réapprendre les particularités de ce nouveau service et adapter manuellement nos configurations pour les rendre compatibles avec le nouveau système.
 
+image::../images/006.png[]
+
 Ainsi, il ne suffit pas de connaître *Docker* ; il est également essentiel d'apprendre à utiliser des services comme AWS ECS, ou tout autre service que nous choisissons. Cela dit, si nous sommes satisfaits d'AWS et que nous prévoyons de rester sur cette plateforme, cette compétence acquise sur ECS devient un atout durable. Toutefois, cette dépendance peut poser un problème à long terme, ce qui nous amène à considérer des alternatives comme *Kubernetes*.
 
 === Qu'est-ce que Kubernetes exactement ?
 
+image::../images/007.png[]
+
 *Kubernetes* permet de résoudre les problèmes évoqués dans le chapitre précédent, car il offre une méthode de définition des déploiements, de mise à l'échelle des conteneurs, et de gestion des conteneurs en termes de surveillance et de remplacement en cas de défaillance. *Kubernetes* permet de définir ces éléments de manière indépendante du fournisseur de services cloud utilisé. Étant un système *open-source* et le standard de facto pour la gestion des déploiements de conteneurs et leur *orchestration*, *Kubernetes* facilite les tâches comme le déploiement automatique, la mise à l’échelle, l'équilibrage de charge et la gestion générale des conteneurs.
 
 *Kubernetes* offre des outils pour surveiller les conteneurs et les remplacer automatiquement s'ils tombent en panne. Il suffit de rédiger une configuration Kubernetes (fichier de configuration) où sont définis les déploiements souhaités : quels conteneurs déployer, combien d'instances, s'ils doivent être mis à l'échelle, s'ils doivent être remplacés, etc. Ensuite, cette configuration peut être transmise à tout fournisseur cloud ou à toute machine correctement configurée. Celle-ci, à son tour, récupérera la configuration Kubernetes pour créer les ressources et le déploiement spécifiés.
+
+image::../images/008.png[]
 
 Cela signifie qu'il existe une méthode standardisée pour rédiger un fichier de configuration, comme suit :
 
@@ -90,24 +104,21 @@ Cela signifie qu'il existe une méthode standardisée pour rédiger un fichier d
 [source,bash]
 ----
 apiVersion: apps/v1
-kind: Deployment
+kind: Service
 metadata:
-  name: example-deployment
+  name: auth-service
+  annotations:
+     service.beta.kubernetes.io/aws-load-balancer-access-log-enabled: "true"
 spec:
-  replicas: 3
   selector:
-    matchLabels:
-      app: example
-  template:
-    metadata:
-      labels:
-        app: example
-    spec:
-      containers:
-      - name: example-container
-        image: nginx
-        ports:
-        - containerPort: 80
+      app: auth-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+
+....
 
 ----
 
@@ -119,7 +130,9 @@ Ainsi, *Kubernetes* est un système extrêmement puissant pour standardiser les 
 
 Kubernetes *n'est pas un fournisseur de services cloud*. Ce n'est pas une alternative *à des services comme AWS ou Microsoft Azure*, mais un projet open-source qui regroupe un ensemble de concepts et *d'outils qui peuvent être utilisés avec n'importe quel fournisseur cloud*. Certains de ces fournisseurs peuvent proposer des services facilitant l'utilisation de Kubernetes, mais Kubernetes lui-même peut être utilisé n'importe où.
 
-Il est important de noter que Kubernetes n'est pas un logiciel unique à exécuter sur une machine, m**ais plutôt un ensemble d'outils et de concepts qui**, ensemble, permettent de gérer les déploiements. *Ce n'est pas non plus une alternative à Docker*. En fait, Kubernetes fonctionne en tandem avec *Docker* pour déployer des conteneurs sur n'importe quelle infrastructure. *Ce n'est pas non plus un service payant*. Étant donné qu'il s'agit d'un projet open-source, il n'y a pas de coût associé à son utilisation. *Cependant, des frais peuvent s'appliquer si vous utilisez Kubernetes avec un service cloud, comme les frais pour les ressources créées par ce fournisseur.*
+Il est important de noter que Kubernetes n'est pas un logiciel unique à exécuter sur une machine, **mais plutôt un ensemble d'outils et de concepts qui**, ensemble, permettent de gérer les déploiements. *Ce n'est pas non plus une alternative à Docker*. En fait, Kubernetes fonctionne en tandem avec *Docker* pour déployer des conteneurs sur n'importe quelle infrastructure. *Ce n'est pas non plus un service payant*. Étant donné qu'il s'agit d'un projet open-source, il n'y a pas de coût associé à son utilisation. *Cependant, des frais peuvent s'appliquer si vous utilisez Kubernetes avec un service cloud, comme les frais pour les ressources créées par ce fournisseur.*
+
+image::../images/009.png[]
 
 En résumé, *Kubernetes* peut être comparé à *Docker-Compose* à l'échelle de plusieurs machines. *Docker-Compose* est un outil que nous utilisons pour gérer facilement des projets multi-conteneurs sur une machine locale. De la même manière, Kubernetes permet de gérer des déploiements sur plusieurs machines, tout en surveillant et en redémarrant automatiquement les conteneurs. Kubernetes offre ainsi des fonctionnalités pratiques supplémentaires pour déployer des applications conteneurisées à grande échelle. 
 
@@ -132,6 +145,8 @@ Au fond, Kubernetes fait pour le déploiement multi-machines ce que Docker-Compo
 == Kubernetes : Architectures et concepts clés
 
 Kubernetes est un ensemble de concepts et d'outils qui facilitent le déploiement de conteneurs sur n'importe quelle infrastructure. Examinons maintenant l'architecture d'un déploiement Kubernetes et voyons ce que ce système peut configurer et gérer sur n'importe quel fournisseur de services cloud.
+
+image::../images/010.png[]
 
 Tout commence par le conteneur que nous souhaitons déployer. Dans l'univers Kubernetes, ce conteneur est géré par ce qu'on appelle un pod. Un pod est la plus petite unité que vous pouvez définir dans un fichier de configuration Kubernetes. Ce pod contient le ou les conteneurs. En effet, un pod peut contenir plusieurs conteneurs qui ont besoin de fonctionner ensemble, mais dans sa forme la plus simple, un pod contient un seul conteneur responsable de son exécution.
 
@@ -162,6 +177,8 @@ Avant de nous plonger dans la pratique, explorons davantage les rôles des nœud
 == Kubernetes ne gère pas votre infrastructure
 
 Lorsque vous examinez cette vue d'ensemble de l'architecture Kubernetes que vous allez mettre en place, et avec laquelle Kubernetes vous aidera, il est essentiel de faire une distinction importante. Kubernetes réalisera certaines tâches pour vous, mais il y a également des aspects que vous devez configurer vous-même avant de pouvoir utiliser Kubernetes.
+
+image::../images/011.png[]
 
 En tant que développeur ou administrateur, vous devez préparer l'environnement dans lequel Kubernetes pourra s'exécuter. Une des tâches cruciales consiste à créer et configurer le cluster, ainsi que les nœuds de travail (worker nodes) et le nœud maître (master node) sur lesquels Kubernetes sera installé. C'est une étape à votre charge. Vous devrez installer tous les logiciels nécessaires de Kubernetes sur ces nœuds, c’est-à-dire sur les machines faisant partie de votre cluster, et configurer les éléments dont Kubernetes aura besoin.
 
