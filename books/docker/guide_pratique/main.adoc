@@ -5,23 +5,11 @@
 include::../../../run_app.adoc[]
 
 
-:_chapter_folder_path: chapters/docker/introduction
-include::{_add_chapter}[]
 
-:_chapter_folder_path: chapters/docker/installation
-include::{_add_chapter}[]
 
-:_chapter_folder_path: chapters/docker/images_docker
-include::{_add_chapter}[]
 
-:_chapter_folder_path: chapters/docker/core_concepts
-include::{_add_chapter}[]
 
-:_chapter_folder_path: chapters/docker/data_volumes
-include::{_add_chapter}[]
 
-:_chapter_folder_path: chapters/docker/networking
-include::{_add_chapter}[]
 
 :_chapter_folder_path: chapters/docker/deploying_containers
 include::{_add_chapter}[]

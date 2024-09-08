@@ -1,0 +1,7 @@
+:_chapter:
+[[docker_compose]]
+
+= Docker Compose : Applications Multi-conteneurs qui ont de la classe !
+include::../../../run_app.adoc[]
+
+coming soon ...
