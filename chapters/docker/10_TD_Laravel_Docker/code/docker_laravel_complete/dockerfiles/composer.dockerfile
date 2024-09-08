@@ -1,4 +1,4 @@
-FROM composer:2.5.7
+FROM composer
 
 RUN addgroup -g 1000 laravel && adduser -G laravel -g laravel -s /bin/sh -D laravel
 
