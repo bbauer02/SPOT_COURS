@@ -12,7 +12,10 @@ Dans ce chapitre, nous allons approfondir ces concepts et apprendre quelques nou
 
 En faisant cela, nous allons appliquer ce que nous avons appris sur les *images*, les *conteneurs*, *Docker Compose*, les conteneurs utilitaires, et bien plus encore, sur un exemple concret.
 
-Vous n'aurez pas besoin de connaissances en *Laravel* ou en *PHP* pour ce module. Nous n'écrirons pas de code *Laravel* ou *PHP*, et c'est pourquoi je recommande également de ne pas passer ce module, même si *Laravel* ne vous intéresse pas. Nous allons découvrir de nouvelles fonctionnalités tout au long de ce module.
+[TIP]
+====
+Vous n'aurez pas besoin de connaissances en *Laravel* ou en *PHP* pour ce module. Nous n'écrirons pas de code *Laravel* ou *PHP*, et c'est pourquoi je recommande également de ne pas passer ce chapitre, même si *Laravel* ne vous intéresse pas. Nous allons découvrir de nouvelles fonctionnalités tout au long de ce module.
+====
 
 Nous allons apprendre de nouvelles manières d'utiliser *Docker Compose*, d'interagir avec plusieurs fichiers *Docker*, de connecter des *images*, et bien plus encore. J'ai choisi *Laravel* et *PHP* comme exemple car :
 
@@ -37,6 +40,7 @@ Pour *Laravel* et *PHP*, c'est différent. Installer *PHP* ne suffit pas, car en
 
 C'est pourquoi cet exemple est parfait pour utiliser *Docker*, car vous verrez à quel point il est facile de gérer une configuration complexe sans avoir à installer quoi que ce soit sur notre machine locale, à part *Docker*. En utilisant *Docker*, nous pourrons écrire du code *Laravel PHP* et créer des applications sans avoir besoin d'installer d'autres outils.
 
+
 Voici l'objectif de cette configuration que nous allons atteindre dans ce module. Nous allons construire un environnement de développement *Laravel* sans avoir à installer quoi que ce soit sur notre machine hôte, à part *Docker*.
 
 L'idée est d'avoir un dossier sur notre machine hôte qui contiendra le code source de cette application *Laravel PHP*. Ce dossier pourra être ouvert avec l'éditeur de notre choix, et nous pourrons y écrire du code *Laravel*.
@@ -60,8 +64,7 @@ image::images/02.png[]
 
 Au total, nous aurons donc six conteneurs qui interagiront avec notre code source. C'est la configuration que nous allons mettre en place dans ce module.
 
-
-== Un conteneur Nginx(Serveur Web)
+== Préparation
 
 Commençons à écrire un peu de code ici.
 
@@ -69,24 +72,24 @@ Dans un dossier vide et je tiens à souligner que je n’ai pas installé *Compo
 
 C’est pourquoi nous allons utiliser *Docker* pour cela. Je vais commencer par ajouter un fichier `docker-compose.yaml`, car nous allons créer plusieurs conteneurs et ces conteneurs devront interagir. Même s’il n’y avait qu’un seul conteneur, j’aime avoir cette configuration dans un fichier texte, facile à lire et à modifier.
 
-Nous utiliserons donc *Docker Compose* pour configurer l'intégralité de cette application, ce projet. Ce fichier contiendra à la fois les conteneurs d'application et les conteneurs utilitaires. Je vous montrerai également comment exécuter tous ces conteneurs ou juste certains d'entre eux tout au long de ce module.
+Ce fichier contiendra à la fois les conteneurs d'application et les conteneurs utilitaires. Je vous montrerai également comment exécuter tous ces conteneurs ou juste certains d'entre eux tout au long de ce module.
 
-Commençons donc par ajouter une version, et encore une fois, je vais choisir la *version 3.8* ici. Ensuite, nous spécifierons nos services, c'est-à-dire les conteneurs que nous souhaitons configurer.
+Je vous ai montré que nous aurons six services différents.
+
+Nous aurons notre service :
+
+* le serveur *_nginx_*, qui prendra en charge toutes les requêtes entrantes et déclenchera l’interpréteur *PHP*.
+* le conteneur *_PHP_*, responsable de l’exécution de notre code *PHP*, et donc aussi du code *Laravel*, car *Laravel* n’est qu’un framework *PHP*.
+
+* le conteneur *_MySQL_*, qui contiendra la base de données *MySQL*, ainsi que les conteneurs utilitaires.
+
+* un conteneur *Composer*,
+* un conteneur *npm*,
+* le conteneur *Artisan*.
 
 [source, yaml]
-.Fichier : code/01-added-nginx/docker-compose.yaml
+.Fichier : ./docker-compose.yaml
 ----
-include::./code/docker_laravel_complete/docker-compose.yaml[lines=1]
-----
-
-Je vous ai montré que nous aurons six services différents. Nous aurons notre service serveur, le serveur *nginx*, qui prendra en charge toutes les requêtes entrantes et déclenchera l’interpréteur *PHP*. Ensuite, nous aurons le conteneur *PHP*, responsable de l’exécution de notre code *PHP*, et donc aussi du code *Laravel*, car *Laravel* n’est qu’un framework *PHP*.
-
-Nous aurons également le conteneur *MySQL*, qui contiendra la base de données *MySQL*, ainsi que les conteneurs utilitaires. Nous aurons un conteneur *Composer*, un conteneur *npm* et, peut-être avant cela, mais l'ordre n’a pas d’importance, le conteneur *Artisan*.
-
-[source, yaml]
-.Fichier : code/docker_laravel_complete/docker-compose.yaml
-----
-version: "3.8"
 services:
     server:
     php:
@@ -98,20 +101,8 @@ services:
 
 Ce sont les six conteneurs dont nous aurons besoin ici, et je vais bien sûr les ajouter étape par étape. Commençons par le serveur.
 
-[source, yaml]
-.Fichier : code/docker_laravel_complete/docker-compose.yaml
-----
-version: "3.8"
-services:
-    server:
-
-   # php:
-   # mysql:
-   # composer:
-   # artisan:
-   # npm:
-----
-
+== Un conteneur Nginx(Serveur Web)
+=== Son Image
 Le serveur, comme je l'ai mentionné, utilisera *nginx*, un serveur web très populaire, puissant et efficace. L’avantage est que si vous recherchez *docker nginx*, vous trouverez une image officielle *nginx* que vous pouvez utiliser. Tout comme avec *MongoDB* ou *Node*, nous avons également une image officielle pour cela.
 
 .https://hub.docker.com/_/nginx[Page officielle de Nginx sur DockerHub]
@@ -122,9 +113,8 @@ Nous pouvons simplement utiliser cette image pour configurer un serveur *nginx*.
 Dans le fichier *docker-compose*, nous pouvons maintenant spécifier une image pour le serveur et utiliser une image officielle, l'image *nginx*. Il existe plusieurs tags, plusieurs versions de cette image que nous pourrions utiliser. Je vais utiliser le tag *stable-alpine* ici pour obtenir une image basée sur une couche système d’exploitation *Linux* très légère, et une version stable de cette image *nginx*.
 
 [source, yaml]
-.Fichier : code/docker_laravel_complete/docker-compose.yaml
+.Fichier : ./docker-compose.yaml
 ----
-version: "3.8"
 services:
     server:
       image: 'nginx:stable-alpine'
@@ -136,12 +126,17 @@ services:
    # npm:
 ----
 
-Ce serveur expose également un port, et comment le savoir ? Eh bien, la documentation officielle nous le dit. Elle nous indique que nous pouvons exposer le port *80*, qui est le port interne exposé par cette image. Nous allons donc lier ce port avec l’option *ports* à un port de notre machine hôte, ici le port *8000*, que nous lierons au port *80* exposé par cette image et donc par le conteneur en cours d'exécution.
+=== Exposition de son port
+
+Ce serveur expose également un port, et comment le savoir ?
+
+**Eh bien, la documentation officielle nous le dit. **
+
+Elle nous indique que nous pouvons exposer le port *80*, qui est le port interne exposé par cette image. Nous allons donc lier ce port avec l’option *ports* à un port de notre machine hôte, ici le port *8000*, que nous lierons au port *80* exposé par cette image et donc par le conteneur en cours d'exécution.
 
 [source, yaml]
-.Fichier : code/docker_laravel_complete/docker-compose.yaml
+.Fichier : ./docker-compose.yaml
 ----
-version: "3.8"
 services:
     server:
       image: 'nginx:stable-alpine'
@@ -155,20 +150,33 @@ services:
    # npm:
 ----
 
+=== Ajout d'un montage `Bind Mount`
+
 Nous pourrons alors exécuter un conteneur avec un serveur à l'intérieur. Mais ce serveur ne sera pas très utile par défaut, car il ne saura pas quoi faire. Ce qu’il devrait faire ici, c'est traiter les requêtes entrantes et les rediriger vers notre conteneur *PHP*, que nous ajouterons plus tard, pour que ce conteneur exécute notre code *PHP*.
 
-Pour fournir notre propre configuration, nous ajouterons un montage (*bind mount*) avec la clé *volumes*. Ici, nous allons lier un dossier local, disons un dossier *nginx* (que nous devons encore ajouter), et y mettre un fichier *nginx.conf*. Dans le conteneur, nous le lierons à un chemin absolu : `/etc/nginx/nginx.conf`.
+Pour fournir notre propre configuration, nous ajouterons un montage (*bind mount*) avec la clé *volumes*. Ici, nous allons lier un dossier local, disons un dossier *nginx* (que nous devons encore ajouter), et y mettre un fichier *nginx.conf*.
 
-Et comment connaitre ce chemin dans le conteneur ? Eh bien, encore une fois, la documentation officielle de l'image nous l’indique. Nous apprenons que nous pouvons passer notre propre configuration en la liant avec `/etc/nginx/`.
+Dans le conteneur, nous le lierons à un chemin absolu : `/etc/nginx/conf.d/default.conf`.
+( _Voir la documentation officielle de NGINX pour plus d'informations sur la configuration de NGINX_ )
 
 Nous pouvons également définir cela en lecture seule (*read-only*), car le conteneur ne devrait jamais modifier cette configuration. Cela nous permettra de transmettre notre fichier de configuration personnalisé pour ce serveur web dans le conteneur.
 
 [source, yaml]
-.Fichier : code/docker_laravel_complete/docker-compose.yaml
+.Fichier : ./docker-compose.yaml
 ----
-
+services:
+    server:
+      image: 'nginx:stable-alpine'
+      ports:
+        - 8000:80
       volumes:
-        - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
+   # php:
+   # mysql:
+   # composer:
+   # artisan:
+   # npm:
 ----
 
 Nous devons maintenant créer ce dossier *nginx* sur notre machine hôte, ainsi qu'un fichier *nginx.conf*. Vous trouverez le fichier de configuration prêt dans cette section, car je l'ai déjà préparé pour vous. Vous pouvez donc simplement utiliser ce fichier.
@@ -176,35 +184,17 @@ Nous devons maintenant créer ce dossier *nginx* sur notre machine hôte, ainsi 
 Ce fichier contient une configuration *nginx* qui écoute sur le port *80* et gère les requêtes, puis redirige celles-ci vers des fichiers *index.php*, ou vers notre interpréteur *PHP* pour traiter les requêtes entrantes.
 
 [source, ]
-.Fichier : code/01-added-nginx/nginx/nginx.conf
+.Fichier : ./nginx/nginx.conf
 ----
-include::./code/docker_laravel_complete/nginx/nginx.conf[]
-----
-
-Enfin, revenons au fichier *docker-compose.yaml*. Nous avons ajouté notre configuration en tant que volume, et c'est tout pour le conteneur serveur.
-
-[source, yaml]
-.Fichier : code/docker_laravel_complete/docker-compose.yaml
-----
-version: "3.8"
-services:
-    server:
-      image: 'nginx:stable-alpine'
-      ports:
-        - 8000:80
-      volumes:
-        - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-
-   # php:
-   # mysql:
-   # composer:
-   # artisan:
-   # npm:
+include::./code/laravel_docker_final/nginx/nginx.conf[]
 ----
 
 Je suis conscient que cela était nouveau et peut-être pas quelque chose que vous vous sentez à l'aise de construire vous-même, mais c’est pourquoi nous parcourons cela ensemble. Nous avons maintenant construit ce conteneur *nginx*, et dans la prochaine section, nous passerons au conteneur *PHP*.
 
+
 == Un conteneur PHP
+
+=== Son Image
 
 Passons maintenant au conteneur *PHP*, après avoir configuré le conteneur *nginx*. Le conteneur *PHP* sera relativement simple. Cependant, je vais utiliser un fichier *Dockerfile* personnalisé, car il n'existe pas d'image prête à l'emploi avec tout ce dont j'ai besoin.
 
@@ -212,63 +202,79 @@ Pour clarifier, si vous recherchez *PHP* sur *Docker Hub*, vous trouverez une im
 
 Je vais donc ajouter un nouveau dossier à côté du dossier *nginx*, que je nommerai *dockerfiles*. À l'intérieur, j'ajouterai un fichier `php.dockerfile`. Vous pouvez choisir le nom que vous voulez, mais en utilisant cette convention de nommage, cela permet à certains éditeurs comme *Visual Studio Code* de reconnaître le fichier comme un *Dockerfile*, ce qui aide pour l'auto-complétion.
 
-Je vais commencer avec l'image de base *PHP*, que je viens de mentionner. En regardant les tags, je vais utiliser l'image `7.4-fpm-alpine`, qui est une image *PHP* légère et stable, avec tout ce dont nous avons besoin pour fonctionner avec notre configuration de *Nginx*.
+Je vais commencer avec l'image de base *PHP*, que je viens de mentionner. En regardant les tags, je vais utiliser l'image `8.2.4-fpm-alpine`, qui est une image *PHP* légère et stable, Il s'agit d'une version spécifique de l'image PHP version 8.2.4, qui inclut FPM (FastCGI Process Manager) pour traiter les requêtes PHP via un serveur web comme Nginx. La partie alpine désigne une version légère basée sur Alpine Linux, ce qui en fait une image optimisée pour les environnements de production, car elle est plus petite et rapide à télécharger.
 
 [source, ]
-.Fichier : code/docker_laravel_complete/dockerfiles/php.dockerfile
+.Fichier : ./dockerfiles/php.dockerfile
 ----
-FROM php:fpm-alpine3.20
+include::./code/laravel_docker_final/dockerfiles/php.dockerfile[lines=1..1]
 ----
+
+Nous allons définir un répertoire de travail à l'intérieur du conteneur. Tout ce qui suis sera exécuté depuis ce répertoire.
+
+Puis, nous allons copier le contenu du dossier /src/ dans le répertoire de travail.
+Il faudra créer alors un dossier `src` à côté du dossier `dockerfiles`.
+
+C'est dans ce dossier que nous mettrons notre code source *Laravel*.
 
 Ensuite, je vais exécuter une commande. C'est là la raison pour laquelle je construis cette image personnalisée : je vais installer des dépendances supplémentaires nécessaires pour *Laravel*. Heureusement, cette image de base inclut un outil pratique : `docker-php-ext-install`. Cet outil me permet d'installer les extensions *PDO* et *pdo_mysql*, qui sont essentielles pour *Laravel*.
 
-[source, ]
-.Fichier : code/docker_laravel_complete/dockerfiles/php.dockerfile
-----
-FROM php:fpm-alpine3.20
 
-RUN  docker-php-ext-install pdo pdo_mysql
-----
-
-
-Nous devons nous assurer que cette commande est exécutée dans le bon dossier. Nous allons donc définir un *working directory* à `/var/www/html`. Ce chemin est assez standard sur les serveurs web pour servir les sites web. Nous allons utiliser ce dossier pour toutes les étapes de ce module, car il sera utilisé dans les conteneurs pour héberger notre application *Laravel PHP*.
 
 [source, ]
-.Fichier : code/docker_laravel_complete/dockerfiles/php.dockerfile
+.Fichier : ./dockerfiles/php.dockerfile
 ----
-FROM php:fpm-alpine3.20
-
-WORKDIR /var/www/html
-
-RUN  docker-php-ext-install pdo pdo_mysql
+include::./code/laravel_docker_final/dockerfiles/php.dockerfile[]
 ----
 
-Maintenant, ce fichier *Dockerfile* ne contient pas de commande ou de point d'entrée (*entry point*). Si vous n'ajoutez pas de commande dans un *Dockerfile*, celle de l'image de base est utilisée, et dans notre cas, l'image de base *PHP* a une commande par défaut qui invoque l'interpréteur *PHP*. Ainsi, notre image personnalisée utilisera cette commande pour traiter les fichiers *PHP*.
+Nous lançons également une commande pour créer un utilisateur Laravel et lui donner les droits sur le répertoire de travail.
 
-Dans le fichier *docker-compose.yaml*, nous pouvons maintenant référencer ce *Dockerfile*. Nous allons configurer la section *build* et spécifier le *context* (le dossier contenant notre *Dockerfile*), qui est `dockerfiles`, puis nous indiquerons le nom du fichier *Dockerfile*, ici `php.dockerfile`.
+* `addgroup -g 1000 laravel` : Cette commande crée un groupe utilisateur nommé laravel avec l'ID de groupe (GID) 1000.
+
+* `adduser -G laravel -g laravel -s /bin/sh -D laravel` : Crée un nouvel utilisateur nommé laravel et l'ajoute au groupe laravel. L'option -s /bin/sh définit /bin/sh comme shell par défaut pour cet utilisateur, et -D crée cet utilisateur sans un répertoire personnel.
+
+* `chmod 777 -R /var/www/html/storage/` : Modifie les permissions du répertoire /var/www/html/storage/ pour que tous les utilisateurs puissent lire, écrire et exécuter les fichiers dans ce répertoire. Le -R signifie que cette modification est appliquée de manière récursive à tous les sous-dossiers et fichiers à l'intérieur.
+
+`USER laravel` : Cette commande définit l'utilisateur par défaut pour les instructions suivantes à l'intérieur du conteneur. Ainsi, toutes les opérations futures dans le conteneur seront effectuées par l'utilisateur laravel plutôt que root, ce qui est plus sécurisé.
+
+[NOTE]
+====
+Ce fichier *Dockerfile* ne contient pas de commande ou de point d'entrée (*entry point*).
+
+Si vous n'ajoutez pas de commande dans un *Dockerfile*, celle de l'image de base est utilisée, et dans notre cas, l'image de base *PHP* a une commande par défaut qui invoque l'interpréteur *PHP*.
+
+Ainsi, notre image personnalisée utilisera cette commande pour traiter les fichiers *PHP*.
+====
+
+
+=== Référencement de l'image dans le docker-compose
+
+Dans le fichier *docker-compose.yaml*, nous pouvons maintenant référencer ce *Dockerfile*. Nous allons configurer la section *build* et spécifier le *context* (le dossier contenant notre projet à conteneuriser  ), qui est `./`, puis nous indiquerons le nom du fichier *Dockerfile* et son chemin par rapport au contexte, ici `php.dockerfile`.
+Cela permet d'utiliser des liens relatifs dans les Dockerfiles qui sont situés dans des sous-dossiers.
+
 
 [source, yaml]
-.Fichier : code/docker_laravel_complete/docker-compose.yaml
+.Fichier : ./docker-compose.yaml
 ----
-version: "3.8"
 services:
     server:
       image: 'nginx:stable-alpine'
       ports:
         - 8000:80
       volumes:
-        - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
 
     php:
       build:
-        context: ./dockerfiles
-        dockerfile: php.dockerfile
+        context: ./
+        dockerfile: ./dockerfiles/php.dockerfile
    # mysql:
    # composer:
    # artisan:
    # npm:
 ----
 
+=== Création du dossier `SRC`
 
 Ensuite, il nous reste deux points importants à aborder. Le premier est de s'assurer que l'interpréteur *PHP* puisse accéder à notre code source. Même si nous n'avons pas encore de code source, nous aurons une application *Laravel PHP*, et ce code doit être accessible dans le dossier `/var/www/html` à l'intérieur du conteneur. Nous allons donc créer un montage (*bind mount*), pour monter notre dossier de projet local (par exemple, un dossier *src*) dans ce dossier à l'intérieur du conteneur.
 
@@ -281,21 +287,20 @@ L'option delegated permet de décaler cette synchronisation pour améliorer les 
 Cela est utile dans des cas où les données modifiées à l'intérieur du conteneur n'ont pas besoin d'être immédiatement accessibles sur la machine hôte. Par exemple, si le conteneur écrit des fichiers de cache ou des fichiers temporaires qui n'ont pas besoin d'être visibles instantanément sur votre ordinateur.
 
 [source, yaml]
-.Fichier : code/docker_laravel_complete/docker-compose.yaml
+.Fichier : ./docker-compose.yaml
 ----
-version: "3.8"
 services:
     server:
       image: 'nginx:stable-alpine'
       ports:
         - 8000:80
       volumes:
-        - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
 
     php:
       build:
-        context: ./dockerfiles
-        dockerfile: php.dockerfile
+        context: ./
+        dockerfile: ./dockerfiles/php.dockerfile
       volumes:
         - ./src:/var/www/html:delegated
    # mysql:
@@ -304,10 +309,13 @@ services:
    # npm:
 ----
 
-Le second point important concerne le port sur lequel l’interpréteur *PHP* écoute les requêtes. Dans la configuration *nginx* (nginx.conf), nous avons défini un port 3000 pour les requêtes PHP.
+
+=== Le port
+
+Le second point important concerne le port sur lequel l’interpréteur *PHP* écoute les requêtes. Dans la configuration *nginx* (`nginx.conf`), nous avons défini un port `3000` pour les requêtes PHP.
 
 [source, yaml]
-.Fichier : code/docker_laravel_complete/nginx/nginx.conf
+.Fichier : ./nginx/nginx.conf
 ----
 [...]
 
@@ -316,25 +324,23 @@ fastcgi_pass php:3000;
 [...]
 ----
 
-
 Cependant, l'image *PHP* expose par défaut le port 9000, comme indiqué dans le fichier *Dockerfile* officiel. Nous devons donc mapper le port 3000 de *nginx* au port 9000 du conteneur *PHP*.
 
 [source, yaml]
-.Fichier : code/docker_laravel_complete/docker-compose.yaml
+.Fichier : ./docker-compose.yaml
 ----
-version: "3.8"
 services:
     server:
       image: 'nginx:stable-alpine'
       ports:
         - 8000:80
       volumes:
-        - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
 
     php:
       build:
-        context: ./dockerfiles
-        dockerfile: php.dockerfile
+        context: ./
+        dockerfile: ./dockerfiles/php.dockerfile
       volumes:
         - ./src:/var/www/html:delegated
       ports:
@@ -345,11 +351,10 @@ services:
    # npm:
 ----
 
-
 Cela dit, nous devons nous rappeler que *nginx* communiquera directement avec le conteneur *PHP* via le réseau Docker, sans passer par la machine hôte, sans passer par une URL : localhost, le mapping est alors inutile. Par conséquent, nous allons simplement changer la configuration *nginx* pour qu'elle utilise le port 9000, car le trafic entre les conteneurs se fait directement via leurs noms de service.
 
 [source, yaml]
-.Fichier : code/docker_laravel_complete/nginx/nginx.conf
+.Fichier : ./nginx/nginx.conf
 ----
 [...]
 
@@ -358,25 +363,23 @@ fastcgi_pass php:9000;
 [...]
 ----
 
-
 Avec ce changement, nous avons terminé la configuration du conteneur *PHP*. Passons maintenant à la configuration du conteneur *MySQL*.
 
 [source, yaml]
-.Fichier : code/docker_laravel_complete/docker-compose.yaml
+.Fichier : ./docker-compose.yaml
 ----
-version: "3.8"
 services:
     server:
       image: 'nginx:stable-alpine'
       ports:
         - 8000:80
       volumes:
-        - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
 
     php:
       build:
-        context: ./dockerfiles
-        dockerfile: php.dockerfile
+        context: ./
+        dockerfile: ./dockerfiles/php.dockerfile
       volumes:
         - ./src:/var/www/html:delegated
    # mysql:
@@ -387,6 +390,7 @@ services:
 
 == Un conteneur MySQL
 
+=== L'image
 Passons maintenant à la configuration du conteneur *MySQL*.
 
 Il n'est pas surprenant que nous ayons également une image *MySQL* officielle que nous pouvons utiliser. Nous allons l'utiliser pour lancer une base de données dans un conteneur *MySQL*. C'est très similaire à l'image *MongoDB* que nous avons utilisée précédemment dans le cours.
@@ -396,25 +400,23 @@ Dans le fichier *docker-compose.yaml*, nous allons ajouter une image. L'image qu
 Cette base de données sera accessible par notre code *PHP* dans le conteneur *PHP*. Comme tous ces services font partie du même réseau, nous pourrons communiquer avec cette base de données sans problème, simplement en utilisant le nom du conteneur.
 
 [source, yaml]
-.Fichier : code/docker_laravel_complete/docker-compose.yaml
+.Fichier : ./docker-compose.yaml
 ----
-version: "3.8"
 services:
     server:
       image: 'nginx:stable-alpine'
       ports:
         - 8000:80
       volumes:
-        - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
 
     php:
       build:
-        context: ./dockerfiles
-        dockerfile: php.dockerfile
+        context: ./
+        dockerfile: ./dockerfiles/php.dockerfile
       volumes:
         - ./src:/var/www/html:delegated
-
-   mysql:
+    mysql:
       image: mysql:5.7
 
    # composer:
@@ -422,7 +424,11 @@ services:
    # npm:
 ----
 
-Il n'est donc pas nécessaire de configurer le réseau ici, mais il y a un autre aspect que nous devons configurer : les variables d'environnement. Nous devons fournir des variables d'environnement qui seront utilisées par cette image pour configurer une base de données, un utilisateur, un mot de passe, etc.
+
+
+=== Les variables d'environnement `ENV`
+
+Il n'est donc pas nécessaire de configurer le réseau ici, mais il y a un autre aspect que nous devons configurer : *les variables d'environnement*. Nous devons fournir des variables d'environnement qui seront utilisées par cette image pour configurer une base de données, un utilisateur, un mot de passe, etc.
 
 Nous trouvons la description détaillée de ces variables sur la page *Docker Hub* de l'image *MySQL*. Vous pouvez y voir quelles variables d'environnement peuvent être définies et ce qu'elles font.
 
@@ -446,36 +452,38 @@ MYSQL_ROOT_PASSWORD=secret
 Cela fait, nous retournons au fichier *docker-compose.yaml* pour ajouter l'option `env_file` sous le conteneur *MySQL*, et nous pointons vers le dossier *env* et le fichier `mysql.env`. Cela permettra d'utiliser les variables d'environnement définies dans ce fichier pour configurer le conteneur *MySQL*.
 
 [source, yaml]
-.Fichier : code/docker_laravel_complete/docker-compose.yaml
+.Fichier : ./docker-compose.yaml
 ----
-version: "3.8"
 services:
-  server:
-    image: 'nginx:stable-alpine'
-    ports:
-      - 8000:80
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    server:
+      image: 'nginx:stable-alpine'
+      ports:
+        - 8000:80
+      volumes:
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
 
-  php:
-    build:
-      context: ./dockerfiles
-      dockerfile: php.dockerfile
-    volumes:
-      - ./src:/var/www/html:delegated
+    php:
+      build:
+        context: ./
+        dockerfile: ./dockerfiles/php.dockerfile
+      volumes:
+        - ./src:/var/www/html:delegated
+    mysql:
+      image: mysql:5.7
+      env_file:
+        - ./env/mysql.env
 
-  mysql:
-    image: mysql:5.7
-    env_file:
-      - ./env/mysql.env
-  # composer:
-  # artisan:
-  # npm:
+   # composer:
+   # artisan:
+   # npm:
 ----
 
 C'est tout pour nos trois conteneurs d'application.
 
+[IMPORTANT]
+====
 Pour tester si tout fonctionne correctement ou si nous avons fait une erreur, nous aurons besoin d'une application *Laravel*. Nous allons la créer à l'aide de l'outil *Composer*. Passons donc à la configuration du conteneur *Composer*.
+====
 
 == Un conteneur Composer
 
@@ -489,75 +497,76 @@ Je vais commencer par une image de base, l'image *Composer*. C'est vraiment prat
 
 Voici pourquoi j'ai besoin de mon propre *Dockerfile* personnalisé : je veux spécifier un point d'entrée (*entry point*). Petite parenthèse, il est aussi possible de faire cela directement dans le fichier *docker-compose*, mais je reviendrai sur ce point plus tard. J'aime cette approche, car elle est claire et facile à comprendre.
 
+[WARNING]
+====
+On ajoute aussi un utilisateur Laravel pour des questions de droits d'accès aux fichiers créés.
+====
+
 [source, ]
-.Fichier : code/docker_laravel_complete/dockerfiles/composer.dockerfile
+.Fichier : ./dockerfiles/composer.dockerfile
 ----
-FROM composer:latest
+include::./code/laravel_docker_final/dockerfiles/composer.dockerfile[]
 
-WORKDIR /var/www/html
 
-ENTRYPOINT [ "composer", "--ignore-platform-reqs" ]
 ----
-
 
 Dans mon fichier *Dockerfile*, le point d'entrée sera l'exécutable *composer* qui existe dans l'image *Composer* et dans le conteneur, contrairement à ma machine locale où il n'est pas installé (comme je l'ai montré précédemment). J'ajouterai également un flag `--ignore-platform-reqs` à chaque commande exécutée par *Composer*. Ce flag permet d'exécuter *Composer* sans avertissements ou erreurs, même si certaines dépendances manquent.
 
 Il est très important de définir le bon répertoire de travail avec la commande `WORKDIR`, et je le fixe à `/var/www/html`. C'est là que notre code sera placé plus tard.
 
-Enregistrez ce fichier et revenons au fichier *docker-compose.yaml*.
+=== Configuration du build
 
-Maintenant que nous avons notre *Dockerfile*, nous pouvons ajouter la configuration *build* pour le service *Composer* et définir le contexte avec `context: ./dockerfiles`. Nous définissons ensuite l'option `dockerfile` à `composer.dockerfile`, car c'est le fichier que nous souhaitons utiliser pour construire cette image.
+Maintenant que nous avons notre *Dockerfile*, nous pouvons ajouter la configuration *build* pour le service *Composer* et définir le contexte avec `context: ./`. Nous définissons ensuite l'option `dockerfile` à `./dockerfiles/composer.dockerfile`, car c'est le fichier que nous souhaitons utiliser pour construire cette image.
 
 Nous devons maintenant nous assurer d'exposer notre répertoire de code source à cette image, afin que le conteneur puisse travailler sur ce répertoire lorsque nous utiliserons *Composer* pour installer *Laravel* et configurer le projet *Laravel*. Il doit bien sûr le faire dans le dossier `/var/www/html` à l'intérieur du conteneur.
 
 Nous ajoutons donc un volume et lions notre dossier source local à ce répertoire `/var/www/html` dans le conteneur. Ainsi, si nous utilisons *Composer* pour créer une application *Laravel* dans ce dossier à l'intérieur du conteneur, cela sera reflété dans notre dossier source sur notre machine locale.
 
 [source, yaml]
-.Fichier : code/docker_laravel_complete/docker-compose.yaml
+.Fichier : ./docker-compose.yaml
 ----
-version: "3.8"
 services:
-  server:
-    image: 'nginx:stable-alpine'
-    ports:
-      - 8000:80
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    server:
+      image: 'nginx:stable-alpine'
+      ports:
+        - 8000:80
+      volumes:
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
 
-  php:
-    build:
-      context: ./dockerfiles
-      dockerfile: php.dockerfile
-    volumes:
-      - ./src:/var/www/html:delegated
+    php:
+      build:
+        context: ./
+        dockerfile: ./dockerfiles/php.dockerfile
+      volumes:
+        - ./src:/var/www/html:delegated
+    mysql:
+      image: mysql:5.7
+      env_file:
+        - ./env/mysql.env
 
-  mysql:
-    image: mysql:5.7
-    env_file:
-      - ./env/mysql.env
-  composer:
-    build:
-      context: ./dockerfiles
-      dockerfile: composer.dockerfile
-    volumes:
-      - ./src:/var/www/html
-  # artisan:
-  # npm:
+    composer:
+        build:
+          context: ./
+          dockerfile: ./dockerfiles/composer.dockerfile
+        volumes:
+          - ./src:/var/www/html
+   # artisan:
+   # npm:
 ----
-
-C'est essentiellement ce que je vous ai déjà montré dans la dernière section du cours avec *NPM* et *Node*.
 
 Avec cela en place, nous avons désormais trois conteneurs d'application nécessaires pour exécuter l'application *Laravel*, et nous avons ce conteneur utilitaire pour la créer. Nous aurons besoin des deux autres conteneurs utilitaires pour certaines fonctionnalités spécifiques de *Laravel*, mais pour l'instant, nous pouvons les ignorer.
 
+[TIP]
+====
 Nous pouvons maintenant commencer à utiliser le conteneur utilitaire *Composer* pour créer une application *Laravel*. Ensuite, nous vérifierons si nous pouvons lancer cette application avec l'aide de nos trois conteneurs d'application.
-
-Comment procéder ?
+====
 
 == Créer une application Laravel avec le conteneur utilitaire
 
 Pour créer une application *Laravel*, nous pouvons consulter la documentation officielle de *Laravel*. Sous la section *Get Started*, nous voyons les prérequis. Si nous descendons un peu pour atteindre la section *Installing Laravel*, nous voyons cette commande que vous pouvez exécuter pour installer *Laravel*. Nous allons utiliser cette commande ici, car elle utilise uniquement *Composer* pour configurer un projet *Laravel*. Nous allons légèrement ajuster la commande concernant le dossier dans lequel nous voulons installer ce projet, mais c'est essentiellement la commande que nous allons utiliser.
 
 image::images/04.png[]
+
 
 Nous pouvons donc déjà copier cette commande, puis revenir à notre terminal. Maintenant, je veux exécuter uniquement le conteneur *Composer*. C'est quelque chose que je vous ai montré dans la dernière section : vous pouvez exécuter des conteneurs individuels dans votre fichier *docker-compose.yaml* avec la commande `docker-compose run`. Vous n'avez pas besoin de démarrer l'ensemble du système de conteneurs, vous pouvez simplement exécuter des conteneurs individuels, ce qui est généralement le cas avec ces conteneurs utilitaires.
 
@@ -576,8 +585,6 @@ Enfin, nous devons spécifier le dossier dans lequel ce projet doit être créé
 ----
 docker-compose run --rm composer create-project --prefer-dist laravel/laravel .
 ----
-
-
 
 Grâce à notre montage (*bind mount*), cela sera ensuite reflété dans le dossier *src* sur notre machine hôte.
 
@@ -604,70 +611,8 @@ Cependant, nous n'allons pas faire cela ensemble ici, car ce n'est pas un cours 
 Cela dit, nous n'avons pas encore terminé. Nous voulons maintenant voir si nous pouvons exécuter cette application avec nos trois conteneurs d'application.
 
 
-== A lire en cas d'erreurs ...
-
-Vous pouvez ignorer ce sous-titre si vous ne rencontrez pas d'erreurs dans le prochain sous-titre. Cependant, si vous faites face à des erreurs, consultez à nouveau cette partie.
-
-Lorsque vous utilisez *Docker* sur *Linux*, vous pourriez rencontrer des erreurs de permission lors de l'ajout d'un montage (*bind mount*), comme montré dans la prochaine leçon. Si c'est le cas, essayez les étapes suivantes :
-
-Modifiez le fichier `php.dockerfile` pour qu'il ressemble à ceci :
-
-[source,bash]
-.php.dockerfile
-----
-FROM php:8.2.4-fpm-alpine
-
-WORKDIR /var/www/html
-
-COPY ../src .
-
-RUN docker-php-ext-install pdo pdo_mysql
-
-RUN addgroup -g 1000 laravel && adduser -G laravel -g laravel -s /bin/sh -D laravel
-
-USER laravel
-----
-
-Et changer dans `docker-compose.yaml` le contexte de build de PHP :
-
-[source,bash]
-.docker-compose.yaml
-----
-[..]
- php:
-    build:
-      context: ./
-      dockerfile: ./dockerfiles/php.dockerfile
-    volumes:
-      - ./src:/var/www/html:delegated
-[..]
-----
-
-Notez que l'instruction `RUN chown` a été supprimée ici. À la place, nous créons un utilisateur nommé "laravel", que nous utilisons (avec l'instruction `USER`) pour exécuter des commandes à l'intérieur de cette image/conteneur.
-
-Modifiez également le fichier `composer.dockerfile` pour qu'il ressemble à ceci :
-
-[source,bash]
-.composer.dockerfile
-----
-FROM composer:2.5.7
-
-RUN addgroup -g 1000 laravel && adduser -G laravel -g laravel -s /bin/sh -D laravel
-
-USER laravel
-
-WORKDIR /var/www/html
-
-ENTRYPOINT [ "composer", "--ignore-platform-reqs" ]
-----
-
-
-Ici, nous ajoutons également l'utilisateur "laravel" et l'utilisons pour créer le projet.
-
-Ces étapes devraient garantir que tous les fichiers créés par le conteneur *Composer* sont assignés à un utilisateur nommé "laravel", qui existe dans tous les conteneurs devant travailler sur ces fichiers.
-
-
 == Lancer des services Docker Compose à la carte
+
 
 Pour commencer, à l'intérieur du dossier *source*, dans cette nouvelle application *Laravel*, je vais ouvrir le fichier `.env`. Ce fichier a été généré par *Laravel* et contient certaines configurations spécifiques à *Laravel*.
 
@@ -701,39 +646,37 @@ Cependant, nous avons un problème ici. Notre serveur (*nginx*) ne connaît actu
 Ce volume supplémentaire sera un *bind mount* qui lie notre dossier source au dossier `/var/www/html` à l'intérieur du conteneur. Je choisis ce dossier car, dans la configuration *nginx*, c'est ce dossier qui est utilisé pour servir notre contenu, et c'est là que nous recherchons les fichiers. Bien sûr, nous cherchons principalement dans le dossier *public*, qui se trouve dans le dossier *source*.
 
 [source, yaml]
-.docker-compose.yaml
+.Fichier : ./docker-compose.yaml
 ----
-version: "3.8"
 services:
-  server:
-    image: 'nginx:stable-alpine'
-    ports:
-      - 8000:80
-    volumes:
-      - ./src:/var/www/html
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    server:
+      image: 'nginx:stable-alpine'
+      ports:
+        - 8000:80
+      volumes:
+        - ./src:/var/www/html
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
 
-  php:
-    build:
-      context: ./dockerfiles
-      dockerfile: php.dockerfile
-    volumes:
-      - ./src:/var/www/html:delegated
+    php:
+      build:
+        context: ./
+        dockerfile: ./dockerfiles/php.dockerfile
+      volumes:
+        - ./src:/var/www/html:delegated
+    mysql:
+      image: mysql:5.7
+      env_file:
+        - ./env/mysql.env
 
-  mysql:
-    image: mysql:5.7
-    env_file:
-      - ./env/mysql.env
-  composer:
-    build:
-      context: ./dockerfiles
-      dockerfile: composer.dockerfile
-    volumes:
-      - ./src:/var/www/html
-  # artisan:
-  # npm:
+    composer:
+        build:
+          context: ./
+          dockerfile: ./dockerfiles/composer.dockerfile
+        volumes:
+          - ./src:/var/www/html
+   # artisan:
+   # npm:
 ----
-
 
 
 Une fois ce volume ajouté, nous pouvons démarrer nos services. Pour cela, nous utilisons `docker-compose up` à nouveau.
@@ -747,32 +690,50 @@ La commande `docker-compose up` dispose d'une fonctionnalité spéciale pour cel
 docker-compose up -d server php mysql
 ----
 
-Faisons cela en mode détaché (`--detach`) et voyons si cela fonctionne. En tapant *Entrée*, le processus démarre, mais il semble que le conteneur *nginx* ne soit pas lancé correctement. Si nous inspectons les conteneurs en cours d'exécution, nous voyons que deux conteneurs fonctionnent, mais *nginx* semble avoir échoué.
+Faisons cela en mode détaché (`--detach`) et voyons si cela fonctionne.
 
-image::images/07.png[]
-
-Le problème vient d'une petite erreur de ma part. Le fichier de configuration *nginx* que je lie via le volume est lié à un mauvais chemin. Nous ne devrions pas lier ce fichier à `nginx.conf`, mais plutôt au dossier `conf.d` dans `/etc/nginx`, et ensuite à `default.conf`. Ce fichier sera ensuite fusionné avec une configuration *nginx* plus large dans l'image *nginx*.
-
-[source,bash]
-.Extrait du : docker-compose.sh
-----
-  server:
-    image: 'nginx:stable-alpine'
-    ports:
-      - 8000:80
-    volumes:
-      - ./src:/var/www/html
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-
-----
+Si nous visitons `localhost:8000` et rechargeons la page, nous devrions voir l'écran de démarrage de *Laravel*.
 
 
-Après cette correction, nous utilisons `docker-compose down` pour arrêter tous les services, puis nous relançons `docker-compose up` avec *server*, *PHP* et *MySQL*. Cela semble maintenant fonctionner correctement. Si nous visitons `localhost:8000` et rechargeons la page, nous devrions voir l'écran de démarrage de *Laravel*.
-
-
+== Conteneurs et leurs dépendances
 
 Bien que cette méthode fonctionne, taper chaque service individuellement peut être fastidieux. Il serait préférable de spécifier que le service *server* dépend de *PHP* et *MySQL*, de sorte que *docker-compose* démarre automatiquement ces services. Nous pouvons ajouter cette configuration en utilisant `depends_on` dans le service *server*.
 
+[source, yaml]
+.Fichier : ./docker-compose.yaml
+----
+services:
+    server:
+      image: 'nginx:stable-alpine'
+      ports:
+        - 8000:80
+      volumes:
+        - ./src:/var/www/html
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      depends_on:
+          - php
+          - mysql
+
+    php:
+      build:
+        context: ./
+        dockerfile: ./dockerfiles/php.dockerfile
+      volumes:
+        - ./src:/var/www/html:delegated
+    mysql:
+      image: mysql:5.7
+      env_file:
+        - ./env/mysql.env
+
+    composer:
+        build:
+          context: ./
+          dockerfile: ./dockerfiles/composer.dockerfile
+        volumes:
+          - ./src:/var/www/html
+   # artisan:
+   # npm:
+----
 
 
 En ajoutant cette dépendance, *docker-compose* s'assurera que lorsque nous démarrons le service *server*, les services *PHP* et *MySQL* seront également démarrés. Nous pouvons maintenant lancer tous les services dépendants en une seule commande.
@@ -784,3 +745,179 @@ En utilisant `--build`, nous nous assurons que toute modification dans les *Dock
 Nous pouvons maintenant travailler sur cette application *Laravel* avec cette configuration.
 
 Il ne nous reste plus qu'à configurer les deux autres conteneurs utilitaires, dont nous n'avons pas besoin pour démarrer l'application, mais qui sont nécessaires pour exécuter des migrations ou gérer le code *JavaScript* côté client. Passons maintenant à ces deux conteneurs.
+
+
+== Le conteneur Artisan
+
+
+Continuons avec le conteneur *Artisan*.
+
+Nous avons besoin de l'outil *Artisan* pour exécuter certaines commandes *Laravel*. Par exemple, pour peupler la base de données avec des données initiales.
+
+Le conteneur *Artisan* nécessite un fichier *Dockerfile* personnalisé. Cependant, je vais simplement utiliser le *Dockerfile* du conteneur *PHP* ici, car j'ai besoin de la même configuration que nous avons pour le conteneur *PHP*. Nous pouvons donc ajouter la configuration de construction ici ou simplement copier celle du conteneur *PHP* et l'ajouter pour *Artisan*. Il a besoin de *PHP* pour exécuter du code, car *Artisan* est une commande *Laravel* construite avec *PHP*. Il a donc besoin de *PHP* pour fonctionner.
+
+Pour configurer le conteneur Artisan, qui nous permet d'exécuter des commandes spécifiques à Laravel, nous allons utiliser le Dockerfile du conteneur PHP précédemment défini. Étant donné qu'Artisan est un outil intégré à Laravel, basé sur PHP, il nécessite l'environnement de ce dernier pour fonctionner. Ainsi, nous n'avons pas besoin d'un Dockerfile distinct, mais nous ajouterons un point d'entrée (entrypoint) spécifique dans le fichier `docker-compose`.
+
+[source, yaml]
+.Fichier : ./docker-compose.yaml
+----
+services:
+    server:
+      image: 'nginx:stable-alpine'
+      ports:
+        - 8000:80
+      volumes:
+        - ./src:/var/www/html
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      depends_on:
+          - php
+          - mysql
+
+    php:
+      build:
+        context: ./
+        dockerfile: ./dockerfiles/php.dockerfile
+      volumes:
+        - ./src:/var/www/html:delegated
+    mysql:
+      image: mysql:5.7
+      env_file:
+        - ./env/mysql.env
+
+    composer:
+        build:
+          context: ./
+          dockerfile: ./dockerfiles/composer.dockerfile
+        volumes:
+          - ./src:/var/www/html
+   artisan:
+      build:
+        context: ./
+        dockerfile: ./dockerfiles/php.dockerfile
+        volumes:
+          - ./src:/var/www/html
+        entrypoint: ["php",  "/var/www/html/artisan"]
+   # npm:
+----
+
+
+
+L'ajout de l'option entrypoint dans docker-compose permet de surcharger ou de définir un point d'entrée pour un conteneur sans modifier le Dockerfile de base. Ici, le point d'entrée sera l'exécution du fichier artisan avec PHP, situé dans le répertoire /var/www/html. Ce fichier, déjà présent dans notre dossier source, exécute des tâches spécifiques à Laravel, telles que les migrations de base de données.
+
+
+== Le conteneur NPM
+
+Quant au conteneur NPM, nous utiliserons l'image officielle de Node.js, telle que node:latest. Plutôt que de créer un Dockerfile personnalisé, nous définirons directement dans `docker-compose` le répertoire de travail à `/var/www/html` et le point d'entrée à `npm`. Cela nous permettra d'exécuter les commandes `npm` à l'intérieur du conteneur, tout en exposant notre répertoire source à Docker.
+
+
+[source, yaml]
+.Fichier : ./docker-compose.yaml
+----
+services:
+    server:
+      image: 'nginx:stable-alpine'
+      ports:
+        - 8000:80
+      volumes:
+        - ./src:/var/www/html
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      depends_on:
+          - php
+          - mysql
+
+    php:
+      build:
+        context: ./
+        dockerfile: ./dockerfiles/php.dockerfile
+      volumes:
+        - ./src:/var/www/html:delegated
+    mysql:
+      image: mysql:5.7
+      env_file:
+        - ./env/mysql.env
+
+    composer:
+        build:
+          context: ./
+          dockerfile: ./dockerfiles/composer.dockerfile
+        volumes:
+          - ./src:/var/www/html
+    artisan:
+      build:
+        context: ./
+        dockerfile: ./dockerfiles/php.dockerfile
+        volumes:
+          - ./src:/var/www/html
+        entrypoint: ["php",  "/var/www/html/artisan"]
+   npm:
+      image: node:latest
+      working_dir: /var/www/html
+      entrypoint: ["npm"]
+      volumes:
+          - ./src:/var/www/html
+
+
+----
+
+
+
+Avec ces configurations en place, nous pouvons maintenant exécuter des commandes Artisan via docker-compose run pour des tâches telles que les migrations. Cela permettra d'écrire des données dans la base de données et de tester la connexion à MySQL.
+
+Ainsi, nous obtenons une configuration complète pour une application Laravel PHP dans Docker, intégrant plusieurs services tels que nginx, PHP, MySQL, Artisan, et NPM. Cette configuration montre comment utiliser Docker pour orchestrer une architecture plus complexe, en facilitant le développement local sans dépendances supplémentaires sur la machine hôte.
+
+== Test des conteneurs outils
+
+[source]
+----
+docker-compose run --rm artisan migrate
+----
+
+
+== Conclusion
+
+Nous avons maintenant une configuration complète pour une application *Laravel PHP*. C'est une configuration plus complexe, mais c'est l'objectif de ce cours : apprendre les bases et voir comment les appliquer dans des projets plus complexes.
+
+Lorsque vous construisez quelque chose comme cela par vous-même, il est tout à fait normal de le faire étape par étape en cherchant des solutions, en suivant des cours comme celui-ci. Avec le temps, vous arriverez à construire des projets comme celui-ci de manière autonome.
+
+Il est évident que cela aide aussi si vous connaissez *Laravel* et *PHP*, car vous savez quels blocs constitutifs utiliser, comme *Composer*. Si vous ne connaissez pas ces technologies, il est normal de ne pas savoir que vous en avez besoin. Ne vous découragez donc pas si vous ne connaissez pas *PHP* ou *Laravel*.
+
+== Docker Compose AVEC et SANS Dockerfiles
+
+Avec cette configuration en place, nous avons un environnement fonctionnel en utilisant les outils vus dans ce cours. Cependant, certains concepts introduits ici méritent d'être abordés, comme l'ajout d'instructions *Docker* directement dans le fichier `docker-compose`, telles que `entrypoint` ou `working_dir`. Bien que cela soit possible, ce n'est pas obligatoire. Une alternative consiste à créer un fichier Dockerfile séparé et à le référencer dans `docker-compose`.
+
+Personnellement, je préfère avoir des fichiers `Dockerfile` distincts, car cela clarifie mes intentions et allège le fichier `docker-compose`. Cependant, cela implique de consulter plusieurs fichiers pour comprendre la configuration complète. Pour des instructions plus complexes, comme exécuter une commande spécifique ou copier des fichiers, un `Dockerfile` est de toute façon nécessaire, car `docker-compose` ne prend pas en charge ces instructions.
+
+Concernant les `bind mounts,` illustrés ici par le service `nginx`, il est important de rappeler qu'ils sont très utiles en phase de développement. Ils permettent de lier un dossier local à un conteneur, comme le dossier source ou la configuration nginx. Cependant, les bind mounts ne sont pas adaptés pour la production, car ils lient des dossiers qui existent uniquement sur la machine hôte. 
+
+[WARNING]
+====
+Si vous déployez un conteneur sur un serveur distant, les dossiers montés ne seront pas disponibles.
+====
+
+L'objectif des conteneurs est d'inclure toutes les ressources nécessaires à leur exécution, sans dépendre de l'environnement hôte. Par conséquent, pour le déploiement, il serait préférable de créer un Dockerfile pour le serveur, incluant une copie du code source et de la configuration nginx dans l'image. Cela garantirait que l'image déployée contienne tout ce dont elle a besoin, indépendamment des bind mounts utilisés en développement.
+
+== Bind Mount ou COPY : Quand ?
+
+Pour ajouter un fichier n``ginx.dockerfile`` dans notre dossier dockerfiles, nous pouvons partir de l'image de base `nginx:stable-alpine`. Ensuite, nous définirons le répertoire de travail (working directory) dans le dossier de configuration, en omettant le nom du fichier, afin de copier notre fichier de configuration local `nginx.conf` dans ce répertoire. Cela se fait via l'instruction COPY, qui permet de transférer le fichier de configuration local dans le répertoire de travail défini dans le conteneur.
+
+Une fois le fichier copié, il est nécessaire de le renommer en default.conf, car c'est ce qu'attend nginx. Cela peut être fait avec la commande mv, qui permet de renommer nginx.conf en default.conf directement dans le répertoire de travail.
+
+Ensuite, nous passons au répertoire /var/www/html et copions notre code source, contenu dans le dossier src, dans ce répertoire à l'intérieur du conteneur. Cela permet d'inclure un instantané de notre code source dans l'image, sans dépendre uniquement du bind mount utilisé pour le développement.
+
+En procédant ainsi, nous garantissons que l'image du conteneur contient toujours une version instantanée du code source et de la configuration au moment de la construction. Le bind mount reste utile pendant le développement, car il permet de lier les modifications du code source local au conteneur, mais il n'est pas utilisable lors du déploiement.
+
+Nous n'avons pas besoin de définir de entrypoint ou de commande dans ce fichier Dockerfile, car l'image nginx inclut déjà une commande par défaut qui démarre le serveur web. Dans le fichier docker-compose.yaml, il suffit alors de remplacer l'image de base par notre nouvelle image personnalisée, en définissant la configuration de construction appropriée.
+
+Cependant, il est important de bien définir le context dans le fichier docker-compose. Ce context ne doit pas seulement pointer vers le dossier dockerfiles, mais également inclure le dossier principal du projet. Cela permet de s'assurer que tous les fichiers nécessaires, tels que le dossier nginx et le dossier src, sont accessibles pendant la construction de l'image. Pour ce faire, nous définissons le context à . (le répertoire racine du projet) et ajustons l'instruction dockerfile en précisant le chemin vers notre fichier nginx.dockerfile.
+
+Une fois ces modifications effectuées, nous pouvons tester notre configuration en exécutant la commande docker-compose up sans les bind mounts, afin de vérifier que l'application fonctionne correctement avec l'instantané de code intégré dans l'image.
+
+Un ajustement similaire doit être effectué pour le fichier php.dockerfile. Nous ajoutons une instruction COPY pour inclure le dossier src dans le répertoire /var/www/html à l'intérieur du conteneur. Cela permet de garantir que le code source est intégré au conteneur lors du déploiement. Cependant, pendant le développement, nous pouvons continuer à utiliser les bind mounts pour bénéficier de la mise à jour en temps réel des modifications du code.
+
+Si nous rencontrons des erreurs liées aux permissions d'accès au code source à l'intérieur du conteneur, nous pouvons les résoudre en utilisant la commande chown dans le fichier Dockerfile pour accorder des droits en lecture et écriture à l'utilisateur par défaut de php (www-data), ce qui est essentiel pour permettre à Laravel de générer des fichiers pendant l'exécution.
+
+Après avoir apporté ces ajustements, nous pouvons relancer le projet avec docker-compose up --build pour reconstruire les images et vérifier que l'application Laravel fonctionne comme prévu.
+
+Enfin, pour faciliter l'exécution des commandes Artisan dans notre environnement, nous devons nous assurer que le context du service Artisan est correctement défini pour inclure le chemin du php.dockerfile. Cela garantit que toutes les commandes Artisan fonctionnent comme prévu, y compris les migrations de base de données.
+
+Cette configuration aboutit à un environnement de développement et de déploiement complet et flexible, adapté à des projets complexes comme une application Laravel PHP.
