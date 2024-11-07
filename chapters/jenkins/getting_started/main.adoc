@@ -1,5 +1,5 @@
 :_chapter:
-[[getting_started]]
+[[01_getting_started]]
 = Débuter avec Kubernetes
 include::../../../run_app.adoc[]
 
