@@ -25,7 +25,7 @@ endif::_system_start[]
 include::{_relative_file_path_attributes_application_default_values}[]
 //
 // ----------------------------------------------------------------------------
-// Import des valeurs globales d'attribut d'application définies par l'utilisateur
+// Import des valeurs globales d'attribut d'application définies par l'utilisateur dans le fichier config/attributes/global_application_attributes.adoc
 // ----------------------------------------------------------------------------
 include::{_relative_file_path_attributes_application_global_user}[]
 //si une image de couverture est définie au niveau global, alors on définit un attribut _global_cover_image qui sera utile pour le fichier attributes_resolver.adoc au moment de déterminer le chemin vers l'image à utiliser
@@ -39,6 +39,18 @@ ifeval::["{_user_background_image_for_all_pages}" != ""]
 :_global_page_image: {_user_background_image_for_all_pages}
 //end eval _user_background_image_for_all_pages
 endif::[]
+//si un logo à appliquer sur la page de garde est définie au niveau global, alors on définit un attribut _global_logo_image qui sera utile pour le fichier attributes_resolver.adoc au moment de déterminer le chemin vers l'image de logo à utiliser
+ifeval::["{_user_cover_logo_filename}" != ""]
+//cet attribut indique que l'image de logo est définie au niveau global
+:_global_cover_logo: {_user_cover_logo_filename}
+//end eval _user_logo_image_filename
+endif::[]
+//si une icône de logo est définie au niveau global, alors on définit un attribut _global_logo_icon_image qui sera utile pour le fichier attributes_resolver.adoc au moment de déterminer le chemin vers l'icone image à utiliser
+ifeval::["{_user_logo_icon_filename}" != ""]
+//cet attribut indique que l'icône de logo est définie au niveau global
+:_global_logo_icon_image: {_user_logo_icon_filename}
+//end eval _user_logo_image_filename
+endif::[]
 //
 // ----------------------------------------------------------------------------
 // Import des valeurs locales d'attribut d'application définies au niveau du livre
@@ -46,8 +58,7 @@ endif::[]
 ifdef::_use_local_application_attributes[]
 include::{_file_path_attributes_application_local_user}[]
 //
-//
-//s'il n'est pas défini d'image de couverture au niveau global et qu'une image est définie au niveau local, alors il faut utiliser le répertoire des images_docker d'un livre.
+//s'il n'est pas défini d'image de couverture au niveau global et qu'une image est définie au niveau local, alors il faut utiliser le répertoire des images d'un livre.
 ifndef::_global_cover_image[]
 ifeval::["{_user_cover_image_filename}" != ""]
 //il faut indiquer que l'image de couverture sera locale
@@ -55,17 +66,41 @@ ifeval::["{_user_cover_image_filename}" != ""]
 //end eval _user_cover_image_filename
 endif::[]
 endif::_global_cover_image[]
-//Si l'image est définie au niveau global et que le nom de l'image n'est pas le même après inclusion de la valeur définie localement, alors, c'est qu'il faut utiliser l'image locale (définie au niveau d'un livre)
+//Si l'image est définie au niveau global et que le nom de l'image n'est pas le même après inclusion de la valeur définie localement, alors, c'est qu'il faut utiliser l'image locale (définie au niveau d'un livre).  !WARNING! : Si l'image "locale" porte le même nom que l'image globale, c'est l'image globale qui sera affichée)
 ifdef::_global_cover_image[]
 ifeval::["{_global_cover_image}" != "{_user_cover_image_filename}"]
 :_local_cover_image:
 //end eval _global_cover_image
 endif::[]
 endif::_global_cover_image[]
+//
+//s'il n'est pas définie d'image de logo au niveau global et qu'une image de logo est définie au niveau local, alors il faut utiliser le répertoire des images d'un livre.
+ifndef::_global_cover_logo[]
+ifeval::["{_user_cover_logo_filename}" != ""]
+//il faut indiquer que l'image de couverture sera locale
+:_local_cover_logo:
+//end eval _user_cover_logo_filename
+endif::[]
+endif::_global_cover_logo[]
+//Si l'image de logo est définie au niveau global et que le nom de l'image n'est pas le même après inclusion de la valeur définie localement, alors, c'est qu'il faut utiliser l'image locale (définie au niveau d'un livre) (nous sommes dans le cas d'une image de logo définie globalement et redéfinie localement. !WARNING! : Si l'image de logo "locale" porte le même nom que l'image de logo globale, c'est l'image de logo globale qui sera affichée)
+ifdef::_global_cover_logo[]
+ifeval::["{_global_cover_logo}" != "{_user_cover_logo_filename}"]
+:_local_cover_logo:
+//end eval _global_cover_logo
+endif::[]
+endif::_global_cover_logo[]
+//
+//Si l'image d'icône de logo est définie au niveau global et que le nom de l'image n'est pas le même après inclusion de la valeur définie localement, alors, c'est qu'il faut utiliser l'image locale (définie au niveau d'un livre) (nous sommes dans le cas d'une image de logo définie globalement et redéfinie localement. !WARNING! : Si l'image de logo "locale" porte le même nom que l'image de logo globale, c'est l'image de logo globale qui sera affichée)
+ifdef::_global_cover_logo[]
+ifeval::["{_global_cover_logo}" != "{_user_cover_logo_filename}"]
+:_local_cover_logo:
+//end eval _global_cover_logo
+endif::[]
+endif::_global_cover_logo[]
 endif::_use_local_application_attributes[]
 //
 //
-//s'il n'est pas défini d'image de fond pour toutes les pages au niveau global et qu'une image est définie au niveau local, alors il faut utiliser le répertoire des images_docker d'un livre.
+//s'il n'est pas défini d'image de fond pour toutes les pages au niveau global et qu'une image est définie au niveau local, alors il faut utiliser le répertoire des images d'un livre.
 ifndef::_global_page_image[]
 ifeval::["{_user_background_image_for_all_pages}" != ""]
 //il faut indiquer que l'image de fond est locale
@@ -73,13 +108,22 @@ ifeval::["{_user_background_image_for_all_pages}" != ""]
 //end eval _user_background_image_for_all_pages
 endif::[]
 endif::_global_page_image[]
-//Si l'image est définie au niveau global et que le nom de l'image n'est pas le même après inclusion de la valeur définie localement, alors, c'est qu'il faut utiliser l'image de fond locale (définie au niveau d'un livre)
-ifdef::_global_page_image[]
-ifeval::["{_global_page_image}" != "{_user_background_image_for_all_pages}"]
-:_local_page_image:
+//
+//Si l'image est définie au niveau global et que le nom de l'image n'est pas le même après inclusion de la valeur définie localement, alors, c'est qu'il faut utiliser l'image dd'icône de logo locale (définie au niveau d'un livre)
+ifdef::_global_logo_icon_image[]
+ifeval::["{_global_logo_icon_image}" != "{_user_logo_icon_filename}"]
+:_local_logo_icon:
 //end eval
 endif::[]
-endif::_global_page_image[]
+endif::_global_logo_icon_image[]
+//
+// ----------------------------------------------------------------------------
+// Import des valeurs d'attribut définies par l'application AsciidocProManager
+// ----------------------------------------------------------------------------
+//
+ifdef::_asciidocpromanager_21fcxe14[]
+//inclusion d'un fichier généré par AsciidocProManager
+endif::_asciidocpromanager_21fcxe14[]
 //
 //
 // ----------------------------------------------------------------------------
@@ -88,15 +132,29 @@ endif::_global_page_image[]
 //
 :_background_image_for_all_pages: {_user_background_image_for_all_pages}
 //
+:_bloc_skill_label: {_user_bloc_skill_label}
+//
+:_bloc_noteprof_label: {_user_bloc_noteprof_label}
+//
+:_bloc_resources_student_label: {_user_bloc_resources_student_label}
+//
+:_bloc_resources_teacher_label: {_user_bloc_resources_teacher_label}
+//
 :_chapter_label: {_user_chapter_label}{_user_chapter_label}{_user_chapter_label}
 //
 :_cover_image_filename: {_user_cover_image_filename}
+//
+:_cover_logo_filename: {_user_cover_logo_filename}
 //
 :_default_author: {_user_default_author}
 //
 :_enable_cache_diagrams: {_user_enable_cache_diagrams}
 //
 :_exercise_title: {_user_exercise_title}
+//
+:_logo_icon_filename: {_user_logo_icon_filename}
+//
+:_pdf_layout: {_user_pdf_layout}
 //
 :_pdf_theme_filename: {_user_pdf_theme_filename}
 //
@@ -115,6 +173,8 @@ endif::_global_page_image[]
 :_show_metadata: {_user_show_metadata}
 //
 :_show_note_prof: {_user_show_note_prof}
+//
+:_show_teacher: {_user_show_teacher}
 //
 :_show_title_numbers: {_user_show_title_numbers}
 //

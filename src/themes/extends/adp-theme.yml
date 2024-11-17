@@ -1,0 +1,10 @@
+#thème fournit par AsciidocPro qui étend le thème par défaut. Il est minimaliste car son objectif est de permettre aux utilisateurs du framework d'injecter une image de fond et/ou un logo et de profiter d'une page de garde "harmonieuse" sans avoir à intervenir dans un fichier de thème personnalisé
+extends: default
+base:
+#    font-color: ff0000
+title-page:
+    title:
+        font-color: #4f545b
+        top: $var_title_top
+    logo:
+        top: $var_logo_top

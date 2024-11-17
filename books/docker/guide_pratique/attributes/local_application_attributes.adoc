@@ -1,1 +1,5 @@
 :_user_cover_image_filename: bg.png
+:_author: Bauer Baptiste
+:_version_number: 1.0.0
+:_version_date: 17/11/2024
+:_user_background_image_for_all_pages: bg-book-docker.png

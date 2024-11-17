@@ -30,21 +30,60 @@ endif::[]
 // Chargement du fichier de thème utilisateur si spécifié
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
+// POur des raisons pratiques, je construis le chemin (dynamique en fonction du fichier depuis lequel est généré le pdf) vers le dossier de thème d'AsciidocPro et celui de l'utilisateur
+:_path_to_folder_theme_framework: {docdir}/{_current_depth}{_foldername_container_src}/{_foldername_container_themes}/
+:_path_to_folder_theme_user: {docdir}/{_current_depth}{_foldername_container_config_user}/{_foldername_container_themes}/
 //il faut remonter jusqu'au dossier racine du projet depuis le fichier header_attributes.adoc
-:_path_to_pdf_theme: {_current_depth}{_file_path_themes_default}
+//todo avant 1
+////
+:_pdf_theme_file_to_use: {_current_depth}{_file_path_themes_default}
 //si aucun fichier de thème n'est spécifié mais qu'une image de couverture l'est, il faut prendre l'autre thème par défaut
 ifeval::["{_pdf_theme_filename}" == ""]
 //si une image de couverture est spécifiée, on utilise le thème qui permet de déplacer le titre
 ifeval::["{_cover_image_filename}" != ""]
-:_path_to_pdf_theme: {_current_depth}{_file_path_themes_default_with_cover_image}
+:_pdf_theme_file_to_use: {_current_depth}{_file_path_themes_default_with_cover_image}
 //end eval _cover_image_filename
 endif::[]
 //end eval _pdf_theme_filename
 endif::[]
 ifeval::["{_pdf_theme_filename}" != ""]
-:_path_to_pdf_theme: {_current_depth}{_folder_path_themes_user}{_pdf_theme_filename}
+:_pdf_theme_file_to_use: {_current_depth}{_folder_path_themes_user}{_pdf_theme_filename}
 //end eval _pdf_theme
 endif::[]
+////
+//todo fin_avant 1
+//
+//todo après 1
+//si aucun fichier de thème n'a été défini par l'utilisateur, le thème intégré à AsciidocPro est utilisé (situé dans src/themes) . En fonction de la présence ou non d'image et/ou d'un logo sur la page de couverture, la disposition du titre évolue pour garder une page de garde harmonieuse sans contrainte l'utilisateur à créer son propre fichier de thème.
+ifeval::["{_pdf_theme_filename}" == ""]
+//chemin du répertoire de thème du framework
+:_pdf_themesdir: {_path_to_folder_theme_framework}
+//fichier de thème situé dans le répertoire ciblé par _pdf_themes_dir
+:_pdf_theme_file_to_use: adp-default-theme.yml
+//il y a une image de couverture, il faut remonter le titre pour ne pas qu'il s'affiche par dessus l'image. Celle-ci est positionnée en "bottom" depuis header_attributes.adoc
+ifeval::["{_cover_logo_filename}" != ""]
+:_pdf_theme_file_to_use: adp-logo-only-theme.yml
+//end eval _logo_icon_filename
+endif::[]
+ifeval::["{_cover_image_filename}" != ""]
+:_pdf_theme_file_to_use: adp-cover-image-only-theme.yml
+//s'il y a une icône de page de garde, il faut mettre le titre un peu plus bas mais toujours au-dessus de l'image
+ifeval::["{_cover_logo_filename}" != ""]
+:_pdf_theme_file_to_use: adp-cover-image-with-logo-theme.yml
+//end eval _logo_icon_filename
+endif::[]
+//end eval _cover_image_filename
+endif::[]
+//end eval _pdf_theme_filename
+endif::[]
+//
+//si un fichier de thème a été spécifié par l'utilisateur, on utilise son fichier et on définit le chemin des templates de l'utilisateur
+ifeval::["{_pdf_theme_filename}" != ""]
+:_pdf_themesdir: {_path_to_folder_theme_user}
+:_pdf_theme_file_to_use: {_pdf_theme_filename}
+//end eval _pdf_theme_filename
+endif::[]
+//todo fin_après 1
 //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Auteur
@@ -156,7 +195,7 @@ endif::_version_number[]
 //
 //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Répertoire des images_docker de diagrammes et du cache (pour les diagrammes gérés
+// Répertoire des images de diagrammes et du cache (pour les diagrammes gérés
 //avec asciidoc-diagram
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ifndef::_persist_context[]
@@ -176,25 +215,74 @@ endif::[]
 // Image de fond sur la première page
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ifeval::["{_cover_image_filename}" != ""]
-//si l'image de couverture a été définie localement (au niveau d'un livre par exemple), il faut utiliser le répertoire des images_docker de ce dernier
+//si l'image de couverture a été définie localement (au niveau d'un livre par exemple), il faut utiliser le répertoire des images de ce dernier
 ifdef::_local_cover_image[]
-:title-page-background-image: image:{_folder_path_images_local}{_cover_image_filename}[]
+//si la valeur de _local_cover_image est none, cela signifie qu'il ne faut pas de logo
+ifeval::["{_cover_image_filename}" != "none"]
+:title-page-background-image: image:{_folder_path_images_local}{_cover_image_filename}[position=bottom]
+endif::[]
 endif::_local_cover_image[]
-//si l'image à utiliser est définie globalement, il faut la récupérer dans le dossier des images_docker globales
+//si l'image à utiliser est définie globalement, il faut la récupérer dans le dossier des images globales
 ifndef::_local_cover_image[]
-:title-page-background-image: image:{_current_depth}{_foldername_container_config_user}/{_foldername_container_images}/{_cover_image_filename}[]
+:title-page-background-image: image:{_current_depth}{_foldername_container_config_user}/{_foldername_container_images}/{_cover_image_filename}[position=bottom]
 endif::_local_cover_image[]
 //end eval _cover_image_filename
+endif::[]
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Image de logo sur la première page
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//si le logo de couverture a été définie localement (au niveau d'un livre par exemple), il faut utiliser le répertoire des images de ce dernier
+ifeval::["{_cover_logo_filename}" != ""]
+ifdef::_local_cover_logo[]
+//si la valeur de _local_cover_image est none, cela signifie qu'il ne faut pas de logo
+ifeval::["{_cover_logo_filename}" != "none"]
+:title-logo-image: image:{_folder_path_images_local}{_cover_logo_filename}[]
+//end eval _cover_logo_filename
+endif::[]
+endif::_local_cover_logo[]
+//si l'image à utiliser est définie globalement, il faut la récupérer dans le dossier des images globales
+ifndef::_local_cover_logo[]
+:title-logo-image: image:{_current_depth}{_foldername_container_config_user}/{_foldername_container_images}/{_cover_logo_filename}[]
+endif::_local_cover_logo[]
+//end eval _cover_logo_filename
+endif::[]
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Image d'icône de logo utilisable dans les headers et/ou footer
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//par défaut, l'image d'icône de logo à utiliser est une image transparente de 1px de côté. Son chemin est stocké dans l'attribut _logo_icon_empty_file
+//docdir donne le chemin absolu vers le dossier qui contient le fichier à convertir. Il faut retrouver l'image qui est dans le dossier images du dossier source de AsciidocPro
+:_logo_icon_empty_file: {docdir}/{_current_depth}/{_foldername_container_src}/{_foldername_container_images}/{_filename_logo_icon_empty}
+//par défaut, l'icône à utiliser est l'icône vide.
+:_logo_icon: {_logo_icon_empty_file}
+//Si l'image d'icône de logo a été définie localement (au niveau d'un livre par exemple), il faut utiliser le répertoire des images de ce dernier
+ifeval::["{_logo_icon_filename}" != ""]
+//l'image d'icône de logo est définie localement (au niveau d'un livre). Il faut la récupérer dans le dossier "images" du livre à générer
+ifdef::_local_logo_icon[]
+ifeval::["{_logo_icon_filename}" != "none"]
+:_logo_icon: {docdir}/{_foldername_container_images}/{_logo_icon_filename}
+//end eval _logo_icon_filename
+endif::[]
+endif::_local_logo_icon[]
+//Si l'image d'icône est définie au niveau global (donc pas au niveau local), il faut la récupérer dans le répertoire "images" du dossier "config"
+ifndef::_local_logo_icon[]
+ifeval::["{_logo_icon_filename}"!= "none"]
+//l'image d'icône à utiliser est l'image globale placée dans le dossier config/images
+:_logo_icon: {docdir}/../../../{_foldername_container_config_user}/{_foldername_container_images}/{_logo_icon_filename}
+//end eval _logo_icon_filename
+endif::[]
+endif::_local_logo_icon[]
+//end eval _user_logo_icon_filename
 endif::[]
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Image de fond sur toutes les pages (sauf la couverture)
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ifeval::["{_background_image_for_all_pages}" != ""]
-//si l'image de fond de page a été définie localement (au niveau d'un livre par exemple), il faut utiliser le répertoire des images_docker de ce dernier
+//si l'image de fond de page a été définie localement (au niveau d'un livre par exemple), il faut utiliser le répertoire des images de ce dernier
 ifdef::_local_page_image[]
 :page-background-image: image:{_folder_path_images_local}{_background_image_for_all_pages}[]
 endif::_local_page_image[]
-//si l'image de fond de page à utiliser est définie globalement, il faut la récupérer dans le dossier des images_docker globales
+//si l'image de fond de page à utiliser est définie globalement, il faut la récupérer dans le dossier des images globales
 ifndef::_local_page_image[]
 :page-background-image: image:{_current_depth}{_foldername_container_config_user}/{_foldername_container_images}/{_background_image_for_all_pages}[]
 endif::_local_page_image[]

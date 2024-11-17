@@ -1,0 +1,4 @@
+#thème proposé pour positionner le titre sous le logo (il n'y a pas d'image de fond)
+extends:
+    - var/adp-logo-only-var-theme.yml
+    - extends/adp-theme.yml

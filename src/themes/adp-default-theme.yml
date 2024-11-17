@@ -1,0 +1,4 @@
+#thème proposé pour positionner le titre au centre vertical de la page car il n'y a pas d'image ni de logo
+extends:
+    - var/adp-default-var-theme.yml
+    - extends/adp-theme.yml

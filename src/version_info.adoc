@@ -1,2 +1,2 @@
-:_asciidocpro_version: 4.0.0-rc.1
-:_asciidocpro_version_update_date: 05/03/24 à 20:40
+:_asciidocpro_version: 4.2.0
+:_asciidocpro_version_update_date: 10/09/2024 à 23:07

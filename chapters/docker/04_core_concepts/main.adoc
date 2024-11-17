@@ -1,6 +1,9 @@
 :_chapter:
 [[core_concepts]]
 = Gestion des images et des conteneurs
+:_author: Bauer Baptiste
+:_version_number: 1.0.0
+:_version_date: 17/11/2024
 include::../../../run_app.adoc[]
 
 Jusqu'à présent, nous avons vu comment créer une image et comment exécuter/arrêter un conteneur. Mais il y a beaucoup plus à faire, alors nous allons prendre un peu de temps pour comprendre comment configurer et gérer nos images et nos conteneurs.

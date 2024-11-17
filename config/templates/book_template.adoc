@@ -1,0 +1,13 @@
+[discrete]
+= Copyright
+
+« Tous droits de reproduction, d’adaptation et de traduction, intégrale ou
+partielle réservés pour tous pays. L’auteur ou l’éditeur est seul propriétaire des
+droits et responsable du contenu de ce livre. »
+
+« Le Code de la propriété intellectuelle interdit les copies ou reproductions
+destinées à une utilisation collective. Toute représentation ou reproduction
+intégrale ou partielle faite par quelque procédé que ce soit, sans le consentement
+de l’auteur ou de ses ayant droit ou ayant cause, est illicite et constitue une
+contrefaçon, aux termes des articles L.335-2 et suivants du Code de la propriété
+intellectuelle »

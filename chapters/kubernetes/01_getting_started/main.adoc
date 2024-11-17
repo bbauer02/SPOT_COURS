@@ -1,7 +1,12 @@
 :_chapter:
-[[01_getting_started]]
+[[start_with_kubernetes]]
 = Débuter avec Kubernetes
+:_author: Bauer Baptiste
+:_version_number: 1.0.0
+:_version_date: 17/11/2024
 include::../../../run_app.adoc[]
+
+
 
 == Introduction
 image::images/002.png[]
@@ -9,7 +14,8 @@ Kubernetes est un outil supplémentaire, bien que ce ne soit pas vraiment un out
 
 Mais allons-y étape par étape. Dans ce premier module sur Docker et Kubernetes, nous allons comprendre les défis auxquels nous pouvons être confrontés lors du déploiement de conteneurs, puis nous verrons comment Kubernetes peut nous aider à les surmonter. Nous découvrirons ce qu'est exactement Kubernetes et pourquoi nous voudrions l'utiliser, et nous commencerons à explorer les concepts et les composants clés de Kubernetes.
 
-Comme je l'ai mentionné, ce ne sera pas le seul module sur Kubernetes. Tout comme Docker, il ne s'agit pas d'un outil simple. Il comporte de nombreux aspects. Par conséquent, nous aurons plusieurs modules. Dans ce premier module, nous commencerons par la théorie. Ensuite, dans le module suivant, nous verrons Kubernetes en action. Enfin, nous apprendrons comment utiliser Kubernetes pour mettre des conteneurs en production sur un fournisseur de cloud réel.
+Comme je l'ai mentionné, ce ne sera pas le seul chapitre sur Kubernetes. Tout comme Docker, il ne s'agit pas d'un *outil simple*. Il comporte de nombreux aspects.  Dans ce premier chapitre, nous commencerons par la théorie. Ensuite, dans le chapitre suivant, nous verrons Kubernetes en action. Enfin, nous apprendrons comment utiliser Kubernetes pour mettre des conteneurs en production sur un fournisseur de cloud réel.
+
 
 Mais prenons les choses étape par étape. Commençons par les bases de Kubernetes dans cette section du cours.
 
@@ -17,9 +23,9 @@ Mais prenons les choses étape par étape. Commençons par les bases de Kubernet
 
 image::images/003.png[]
 
-Si vous consultez https://kubernetes.io, vous pouvez approfondir vos connaissances sur Kubernetes. Toutefois, il n'est pas indispensable de vous plonger dans leur documentation immédiatement, car cette section, ainsi que la suivante, vous fourniront les bases essentielles de Kubernetes.
+Si vous consultez https://kubernetes.io, vous pouvez approfondir vos connaissances sur Kubernetes. Toutefois, il n'est pas indispensable de vous plonger dans leur documentation immédiatement, car ces chapitres vous fourniront les bases essentielles de Kubernetes.
 
-Sur le site officiel, Kubernetes est défini comme un système open source destiné à automatiser le déploiement, la mise à l'échelle et la gestion des applications conteneurisées. Il ne s'agit donc pas d'un logiciel unique, mais bien d'un système composé d'un ensemble d'outils et de pratiques qui facilitent le déploiement et la gestion des conteneurs.
+Sur le site officiel, *Kubernetes* est défini comme un système *open source* destiné à automatiser le déploiement, la mise à l'échelle et la gestion des applications conteneurisées. Il ne s'agit donc pas d'un logiciel unique, mais bien d'un système composé d'un ensemble d'outils et de pratiques qui facilitent le déploiement et la gestion des conteneurs.
 
 Bien que cette définition soit correcte, elle ne permet pas de saisir pleinement ce qu'est Kubernetes, comment il s'utilise et pourquoi il est pertinent dans le contexte des infrastructures modernes. Pour mieux comprendre ces aspects, il convient de prendre du recul et de s'intéresser aux défis inhérents au déploiement manuel des conteneurs.
 

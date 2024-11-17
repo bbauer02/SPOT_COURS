@@ -1,0 +1,7 @@
+:_use_local_application_attributes:
+:_book:
+[[docker_guide_pratique]]
+= Devops::Docker - Exercices
+include::../../../run_app.adoc[]
+
+include::../../../chapters/docker/10_TD_Laravel_Docker/enonce_etudiant.adoc[]

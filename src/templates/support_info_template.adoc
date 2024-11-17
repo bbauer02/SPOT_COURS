@@ -145,6 +145,24 @@ endif::[]
 //end eval _line_1
 endif::[]
 
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Affichage du chemin du container (dossier qui contient le chapitre)
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+ifeval::[{_show_teacher} == 1]
+ifdef::_container_path[]
+ifeval::["{_container_path}" != ""]
+_Indication de l'emplacement du dossier dans le projet AsciidocPro :_ +
+`{_container_path}`
+
+:!_container_path:
+//end eval __path_to_folder_chapter
+endif::[]
+endif::_container_path[]
+//end eval _show_teacher
+endif::[]
+
 //laisser une ligne vide avant la présente ligne
 //laisser une ligne vide avant la présente ligne
 //laisser une ligne vide avant la présente ligne

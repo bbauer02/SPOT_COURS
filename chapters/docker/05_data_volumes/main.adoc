@@ -1,6 +1,9 @@
 :_chapter:
 [[data_volumes]]
 = Data et Volumes
+:_author: Bauer Baptiste
+:_version_number: 1.0.0
+:_version_date: 17/11/2024
 include::../../../run_app.adoc[]
 
 == Introduction

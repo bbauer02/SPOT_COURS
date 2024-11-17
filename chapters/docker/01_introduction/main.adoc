@@ -1,6 +1,10 @@
 :_chapter:
+
 [[introduction]]
 = Introduction
+:_author: Bauer Baptiste
+:_version_number: 1.0.0
+:_version_date: 17/11/2024
 include::../../../run_app.adoc[]
 
 == Préambule
@@ -201,7 +205,7 @@ Le langage de programmation JavaScript est évolue rapidement et de nouvelles ve
 
 Voici un exemple de code source d'une application NodeJs simple:
 
-[%linenums%,js, highlight=3]
+[%linenums,js, highlight=3]
 ----
 include::./code/nodejs-express-axios.mjs[]
 ----
@@ -250,8 +254,9 @@ Nous pouvons créer un conteneur pour notre environnement de développement et u
 
 image::images/10.png[]
 
-[[pourquoi_docker_et_conteneurs]]
-== Des environnements de développement identiques au sein d'une équipe ou d'une organisation
+[[poenvironnements_identiques]]
+
+== Des environnements identiques
 
 De la même manière que nous voulons que nos environnements de développement et de production soient identiques, nous voulons également que les environnements de développement de notre équipe ou de notre organisation soient identiques.
 

@@ -4,6 +4,11 @@
 //cette ligne de commentaire est nécessaire pour séparer les attributs qui suivent.
 :doctype: book
 :icons: font
+:xrefstyle: full
+:section-refsig: partie
+:chapter-refsig: chapitre
+:appendix-refsig: annexe
+// :iconsdir: T:/001 - SPOT/config/images/admonition/
 ifeval::[{_show_title_numbers} == 1]
 :sectnums:
 :sectnumlevels: {_title_level_number}
@@ -11,7 +16,7 @@ ifeval::[{_show_title_numbers} == 1]
 endif::[]
 :chapter-signifier: {_chapter_label}
 :source-highlighter: rouge
-//:rouge-style: monokai
+// :rouge-style: monokai
 :experimental:
 // :backend: html5
 ifeval::[{_show_toc}==1]
@@ -20,6 +25,10 @@ ifeval::[{_show_toc}==1]
 :toclevels: {_toc_levels}
 :toc-title: {_toc_title}
 endif::[]
-:pdf-theme: {_path_to_pdf_theme}
+:pdf-themesdir: {_pdf_themesdir}
+:pdf-theme: {_pdf_theme_file_to_use}
+:pdf-page-layout: {_pdf_layout}
+:appendix-caption: Annexe
+// :!outline:
 
 //une ligne vide doit précéder ce commentaire afin de s'assurer que le contenu du support ne soit pas collé aux attributs d'entête.

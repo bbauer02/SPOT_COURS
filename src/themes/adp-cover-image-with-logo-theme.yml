@@ -1,0 +1,4 @@
+#thème proposé pour positionner le titre sous le logo et au-dessus de l'image de fond positionnée avec bottom (voir le fichier attributes_resolver)
+extends:
+    - var/adp-cover-image-with-logo-var-theme.yml
+    - extends/adp-theme.yml

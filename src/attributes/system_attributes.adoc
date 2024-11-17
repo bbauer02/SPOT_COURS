@@ -36,7 +36,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Profondeur des répertoires des livres, chapitres et exercice
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// nombre de répertoire à remonter depuis un livre ou un chapitre pour arriver à la racine du projet. Comme les livres et les dossiers sont à une profondeur de 3, il faut remonter trois dossiers. C'est utile pour trouver le dossier des images_docker et le dossier des templates de thème car pour ces éléments, il faut utiliser un chemin qui part du fichier depuis lequel est généré le pdf
+// nombre de répertoire à remonter depuis un livre ou un chapitre pour arriver à la racine du projet. Comme les livres et les dossiers sont à une profondeur de 3, il faut remonter trois dossiers. C'est utile pour trouver le dossier des images et le dossier des templates de thème car pour ces éléments, il faut utiliser un chemin qui part du fichier depuis lequel est généré le pdf
 :_depth_default: ../../../
 //profondeur à ajouter à la profondeur de chapitre dans le cas d'un exercice
 :_offset_depth_exercise: ../../
@@ -47,7 +47,7 @@
 // Permet de savoir si un premier chargement des attributs système a été réalisé
 :_system_start:
 //
-// chemin à remonter depuis un fichier situé dans src ou dans config pour arriver à la racine du projet. (attention, ce chemin relatif n'est pas applicable pour les chemins d'images_docker et de thèmes, ces derniers étant relatifs au fichier qui fait l'objet d'une génération pdf)
+// chemin à remonter depuis un fichier situé dans src ou dans config pour arriver à la racine du projet. (attention, ce chemin relatif n'est pas applicable pour les chemins d'images et de thèmes, ces derniers étant relatifs au fichier qui fait l'objet d'une génération pdf)
 :_relative_path_to_root: ../../
 //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,13 +87,13 @@
 // nom des dossiers contenant des templates
 :_foldername_container_templates: templates
 //
-// nom des dossiers contenant des images_docker
+// nom des dossiers contenant des images
 :_foldername_container_images: images
 //
 // nom des dossiers contenant des inclusions
 :_foldername_container_includes: includes
 //
-// nom du dossier qui doit contenir les images_docker des diagrammes asciidoc-diagram
+// nom du dossier qui doit contenir les images des diagrammes asciidoc-diagram
 :_foldername_diagrams_images: diagram_images
 //
 // nom du dossier de cache pour les diagrammes asciidoc-diagram
@@ -103,6 +103,8 @@
 // Nom des fichiers utilisés dans la structure du framework
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
+//nom du fichier à utiliser lorsqu'aucune icône de logo n'a été définie (utile pour une utilisation depuis le fichier de thème, voir l'attribut :user_logo_icon_filename: et son utilisation). Le nom du fichier image doit correspondre à une image png transparente de 1px de côté
+:_filename_logo_icon_empty: empty.png
 // nom du fichier principal dans lequel est écrit le contenu d'un "livre", d'un chapitre ou d'un "exercice"
 :_filename_main_content: main.adoc
 //
@@ -272,22 +274,18 @@
 //chemin absolu vers le fichier local des attributs de contenu (c'est-à-dire par rapport au livre courant)
 :_file_path_attributes_content_local: {docdir}/{_folder_path_attributes_local}{_filename_attributes_content_local}
 //
-// chemin absolu vers le répertoire local des images_docker d'un livre (c'est-à-dire par rapport au livre courant)
+// chemin absolu vers le répertoire local des images d'un livre (c'est-à-dire par rapport au livre courant)
 :_folder_path_images_local: {docdir}/{_foldername_container_images}/
 //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Chemins vers les thèmes et ce qui est lié aux thèmes
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-//chemin du dossier de thèmes de l'utilisateur
-:_folder_path_themes_user: {_foldername_container_config_user}/{_foldername_container_themes}/
+// Le nom des fichiers de thèmes par défaut à utiliser sont écrits en "dur" dans le fichier attributes_resolver.adoc
+// Effectivement, toute évolution nécessiterait de créer de nouveaux fichiers de thèmes.
+// Ils ne peuvent donc pas être définis ici avec pertinence.
 //
-//chemin du fichier de thème pdf par défaut par rapport à la racine du projet
-:_file_path_themes_default: {_foldername_container_src}/{_foldername_container_themes}/default-theme.yml
-//
-//chemin du dossier de thèmes par défaut prévoyant une image en couverture par rapport à la racine du projet
-:_file_path_themes_default_with_cover_image: {_foldername_container_src}/{_foldername_container_themes}/default-with-cover-image-theme.yml
-//
+// Concernant les chemins vers les répertoires qui mènent respectivement au dossier de thèmes de l'utilisateur et au dossier de thèmes du framework, ces chemins sont définis "dynamiquement" et reposent sur la source depuis laquelle la demande de fichier pdf émane.
 //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Alias pour faciliter l'utilisation du framework

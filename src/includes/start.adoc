@@ -45,9 +45,9 @@ ifdef::_persist_context[]
 ifeval::["{_context}" != "book"]
 ifeval::[{_show_metadata} == 1]
 include::{_relative_file_path_template_support_info}[]
-//end eval _show_metadata
+// //end eval _show_metadata
 endif::[]
-//end eval _context
+// //end eval _context
 endif::[]
 endif::_persist_context[]
 // ----------------------------------------------------------------------------

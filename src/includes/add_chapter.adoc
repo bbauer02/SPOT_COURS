@@ -29,9 +29,9 @@ endif::_chapter_folder_path[]
 //on garde le nom du chapitre en mémoire car l'attribut défini par l'utilisateur et contenant le chapitre va être supprimé à la fin de l'ajout
 //cela va être utile pour l'ajout d'exercices.
 :_last_chapter_added: {_chapter_folder_path}
-//chemin relatif vers les images_docker du chapitre (asciidoc cherche par défaut dans le dossier "images_docker" ce pourquoi je ne le précise pas). Asciidoc cherche le dossier des images_docker par rapport au fichier depuis lequel la génération du pdf est appelée. C'est pourquoi le chemin est défini à ce niveau et pas dans un chapitre
+//chemin relatif vers les images du chapitre (asciidoc cherche par défaut dans le dossier "images" ce pourquoi je ne le précise pas). Asciidoc cherche le dossier des images par rapport au fichier depuis lequel la génération du pdf est appelée. C'est pourquoi le chemin est défini à ce niveau et pas dans un chapitre
 :imagesdir: {_relative_path_to_chapter_images}
-//chemin de stockage des images_docker des diagrammes asciidoc-diagram
+//chemin de stockage des images des diagrammes asciidoc-diagram
 :imagesoutdir: {imagesdir}/{_foldername_diagrams_images}
 //chemin du dossier de cache des diagrammes asciidoc-diagram
 :diagram-cachedir: {imagesoutdir}/{_foldername_diagrams_cache}

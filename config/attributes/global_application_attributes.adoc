@@ -20,3 +20,8 @@
 //
 :_user_toc_title: Sommaire
 :_user_default_author: Bauer Baptiste
+:_document_author: Bauer Baptiste
+:_user_pdf_theme_filename: default-theme.yml
+// :_user_cover_logo_filename: logo-try-coach.png
+:_user_header_book_template_filename: book_template.adoc
+:_user_show_header_templates: 0

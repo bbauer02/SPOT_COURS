@@ -13,11 +13,39 @@
 // Image de fond pour toutes les pages (sauf la couverture).
 //
 // Valeur : nom de l'image avec son extension. L'image doit être placée dans le
-//dossier "images_docker" du dossier du livre concerné
+//dossier "images" du dossier du livre concerné
 //
 // Aucune valeur par défaut.
 // ----------------------------------------------------------------------------
 :_user_background_image_for_all_pages:
+//
+// ----------------------------------------------------------------------------
+// libellé d'un bloc de compétences
+//
+// Valeur : mot "Compétences" en gras
+// ----------------------------------------------------------------------------
+:_user_bloc_skill_label: pass:q[*Compétences ciblées*]
+//
+// ----------------------------------------------------------------------------
+// libellé d'un bloc contenant une note pour le professeur
+//
+// Valeur : mots "Note pour le professeur" en gras
+// ----------------------------------------------------------------------------
+:_user_bloc_noteprof_label: pass:q[*Note pour le professeur*]
+//
+// ----------------------------------------------------------------------------
+// libellé d'un bloc contenant les ressources utiles à distribuer
+//
+// Valeur : mots "Ressources à récupérer" en gras
+// ----------------------------------------------------------------------------
+:_user_bloc_resources_student_label: pass:q[*Ressources à récupérer*]
+//
+// ----------------------------------------------------------------------------
+// libellé d'un bloc contenant les ressources utiles à distribuer
+//
+// Valeur : mots "Ressources pour le professeur" en gras
+// ----------------------------------------------------------------------------
+:_user_bloc_resources_teacher_label: pass:q[*Ressources pour le professeur*]
 //
 // ----------------------------------------------------------------------------
 // Préfix automatique avant chaque titre de chapitre
@@ -32,11 +60,23 @@
 // L'image est centrée sur la page de couverture
 //
 // Valeur : nom de l'image avec son extension. L'image doit être placée dans le
-//dossier "images_docker" du dossier du livre concerné
+//dossier "images" du dossier du livre concerné
 //
 // Aucune valeur par défaut.
 // ----------------------------------------------------------------------------
 :_user_cover_image_filename:
+//
+// ----------------------------------------------------------------------------
+// Image de logo sur la page de couverture.
+//
+// L'image est centrée sur la page de couverture
+//
+// Valeur : nom de l'image avec son extension. L'image doit être placée dans le
+//dossier "images" du dossier du livre concerné
+//
+// Aucune valeur par défaut.
+// ----------------------------------------------------------------------------
+:_user_cover_logo_filename:
 //
 // ----------------------------------------------------------------------------
 // Auteur par défaut
@@ -90,14 +130,35 @@
 // ----------------------------------------------------------------------------
 :_user_header_exercise_template_filename:
 //
+// ----------------------------------------------------------------------------
+// Nom du fichier image qui correspond au logo affichage dans l'entête et / ou le pied de page du document.
+//
+// La définition d'une valeur pour cet attribut permet d'utiliser l'attribut "logo_icon" depuis un fichier de thème. "logo_icon" présente l'avantage de pouvoir accéder au fichier d'icône (définit au niveau global ou au niveau d'un livre) sans avoir à se soucier du chemin à utiliser.
+//
+// Aucune valeur par défaut
+//
+// Si la valeur est définie, le fichier doit être placé dans le répertoire config/custom/templates/
+// ----------------------------------------------------------------------------
+:_user_logo_icon_filename:
+//
 //----------------------------------------
 // Nom du fichier de thème qui personnalise le rendu du fichier pdf
 //
-//Le fichier de thème doit être placé dans le dossier config/custom/themes/. Son nom doit avoir un suffixe *-theme.yml. (ex : mon-joli-style-theme.yml)
+//Le fichier de thème doit être placé dans le dossier config/custom/themes/. Son nom doit avoir un suffixe *-theme.yml. (ex : mon-joli-style-theme.yml). Il peut être placé dans un sous dossier (ex .../themes/nom_sous_dossier/chuck-theme.yml). Dans ce cas, la valeur de l'attribut doit être "nom_sous_dossier/chuck-theme.yml"
 //
 // Aucune valeur par défaut (le thème par défaut d'Asciidoctor-pdf est utilisé)
 //----------------------------------------
 :_user_pdf_theme_filename:
+//
+// ----------------------------------------------------------------------------
+// format d'affichage des pages du pdf
+//
+// Pour un affichage en mode portrait, choisir la valeur "portrait", pour un mode paysage, spécifier la valeur "landscape"
+// Valeur par défaut : portrait
+//
+// Aucune valeur par défaut (le thème par défaut d'Asciidoctor-pdf est utilisé)
+//----------------------------------------
+:_user_pdf_layout: portrait
 //
 // ----------------------------------------------------------------------------
 // Affichage des réponses (à la condition d'utiliser le pattern de la documentation)
@@ -143,6 +204,15 @@
 // Valeur par défaut : 1
 // ----------------------------------------------------------------------------
 :_user_show_note_prof: 1
+//
+// ----------------------------------------------------------------------------
+// Affichage des éléments destinés au professeur (à la condition d'utiliser le pattern de la documentation)
+//
+// 1 pour afficher, 0 pour les masquer
+//
+// Valeur par défaut : 1
+// ----------------------------------------------------------------------------
+:_user_show_teacher: 1
 //
 // ----------------------------------------------------------------------------
 // Affichage de la numérotation des titres

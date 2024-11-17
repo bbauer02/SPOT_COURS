@@ -31,7 +31,7 @@ endif::_chapter_folder_path[]
 :_relative_path_to_exercise: {_relative_path_to_root}{_chapter_folder_path_to_use}/{_foldername_container_exercises}/{_exercise_folder_name}
 :_relative_path_to_exercise_images: {_depth_book}{_chapter_folder_path_to_use}/{_foldername_container_exercises}/{_exercise_folder_name}
 //
-//chemin relatif vers les images_docker de l'exercice (pour les images_docker, asciidoc utilise comme point de départ le fichier depuis lequel est appelée la génération)
+//chemin relatif vers les images de l'exercice (pour les images, asciidoc utilise comme point de départ le fichier depuis lequel est appelée la génération)
 :imagesdir: {_relative_path_to_exercise_images}
 //
 //Pour éviter que l'inclusion de l'exercice génère un fausse erreur dans l'IDE, j'affecte des valeurs par défaut

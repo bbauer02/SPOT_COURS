@@ -16,6 +16,7 @@
 :experimental:
 :backend: html5
 :toc:
-:toclevels: 5
+:toclevels: 1
 :toc-title: Table des matières
 :pdf-theme: {_relative_path_to_themes_folder}{_pdf_theme}
+

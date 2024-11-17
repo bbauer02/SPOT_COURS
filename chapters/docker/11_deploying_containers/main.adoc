@@ -1,11 +1,16 @@
 :_chapter:
 [[deploying]]
 = Déploiement de conteneurs Docker
+:_author: Bauer Baptiste
+:_version_number: 1.0.0
+:_version_date: 17/11/2024
 include::../../../run_app.adoc[]
 
 == Introduction
 
 image::images/001.png[width=300]
+
+
 
 Dans ce module, nous allons aborder un sujet très vaste et détaillé : le déploiement de conteneurs Docker. Contrairement aux chapitres précédents où nous nous sommes limités à travailler sur notre machine locale, nous allons maintenant exploiter ce que vous avez appris pour exécuter des conteneurs sur des machines distantes, que ce soit dans le *cloud* ou sur le *web*. Cela signifie que nos applications seront accessibles par les utilisateurs que nous souhaitons atteindre.
 
@@ -74,13 +79,13 @@ En utilisant Docker et les conteneurs, nous minimisons les surprises indésirabl
 
 Le déploiement des conteneurs implique de les transférer sur des machines distantes. Il y a plusieurs aspects importants à prendre en compte :
 
-1. *Utilisation des "Bind Mounts"* : Pendant le développement, nous utilisons fréquemment les bind mounts. Cependant, *il est déconseillé de les utiliser en production*. Nous reviendrons sur les raisons de cette différence un peu plus loin dans le module.
+. *Utilisation des "Bind Mounts"* : Pendant le développement, nous utilisons fréquemment les bind mounts. Cependant, *il est déconseillé de les utiliser en production*. Nous reviendrons sur les raisons de cette différence un peu plus loin dans le module.
 
-2. *Différences de Configuration* : Les applications conteneurisées peuvent nécessiter des configurations différentes pour le développement et la production. Bien que le concept des conteneurs repose sur un environnement identique, certaines applications, comme celles utilisant React, nécessitent une étape de compilation où le code est converti et optimisé avant le déploiement. Ce processus de construction se déroule après le développement et avant le déploiement. Ce chapitre vous montrera comment garantir des environnements reproductibles malgré ces différences nécessaires.
+. *Différences de Configuration* : Les applications conteneurisées peuvent nécessiter des configurations différentes pour le développement et la production. Bien que le concept des conteneurs repose sur un environnement identique, certaines applications, comme celles utilisant React, nécessitent une étape de compilation où le code est converti et optimisé avant le déploiement. Ce processus de construction se déroule après le développement et avant le déploiement. Ce chapitre vous montrera comment garantir des environnements reproductibles malgré ces différences nécessaires.
 
-3. *Projets Multi-Conteneurs* : Dans des projets utilisant plusieurs conteneurs, il peut être pertinent de distribuer ces conteneurs sur plusieurs hôtes, c'est-à-dire plusieurs machines distantes. Bien que le test en local puisse être effectué avec *Docker Compose* sur une seule machine, le déploiement pourrait bénéficier d'une répartition sur plusieurs serveurs.
+. *Projets Multi-Conteneurs* : Dans des projets utilisant plusieurs conteneurs, il peut être pertinent de distribuer ces conteneurs sur plusieurs hôtes, c'est-à-dire plusieurs machines distantes. Bien que le test en local puisse être effectué avec *Docker Compose* sur une seule machine, le déploiement pourrait bénéficier d'une répartition sur plusieurs serveurs.
 
-4. *Compromis de Contrôle et de Responsabilité* : Tout au long de ce module, nous aborderons des situations où il peut être avantageux de choisir des solutions offrant moins de contrôle sur la plateforme de déploiement, mais aussi moins de responsabilités. Par exemple, la gestion d'un hôte distant complet entraîne une charge de travail supplémentaire pour assurer la sécurité et la maintenance de cette machine. Opter pour des solutions avec moins de contrôle, mais aussi moins de responsabilité peut parfois être plus avantageux et rendre la tâche du développeur plus aisée.
+. *Compromis de Contrôle et de Responsabilité* : Tout au long de ce module, nous aborderons des situations où il peut être avantageux de choisir des solutions offrant moins de contrôle sur la plateforme de déploiement, mais aussi moins de responsabilités. Par exemple, la gestion d'un hôte distant complet entraîne une charge de travail supplémentaire pour assurer la sécurité et la maintenance de cette machine. Opter pour des solutions avec moins de contrôle, mais aussi moins de responsabilité peut parfois être plus avantageux et rendre la tâche du développeur plus aisée.
 
 En résumé, ce chapitre vous guidera à travers le processus de déploiement de conteneurs sur des machines distantes, en tenant compte des différences entre développement et production, et en abordant les stratégies pour les projets multi-conteneurs. Vous découvrirez comment gérer les compromis entre contrôle et responsabilité, tout en maintenant des environnements cohérents et reproductibles. À la fin de ce chapitre, vous serez capable de déplacer vos conteneurs depuis une machine locale vers un environnement de production sécurisé et efficace, que ce soit sur le cloud ou ailleurs.
 
@@ -99,10 +104,10 @@ Voici les étapes de base que nous suivrons pour ce déploiement :
 
 image::images/005.png[]
 
-1. Configuration d'un **Serveur Distant **:
+. Configuration d'un **Serveur Distant **:
 Nous commencerons par configurer un serveur distant, en installant Docker sur cet hôte via une connexion SSH, par exemple.
-2. *Transfert de l'Image Docker* : Nous transférerons notre image Docker depuis notre machine locale, où nous avons développé l'application, vers un registre Docker comme Docker Hub. Ensuite, nous tirerons cette image depuis le registre vers notre serveur distant.
-3. *Exécution du Conteneur* : Une fois l'image sur le serveur distant, nous exécuterons le conteneur et exposerons les ports nécessaires pour que les utilisateurs puissent accéder à notre application via le Web.
+. *Transfert de l'Image Docker* : Nous transférerons notre image Docker depuis notre machine locale, où nous avons développé l'application, vers un registre Docker comme Docker Hub. Ensuite, nous tirerons cette image depuis le registre vers notre serveur distant.
+. *Exécution du Conteneur* : Une fois l'image sur le serveur distant, nous exécuterons le conteneur et exposerons les ports nécessaires pour que les utilisateurs puissent accéder à notre application via le Web.
 
 Cette approche nous permettra de comprendre les bases du déploiement de conteneurs *Docker* sur un serveur distant, y compris la configuration, le transfert et la mise en *ligne d'une application*.
 
@@ -116,9 +121,9 @@ Les trois grands fournisseurs de services de *cloud computing* que nous considé
 
 image::images/006.png[]
 
-1. AWS (Amazon Web Services)
-2. Microsoft Azure
-3. Google Cloud Platform
+. AWS (Amazon Web Services)
+. Microsoft Azure
+. Google Cloud Platform
 
 Ces plateformes ne se limitent pas à l'hébergement web; elles proposent une large gamme de services cloud, allant du développement web au "*deep learning*". Dans cette section, nous utiliserons l'une de ces plateformes, *AWS*, pour nos démonstrations de déploiement d'applications web.
 
@@ -170,11 +175,11 @@ Vous pouvez vous connecter à ces ordinateurs pour installer le logiciel de votr
 
 Pour mettre en ligne notre application conteneurisée sur une instance EC2, nous allons suivre trois étapes principales :
 
-1. Créer et Lancer une *Instance EC2* : La première étape consiste à créer et démarrer une instance *EC2*, c'est-à-dire un ordinateur distant. Nous devrons également créer un *VPC (Virtual Private Cloud)* et un groupe de sécurité, afin de contrôler l'accès à cette instance. Je vous montrerai comment configurer tout cela.
+. Créer et Lancer une *Instance EC2* : La première étape consiste à créer et démarrer une instance *EC2*, c'est-à-dire un ordinateur distant. Nous devrons également créer un *VPC (Virtual Private Cloud)* et un groupe de sécurité, afin de contrôler l'accès à cette instance. Je vous montrerai comment configurer tout cela.
 
-2. Configurer le *Groupe de Sécurité* : Nous devrons ajuster les paramètres du groupe de sécurité pour ouvrir les ports nécessaires et permettre le trafic entrant vers notre instance *EC2*. Cela permettra aux utilisateurs d'accéder à notre application via Internet.
+. Configurer le *Groupe de Sécurité* : Nous devrons ajuster les paramètres du groupe de sécurité pour ouvrir les ports nécessaires et permettre le trafic entrant vers notre instance *EC2*. Cela permettra aux utilisateurs d'accéder à notre application via Internet.
 
-3. Se Connecter à *l'Instance via SSH* : Enfin, nous nous connecterons à l'instance *EC2 en utilisant SSH (Secure Shell)*, un protocole de connexion sécurisé basé sur le terminal. Une fois connectés, nous pourrons exécuter des commandes sur cette machine distante, notamment pour installer Docker, puis tirer et exécuter notre conteneur.
+. Se Connecter à *l'Instance via SSH* : Enfin, nous nous connecterons à l'instance *EC2 en utilisant SSH (Secure Shell)*, un protocole de connexion sécurisé basé sur le terminal. Une fois connectés, nous pourrons exécuter des commandes sur cette machine distante, notamment pour installer Docker, puis tirer et exécuter notre conteneur.
 
 image::images/009.png[]
 
@@ -191,36 +196,37 @@ J'ai déjà créé un fichier Docker pour cette application. Il s'agit d'un `Doc
 
 Voici comment procéder :
 
-1. *Construire l'Image Docker* : Sur votre machine locale, naviguez dans le dossier du projet où se trouve le *Dockerfile*, puis utilisez la commande suivante pour construire l'image Docker :
-
+. *Construire l'Image Docker* : Sur votre machine locale, naviguez dans le dossier du projet où se trouve le *Dockerfile*, puis utilisez la commande suivante pour construire l'image Docker :
++
 [source,bash]
 ----
 docker build -t node-dep-example .
 
 ----
++
 (Ici, _node-dep-example_ est le nom donné à l'image, indiquant qu'il s'agit d'un exemple de déploiement Node.)
-
++
 [NOTE]
 ====
 Nous utilisons la version *Alpine* de l'image Node, car elle est plus légère, ce qui accélère le processus de construction et de déploiement.
 ====
 
-2. *Exécuter le Conteneur* : Une fois l'image construite, vous pouvez exécuter un conteneur basé sur cette image :
-
+. *Exécuter le Conteneur* : Une fois l'image construite, vous pouvez exécuter un conteneur basé sur cette image :
++
 [source,bash]
 ----
 docker run -d --rm --name node-dep -p 80:80 node-dep-example
 ----
-
++
 * `-d` exécute le conteneur en mode détaché.
 * `--rm` le supprime automatiquement s'il est arrêté.
 * `--name node-dep` donne un nom au conteneur.
 * `-p 80:80` expose le *port 80* de l'hôte au port *80* du conteneur.
 
-3. Tester l'Application : Une fois le conteneur démarré, ouvrez un navigateur et accédez à http://localhost.
-
+. Tester l'Application : Une fois le conteneur démarré, ouvrez un navigateur et accédez à http://localhost.
++
 Vous devriez voir la page de bienvenue de cette application de démonstration.
-
++
 image::images/010.png[align=center]
 
 == Différence entre le Développement et la Production avec Docker
@@ -265,29 +271,29 @@ En résumé, pour les projets utilisant un seul conteneur et une seule image, la
 Dans cette section, nous allons voir comment prendre une application de démonstration que nous avons développée localement et la déployer sur un serveur web afin qu'elle soit accessible par n'importe quel utilisateur, et pas seulement depuis notre machine de développement locale.
 
 * *Étape 1 : Construire l'Image Docker*
-
++
 Jusqu'à présent, nous avons simplement construit une image Docker pour notre application, ce que nous avons fait à plusieurs reprises tout au long de ce cours. La construction de l'image est une étape essentielle, surtout lorsque nous apportons des modifications à notre code source. Chaque fois que nous modifions le code, nous devons reconstruire l'image pour inclure ces changements.
 
 * *Étape 2 : Exécuter le Conteneur sur une Machine Distante*
-
++
 Une fois que nous avons l'image prête, l'objectif est de ne pas exécuter le conteneur sur notre machine locale, mais plutôt sur un serveur distant. Cela permet à l'application d'être accessible par tous les utilisateurs sur Internet. Pour ce faire, nous allons utiliser *AWS (Amazon Web Services)* pour créer cette machine distante, sur laquelle nous pourrons exécuter notre conteneur.
 
 *Création de la Machine Distante sur AWS:*
 
-1. **Créer un Compte AWS **: Pour commencer, vous devrez créer un compte AWS et vous y connecter._Vous aurez besoin d'une carte de crédit pour configurer votre compte, même si ce que nous allons faire ici est couvert par l'offre gratuite d'AWS (Free Tier)_, donc normalement cela ne devrait pas générer de coûts.
-
+. **Créer un Compte AWS **: Pour commencer, vous devrez créer un compte AWS et vous y connecter._Vous aurez besoin d'une carte de crédit pour configurer votre compte, même si ce que nous allons faire ici est couvert par l'offre gratuite d'AWS (Free Tier)_, donc normalement cela ne devrait pas générer de coûts.
++
 image::images/012.png[]
 
-2. *Accéder à la Console de Gestion AWS* : Une fois connecté à votre compte AWS, vous accéderez à la console de gestion AWS (AWS Management Console). L'interface peut légèrement varier au fil du temps, mais vous devriez voir une *barre de recherche* où vous pouvez rechercher des services AWS spécifiques.
-
+. *Accéder à la Console de Gestion AWS* : Une fois connecté à votre compte AWS, vous accéderez à la console de gestion AWS (AWS Management Console). L'interface peut légèrement varier au fil du temps, mais vous devriez voir une *barre de recherche* où vous pouvez rechercher des services AWS spécifiques.
++
 image::images/013.png[]
 
-3. *Recherche du Service EC2* : AWS propose une multitude de services et de produits, il est donc courant d'utiliser la barre de recherche pour trouver le service que vous souhaitez utiliser. Dans notre cas, recherchez EC2, qui est le service permettant de créer des serveurs virtuels dans le cloud (c'est-à-dire, nos propres ordinateurs dans le cloud).
-
+. *Recherche du Service EC2* : AWS propose une multitude de services et de produits, il est donc courant d'utiliser la barre de recherche pour trouver le service que vous souhaitez utiliser. Dans notre cas, recherchez EC2, qui est le service permettant de créer des serveurs virtuels dans le cloud (c'est-à-dire, nos propres ordinateurs dans le cloud).
++
 image::images/014.png[]
 
-4. *Lancer une Nouvelle Instance EC2* : Une fois que vous êtes sur la page *EC2*, vous verrez une option pour lancer une nouvelle instance. Cliquez sur le bouton « Lancer une instance », ce qui signifie essentiellement démarrer un nouvel ordinateur basé sur le cloud. Cela vous permettra de configurer un nouveau serveur où vous pourrez ensuite déployer votre application Docker.
-
+. *Lancer une Nouvelle Instance EC2* : Une fois que vous êtes sur la page *EC2*, vous verrez une option pour lancer une nouvelle instance. Cliquez sur le bouton « Lancer une instance », ce qui signifie essentiellement démarrer un nouvel ordinateur basé sur le cloud. Cela vous permettra de configurer un nouveau serveur où vous pourrez ensuite déployer votre application Docker.
++
 image::images/015.png[]
 
 En suivant ces étapes, vous serez en mesure de configurer une machine distante via AWS, d'y installer Docker, et d'exécuter votre conteneur d'application, rendant ainsi votre application accessible sur le web.
@@ -300,17 +306,17 @@ Voici les étapes pour configurer et se connecter à *votre instance EC2* :
 
 *Images d'applications et de systèmes d'exploitation (Amazon Machine Image) :*
 
-1. Sélectionnez l'*AMI d'Amazon Linux* : L'AMI (Amazon Machine Image) est l'image du système d'exploitation qui sera installée sur votre serveur. Choisissez l'option** Amazon Linux AMI en version 64 bits (x86)**. Cliquez sur "Select" pour valider ce choix.
+. Sélectionnez l'*AMI d'Amazon Linux* : L'AMI (Amazon Machine Image) est l'image du système d'exploitation qui sera installée sur votre serveur. Choisissez l'option** Amazon Linux AMI en version 64 bits (x86)**. Cliquez sur "Select" pour valider ce choix.
 
 
-2. Choisir une *Instance Éligible à l'Offre Gratuite* : Assurez-vous de sélectionner une option éligible à l'offre gratuite, comme l'instance `t3.micro` disponible au moment où je rédige ce cours. Cette option est idéale pour les tests et les démonstrations, car elle est gratuite pour commencer et offre suffisamment de ressources pour des tâches basiques.
-
+. Choisir une *Instance Éligible à l'Offre Gratuite* : Assurez-vous de sélectionner une option éligible à l'offre gratuite, comme l'instance `t3.micro` disponible au moment où je rédige ce cours. Cette option est idéale pour les tests et les démonstrations, car elle est gratuite pour commencer et offre suffisamment de ressources pour des tâches basiques.
++
 image::images/016.png[]
 
 *Type d'instance :*
 
-1. *Vérifier la Création d'un VPC par Défaut* : Un VPC (Virtual Private Cloud) par défaut doit être sélectionné. Si ce n'est pas le cas, créez un nouveau VPC. Laissez tous les autres paramètres par défaut à moins que vous ne sachiez ce que vous faites.
-
+. *Vérifier la Création d'un VPC par Défaut* : Un VPC (Virtual Private Cloud) par défaut doit être sélectionné. Si ce n'est pas le cas, créez un nouveau VPC. Laissez tous les autres paramètres par défaut à moins que vous ne sachiez ce que vous faites.
++
 image::images/017.png[]
 
 *Configurer les Détails de l'Instance et paramètres réseau :*
@@ -348,43 +354,41 @@ image::images/021.png[]
 
 *Connexion à l'Instance via SSH*
 
-1. *Utiliser SSH pour se Connecter* : Une fois l'instance en cours d'exécution, vous utiliserez *SSH (Secure Shell)* pour vous connecter. SSH est un protocole qui vous permet de vous connecter à une machine distante depuis votre machine locale via la ligne de commande.
-
+. *Utiliser SSH pour se Connecter* : Une fois l'instance en cours d'exécution, vous utiliserez *SSH (Secure Shell)* pour vous connecter. SSH est un protocole qui vous permet de vous connecter à une machine distante depuis votre machine locale via la ligne de commande.
++
 * *Sur Linux et macOS* : Vous pouvez utiliser le terminal intégré pour exécuter des commandes SSH.
 * *Sur Windows* : Vous pouvez soit installer *WSL 2 (Windows Subsystem for Linux)* pour exécuter Linux sur Windows, soit utiliser un client SSH comme *PuTTY*. *PuTTY* est une application que vous pouvez télécharger et installer pour exécuter des commandes** SSH sur une machine Windows**.
 
-2. *Connexion à l'Instance* : Dans le *tableau de bord EC2 d'AWS*, cliquez sur "*Instance*", et sélectionnez l'instance que nous avons créé puis cliquez sur le bouton "*Se connecter*" ou *click droit + Se connecter*
-
+. *Connexion à l'Instance* : Dans le *tableau de bord EC2 d'AWS*, cliquez sur "*Instance*", et sélectionnez l'instance que nous avons créé puis cliquez sur le bouton "*Se connecter*" ou *click droit + Se connecter*
++
 image::images/022.png[]
-
-
-
++
 Puis choisissez l'onglet "Client SSH". AWS vous fournira les étapes détaillées pour établir la connexion avec votre instance EC2.
-
++
 image::images/023.png[]
-
++
 Ouvrez maintenant Putty :
-
++
 image::images/025.png[]
-
++
 Une fois la session sauvegardée, sélectionnez-la, mais ne cliquez pas encore sur "OPEN" :
-
++
 image::images/026.png[]
-
++
 Il faut ajouter dans PUTTY la clé SSH reçue :
-
++
 image::images/024.png[]
-
++
 Cliquez sur "OPEN", et saisissez le nom d'utilisateur fourni par AWS, pour ma part, il s'agit de : `ec2-user`
-
++
 image::images/027.png[]
-
++
 Vous devriez avoir cette fenêtre dans PUTTY qui s'affiche une fois authentifié :
-
++
 image::images/028.png[]
 
 *Installer Docker sur l'Instance* :
-
++
 Une fois connecté à votre instance *EC2 via SSH*, toutes les commandes que vous exécuterez le seront sur la machine distante. Vous pouvez maintenant procéder à l'installation de Docker, transférer votre image Docker sur l'instance et exécuter votre conteneur. Vous configurerez également les groupes de sécurité pour permettre l'accès approprié.
 
 En suivant ces étapes, vous aurez configuré avec succès une instance EC2, créé une connexion sécurisée via SSH, et préparé votre environnement pour le déploiement d'applications conteneurisées.
@@ -557,17 +561,17 @@ Maintenant que notre image Docker est poussée sur Docker Hub, il est temps de l
 
 *Connexion à l'Instance EC2 et Exécution du Conteneur*
 
-1. *Reconnexion à l'Instance EC2* : Revenez à votre terminal connecté via SSH à l'instance EC2. Si votre connexion s'est interrompue, reconnectez-vous simplement en utilisant la même commande SSH.
+. *Reconnexion à l'Instance EC2* : Revenez à votre terminal connecté via SSH à l'instance EC2. Si votre connexion s'est interrompue, reconnectez-vous simplement en utilisant la même commande SSH.
 
-2. *Exécuter le Conteneur* : Une fois connecté, utilisez la commande suivante pour exécuter l'image Docker que vous avez poussée sur Docker Hub :
-
+. *Exécuter le Conteneur* : Une fois connecté, utilisez la commande suivante pour exécuter l'image Docker que vous avez poussée sur Docker Hub :
++
 [source,bash]
 ----
 docker run -d -p 80:80 bbauer02/node-example-1
 ----
-
++
 image::images/035.png[]
-
++
 * `-d` exécute le conteneur en mode détaché (en arrière-plan).
 * `--rm` supprime automatiquement le conteneur lorsqu'il s'arrête.
 * `-p 80:80` mappe le port 80 de l'instance EC2 au port `80` du conteneur, ce qui est essentiel pour permettre aux utilisateurs d'accéder à l'application via *HTTP*.
@@ -575,51 +579,49 @@ image::images/035.png[]
 
 Cela téléchargera l'image depuis Docker Hub sur la machine distante et démarrera un conteneur basé sur cette image.
 
-3. *Vérifier que le Conteneur Fonctionne* : Pour vérifier que le conteneur fonctionne correctement, exécutez la commande suivante :
-
+. *Vérifier que le Conteneur Fonctionne* : Pour vérifier que le conteneur fonctionne correctement, exécutez la commande suivante :
++
 [source,bash]
 ----
 sudo docker ps
 ----
-
++
 Cette commande affichera une liste des conteneurs en cours d'exécution. Si votre conteneur apparaît dans la liste, cela signifie que votre application conteneurisée est en cours d'exécution sur l'instance distante.
 
 *Tester l'Application*
 
-*1.* *Obtenir l'Adresse IP Publique* : Retournez à la console AWS, accédez à votre instance EC2 en cours d'exécution, et notez l'adresse *IP publique (IPv4) de l'instance*.
-
+. *Obtenir l'Adresse IP Publique* : Retournez à la console AWS, accédez à votre instance EC2 en cours d'exécution, et notez l'adresse *IP publique (IPv4) de l'instance*.
++
 image::images/036.png[]
-
++
 Toutefois l'application n'est pas encore disponible, car il faudra modifier les groupes de sécurité.
 
-*2.* *Configurer les Groupes de Sécurité* : Par défaut, votre instance EC2 bloque tout le trafic entrant, sauf les connexions SSH via le port 22.
-
+. *Configurer les Groupes de Sécurité* : Par défaut, votre instance EC2 bloque tout le trafic entrant, sauf les connexions SSH via le port 22.
++
 image::images/037.png[]
-
++
 Notre instance est associé à un groupe de sécurité nommé ici par défaut : `launch-wizard-1`.
-
++
 Dans le menu de gauche, cherchez la catégorie : "*Réseau et sécurité*" et cliquez sur "*Groupes de sécurité*" :
-
++
 image::images/038.png[]
-
-
++
 Par défaut, votre instance EC2 bloque tout le trafic entrant, sauf les connexions SSH via le port 22.
-
++
 image::images/039.png[]
-
++
 Pour permettre le trafic HTTP (port 80), vous devez modifier les règles du groupe de sécurité :
-
++
 image::images/040.png[]
-
++
 Puis saisissez les paramètres comme ci-dessous sans oublier d'enregistrer les modifications :
-
++
 image::images/041.png[]
-
-*3.* *Accéder à l'Application via le Navigateur* : Avec les règles de sécurité mises à jour, entrez l'adresse IP publique de votre instance EC2 dans votre navigateur web. Vous devriez voir un message indiquant :
-
++
+. *Accéder à l'Application via le Navigateur* : Avec les règles de sécurité mises à jour, entrez l'adresse IP publique de votre instance EC2 dans votre navigateur web. Vous devriez voir un message indiquant :
++
 image::images/042.png[]
-
-
++
 Cela confirme que votre application Node.js conteneurisé fonctionne correctement sur une machine distante sans avoir besoin d'installer ou de configurer un environnement *Node.js* sur cette machine. Tout ce dont vous avez eu besoin était *Docker*.
 
 [IMPORTANT]
@@ -642,9 +644,9 @@ Nous venons de voir un premier exemple de déploiement d'une application avec Do
 *Mettre à Jour le Code de l'Application*
 
 Pour terminer cet exemple, voyons comment mettre à jour le code sur le serveur distant et comment arrêter ou éteindre tout si nécessaire.
-[start=1]
-1. *Modification du Code Localement* : Faites un changement simple dans votre fichier HTML, par exemple, ajoutez des points d'exclamation après "This works!" dans le fichier `welcome.html`. Ce changement n'est pas automatiquement reflété sur le serveur distant, car il n'a été fait que localement.
 
+. *Modification du Code Localement* : Faites un changement simple dans votre fichier HTML, par exemple, ajoutez des points d'exclamation après "This works!" dans le fichier `welcome.html`. Ce changement n'est pas automatiquement reflété sur le serveur distant, car il n'a été fait que localement.
++
 [source,bash]
 .welcome.html
 ----
@@ -653,54 +655,52 @@ Pour terminer cet exemple, voyons comment mettre à jour le code sur le serveur 
 ...
 ----
 
-[start=2]
-2. *Reconstruction et "push" de l'Image* : Pour mettre à jour le serveur distant, il suffit de reconstruire l'image Docker localement, de la pousser à nouveau sur *Docker Hub*, puis d'utiliser cette image mise à jour sur le serveur distant.
-
+. *Reconstruction et "push" de l'Image* : Pour mettre à jour le serveur distant, il suffit de reconstruire l'image Docker localement, de la pousser à nouveau sur *Docker Hub*, puis d'utiliser cette image mise à jour sur le serveur distant.
++
 Sur votre machine locale, ouvrez un terminal et reconstruisez l'image :
-
++
 [source,bash]
 ----
 docker build -t node-dep-example-1 .
 ----
-
++
 Taggez l'image correctement et poussez-la sur Docker Hub :
-
++
 [source,bash]
 ----
 docker tag node-dep-example-1 bbauer02/node-example-1
 docker push bbauer02/node-example-1
 ----
-
++
 [IMPORTANT]
 ====
 Seules les couches modifiées seront poussées, ce qui optimise le processus de mise à jour.
 ====
 
-[start=3]
-3. *Arrêter et Redémarrer le Conteneur sur le Serveur Distant :*
-
+. *Arrêter et Redémarrer le Conteneur sur le Serveur Distant :*
++
 * Revenez au terminal connecté à l'instance *EC2*.
 * Listez tous les conteneurs en cours d'exécution et arrêtez le conteneur actuel :
-
++
 [source,bash]
 ----
 sudo docker ps
 sudo docker stop <nom_du_conteneur>
 ----
-
++
 image::images/043.png[]
-
++
 * Pour utiliser la *version mise à jour*, monter l'image à nouveau vers *Docker Hub* :
-
++
 [source,bash]
 ----
 sudo docker pull bbauer02/node-example-1
 ----
-
++
 image::images/044.png[]
-
++
 * Ensuite, relancez le conteneur avec la commande :
-
++
 [source,bash]
 ----
 sudo docker run -d --rm -p 80:80 bbauer02/node-example-1

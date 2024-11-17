@@ -1,0 +1,132 @@
+:_exercise:
+[[QCM_base]]
+= QCM Docker : Introduction
+:author: Bauer Baptiste
+:version: 1.0.0
+:date: 17/11/2024
+include::../../../../../run_app.adoc[]
+
+
+= QCM Docker
+:author: Bauer Baptiste
+:version: 1.0.0
+:date: 17/11/2024
+
+== Partie 1 : Introduction à Docker
+
+[qanda]
+1. Qu'est-ce que Docker ?::
+* [x] Une technologie de conteneurisation
+* [ ] Un système d'exploitation
+* [ ] Une machine virtuelle
+* [ ] Un logiciel de développement
+
+2. Quels sont les pré-requis pour suivre un cours sur Docker ?::
+* [x] Aucune connaissance préalable n'est requise
+* [ ] Connaître Linux
+* [ ] Maîtriser la virtualisation
+* [ ] Savoir programmer en PHP
+
+3. Quel est l'outil permettant de créer des conteneurs ?::
+* [x] Docker Engine
+* [ ] Docker Container
+* [ ] Docker Box
+* [ ] Docker Machine
+
+4. À quoi peut-on comparer un conteneur Docker ?::
+* [x] Un panier de pique-nique contenant tout le nécessaire
+* [ ] Une voiture
+* [ ] Un ordinateur
+* [ ] Un serveur web
+
+== Partie 2 : Problématiques résolues par Docker
+
+[qanda]
+5. Quel problème Docker résout-il concernant les versions de PHP ?::
+* [x] La gestion de plusieurs versions de PHP sur un même serveur
+* [ ] La sécurité de PHP
+* [ ] La vitesse d'exécution de PHP
+* [ ] La compilation du code PHP
+
+6. Dans l'exemple du cours, pourquoi avoir besoin de Docker pour NodeJS ?::
+* [x] Pour gérer le problème de compatibilité avec la version 14.3 et le mot-clé await
+* [ ] Pour accélérer l'exécution de NodeJS
+* [ ] Pour sécuriser l'application NodeJS
+* [ ] Pour réduire la taille de l'application
+
+7. Quel avantage offre Docker pour le développement en équipe ?::
+* [x] Garantir que tous les développeurs travaillent dans le même environnement
+* [ ] Améliorer la vitesse de développement
+* [ ] Réduire les coûts de développement
+* [ ] Simplifier le code source
+
+== Partie 3 : Comparaison avec les Machines Virtuelles
+
+[qanda]
+8. Quelle est la principale différence entre une VM et un conteneur Docker ?::
+* [x] Le conteneur partage le noyau de l'OS hôte alors que la VM possède son propre système d'exploitation
+* [ ] Le conteneur est plus rapide que la VM
+* [ ] La VM est plus sécurisée que le conteneur
+* [ ] Le conteneur utilise plus de ressources que la VM
+
+9. Pourquoi les machines virtuelles sont-elles considérées comme "lourdes" ?::
+* [x] Car elles nécessitent l'installation complète d'un système d'exploitation
+* [ ] Car elles sont plus lentes
+* [ ] Car elles utilisent plus d'électricité
+* [ ] Car elles sont plus difficiles à installer
+
+10. Dans l'exemple du cours avec une machine hôte de 8 Go de RAM, combien de RAM reste-t-il après l'installation d'une VM de 2 Go ?::
+* [x] 6 Go
+* [ ] 4 Go
+* [ ] 8 Go
+* [ ] 2 Go
+
+== Partie 4 : Avantages des Conteneurs
+
+[qanda]
+11. Pourquoi les conteneurs sont-ils considérés comme "légers" ?::
+* [x] Ils partagent le noyau de l'OS hôte et n'embarquent que le nécessaire
+* [ ] Ils n'utilisent pas de mémoire RAM
+* [ ] Ils sont plus petits en taille de fichier
+* [ ] Ils n'ont pas de système d'exploitation
+
+12. Comment les conteneurs gèrent-ils les ressources système ?::
+* [x] De manière dynamique, en ne consommant que ce dont ils ont besoin
+* [ ] De manière fixe comme les VMs
+* [ ] En prenant toutes les ressources disponibles
+* [ ] En partageant équitablement entre tous les conteneurs
+
+== Partie 5 : Cas d'utilisation
+
+[qanda]
+13. Dans quel cas utiliser une VM plutôt qu'un conteneur Docker ?::
+* [x] Pour installer Windows Server 2022
+* [ ] Pour une application web PHP
+* [ ] Pour un serveur NodeJS
+* [ ] Pour une base de données
+
+14. Que permet Docker en termes d'environnements de développement et de production ?::
+* [x] D'avoir des environnements strictement identiques
+* [ ] D'avoir des environnements plus rapides
+* [ ] D'avoir des environnements plus sécurisés
+* [ ] D'avoir des environnements moins coûteux
+
+15. Quel problème Docker résout-il concernant les dépendances des projets ?::
+* [x] Les conflits entre différentes versions de librairies
+* [ ] La vitesse de téléchargement des dépendances
+* [ ] Le coût des licences
+* [ ] La sécurité des dépendances
+
+Les réponses correctes sont marquées d'un [x].
+
+----
+Score :
+- Comptez 1 point par bonne réponse
+- 0 point par mauvaise réponse
+- Score maximal : 15 points
+
+Niveaux :
+- Débutant : 0-5 points
+- Intermédiaire : 6-10 points
+- Expert : 11-15 points
+----

@@ -1,0 +1,4 @@
+#thème proposé pour positionner le titre au-dessus de l'image qui elle est positionnée avec bottom (voir le fichier attributes_resolver)
+extends:
+    - var/adp-cover-image-only-var-theme.yml
+    - extends/adp-theme.yml
