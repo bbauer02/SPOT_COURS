@@ -20,7 +20,7 @@
 // = {_exercise_title}
 // //
 // // ----------------------------------------------------------------------------
-// // Les titres utilisés dans les exercices doivent être décalé d'un niveau
+// // Les titres utilisés dans les exercices doivent être décalés d'un niveau
 // // ----------------------------------------------------------------------------
 // :leveloffset: +1
 // //end eval _context

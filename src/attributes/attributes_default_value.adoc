@@ -55,6 +55,22 @@
 :_user_chapter_label:
 //
 // ----------------------------------------------------------------------------
+// label à afficher au bout du titre principal lorsque l'attribut
+// _show_correction est à 1
+//
+// Valeur : Notes de version (en gras)
+// ----------------------------------------------------------------------------
+:_user_changelog_label: pass:q[*Notes de version*]
+//
+// ----------------------------------------------------------------------------
+// label à afficher au bout du titre principal lorsque l'attribut
+// _show_correction est à 1
+//
+// Valeur : (correction)
+// ----------------------------------------------------------------------------
+:_user_correction_label: (correction)
+//
+// ----------------------------------------------------------------------------
 // Image de fond de la page de couverture.
 //
 // L'image est centrée sur la page de couverture
@@ -168,6 +184,15 @@
 // Valeur par défaut : 1
 // ----------------------------------------------------------------------------
 :_user_show_correction: 1
+//
+// ----------------------------------------------------------------------------
+// Affichage des notes de version (à la condition d'utiliser le pattern de la documentation)
+//
+// 1 pour afficher les notes de version, 0 pour les masquer
+//
+// Valeur par défaut : 1
+// ----------------------------------------------------------------------------
+:_user_show_changelog: 1
 //
 // ----------------------------------------------------------------------------
 // Afficher les templates d'entête

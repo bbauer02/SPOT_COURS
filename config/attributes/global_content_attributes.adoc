@@ -25,3 +25,5 @@
 //
 //Déclarez ci-dessous vos propres attributs.
 //:foo_mon_attribut: la valeur de l'attribut
+// ici d'autres attributs commençant par que vous souhaitez rendre accessibles depuis n'importe quel chapitre et/ou livre.
+// ATTENTION,il ne doit y avoir aucune ligne vide ni avant ni après cette ligne.

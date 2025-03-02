@@ -1,0 +1,257 @@
+= Attentes pour la partie Devops du dossier de projet CDA.
+
+== Introduction
+
+L'objectif de cette partie du dossier est de montrer que vous avez bien saisi l'importance d'adopter une démarche Devops dans le processus de développement du projet.
+
+* Expliquer briévement ce qu'est le DevOps et son importance dans le cadre de votre projet
+* Présenter les outils que vous allez utiliser.
+
+
+===  Exemple
+
+Dans le cadre de ce projet, une démarche DevOps est mise en œuvre afin de garantir une livraison continue, fiable et collaborative tout au long du cycle de développement. Cette approche repose sur une collaboration étroite entre les équipes de développement et d’exploitation, facilitée par des outils et des pratiques adaptés. L’objectif principal est de réduire les délais entre le développement, les tests, et la mise en production, tout en améliorant la qualité des livrables et en minimisant les erreurs humaines.
+
+Pour atteindre cet objectif, plusieurs outils et méthodologies DevOps ont été sélectionnés et intégrés au projet :
+
+* *Gestion du code source :* Un système de gestion de version, tel que Git, est utilisé pour centraliser le code et permettre une collaboration efficace entre les membres de l’équipe. La mise en place d’un workflow (par exemple GitFlow) assure une gestion rigoureuse des branches et des merges.
+* **Intégration continue (CI) **: Un serveur d’automatisation, comme GitLab CI/CD ou Jenkins, a été configuré pour automatiser les phases de build, de test, et de déploiement dès qu’un changement est poussé dans le dépôt. Cela permet de détecter rapidement les erreurs introduites dans le code.
+* **Qualité du code **: Un outil d’analyse statique, comme SonarQube, a été intégré pour vérifier la qualité du code. Il évalue des critères tels que la lisibilité, la maintenabilité, et la sécurité, en identifiant les bugs, les vulnérabilités, et les dettes techniques.
+* A**utomatisation des tests** : Des tests unitaires et d’intégration sont automatisés à l’aide d’outils comme JUnit, Jest ou Selenium. Ces tests garantissent que les nouvelles modifications n’introduisent pas de régressions et respectent les spécifications fonctionnelles.
+* *Déploiement continu (CD)* : La mise en production est automatisée grâce à des scripts ou des configurations d’infrastructure comme Terraform ou Ansible, combinés à des conteneurs Docker pour un déploiement reproductible. Cela permet de maintenir des cycles de déploiement courts et fiables.
+* *Monitoring et feedback* : Des outils de surveillance, tels que Prometheus ou Grafana, peuvent être utilisés pour recueillir des retours sur les performances et l’état de l’application en production, fermant ainsi la boucle DevOps.
+
+
+En combinant ces outils et pratiques, la démarche DevOps garantit un flux de travail fluide, où chaque étape, de la planification au déploiement, est optimisée et surveillée.
+
+== Environnement collaboratif et conteneurs
+
+
+Attentes :
+
+ * Montrer comment l’environnement de développement est configuré pour permettre une collaboration efficace (ex. : GitHub, GitLab).
+* Justifier l'utilisation des conteneurs (Docker, Kubernetes) pour un environnement reproductible.
+
+Comment l’intégrer dans le dossier :
+
+* Décrire l’environnement collaboratif mis en place : Expliquer l’utilisation d’un outil de gestion de version (Git) et présenter les branches (dev, test, prod) et leur workflow.
+
+* Décrire l’utilisation de conteneurs : Inclure un fichier Dockerfile ou un docker-compose.yml avec une explication des choix techniques. Expliquer comment les conteneurs facilitent les tests et la mise en production
+
+===  Exemple
+
+==== *Un environnement collaboratif basé sur GitLab*
+
+Dans ce projet, GitLab a été choisi comme plateforme principale pour la gestion du code source et l’automatisation des pipelines CI/CD. Cet outil offre une solution intégrée qui combine un gestionnaire de version, un système de suivi des tâches, et des fonctionnalités CI/CD avancées.
+
+1. Gestion du code source et collaboration
+* Organisation des branches :
+Un workflow Git structuré, basé sur GitFlow, a été mis en place pour organiser le développement.
+
+** Branch principale (main) : Contient le code stable prêt pour la production.
+** Branches secondaires (develop) : Héberge les fonctionnalités en cours de développement.
+** Branches de fonctionnalités (feature/*) : Chaque nouvelle fonctionnalité est développée dans une branche dédiée, issue de develop.
+** Branches de correctifs (hotfix/*) : Utilisées pour les corrections urgentes dans la branche main.
+** Processus de merge : Les pull requests (ou merge requests) permettent à chaque membre de soumettre ses modifications. Un processus de revue par un pair garantit la qualité et la conformité du code avant intégration.
+
+* Suivi des tâches et collaboration :
+
+** Les issues GitLab sont utilisées pour suivre les tâches et les bogues. Chaque tâche est liée à une branche spécifique, ce qui garantit une traçabilité complète entre le développement et la planification.
+** Les milestones et les labels permettent de structurer les versions et d’identifier rapidement les priorités.
+
+2. Pipelines CI/CD dans GitLab
+
+*Automatisation des étapes critiques :*
+Les pipelines CI/CD sont définis via un fichier `.gitlab-ci.yml`. À chaque commit ou merge, les étapes suivantes sont déclenchées automatiquement :
+
+* `Build` : Compilation et création d’une image Docker.
+* `Tests` : Exécution des tests unitaires, d’intégration, et de qualité de code.
+* `Déploiement` : Livraison sur un environnement staging ou production, en fonction de la branche.
+
+*Feedback rapide :*
+Les pipelines permettent de détecter et corriger rapidement les erreurs grâce à des rapports automatiques. Par exemple, un échec des tests ou une mauvaise qualité du code bloque l’intégration dans les branches principales.
+
+*Utilisation de Docker pour des environnements homogènes*
+
+
+Docker a été adopté pour garantir que l’application s’exécute de manière cohérente dans tous les environnements (développement, test, production).
+
+==== Pourquoi Docker ?
+
+Docker permet de créer des conteneurs qui encapsulent l’application et toutes ses dépendances (système, bibliothèques, configurations). Cela résout les problèmes classiques liés aux différences d’environnement, tels que :
+
+* "Ça fonctionne sur ma machine, mais pas sur le serveur."
+* Incompatibilités de versions entre bibliothèques ou frameworks.
+
+Mise en œuvre technique :
+
+* Création d’un Dockerfile : Un fichier `Dockerfile` est utilisé pour définir l’image de l’application. Par exemple :
+
+[source,bash]
+.Dockerfile
+----
+FROM node:18
+WORKDIR /app
+COPY . .
+RUN npm install
+EXPOSE 3000
+CMD ["npm", "start"]
+----
+** Base image : Utilisation d’une image officielle (Node.js dans cet exemple).
+** Installation des dépendances : Les bibliothèques requises sont installées avec npm install.
+** Exposition du port : Le conteneur expose le port 3000 pour permettre l’accès à l’application.
+
+
+* Utilisation de docker-compose :
+
+Pour les environnements plus complexes (ex. : application + base de données), docker-compose est utilisé pour orchestrer plusieurs conteneurs. Exemple :
+
+[source,bash]
+.docker-compose.yaml
+----
+version: '3'
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+
+----
+
+* Service app : Définit l’application.
+* Service db : Crée une base de données PostgreSQL.
+* Les deux services communiquent via un réseau Docker interne.
+
+Docker est étroitement intégré avec GitLab CI/CD :
+
+Les pipelines incluent une étape de build pour créer et pousser l’image Docker dans le registre GitLab intégré.
+L’image est utilisée dans les étapes suivantes pour exécuter les tests et les déploiements.
+En production, le conteneur Docker est déployé directement sur un serveur ou un cluster orchestré avec Kubernetes.
+
+== Vérification de la qualité du code
+
+Utiliser un outil d’analyse de code comme SonarQube, ESLint, ou PHPStan.
+Interpréter les rapports générés et apporter des corrections.
+
+* Comment l’intégrer dans le dossier :
+
+* Présenter l’outil choisi (par exemple : SonarQube).
+* Ajouter un exemple de rapport avec les métriques importantes (bugs, vulnérabilités, dette technique).
+* Montrer une capture d’écran ou un tableau récapitulatif des résultats avant et après correction.
+
+=== Exemple
+
+==== Intégration de SonarQube dans le pipeline CI/CD
+
+SonarQube est une plateforme d’analyse statique de code qui permet d’évaluer la qualité d’un projet en identifiant les bugs, les vulnérabilités, et les mauvaises pratiques. Il offre une mesure précise de la dette technique, c’est-à-dire le travail nécessaire pour corriger ou améliorer le code pour atteindre une qualité optimale.
+
+Dans ce projet, SonarQube a été intégré au pipeline CI/CD de GitLab pour garantir que la qualité du code est analysée à chaque commit ou merge request. Cette analyse automatique fournit un retour rapide aux développeurs, leur permettant de corriger les problèmes avant qu’ils ne s’accumulent.
+
+===== Configuration de SonarQube
+
+1. *Installation et déploiement* :
++ SonarQube a été déployé dans un conteneur Docker à l’aide de l’image officielle. Exemple de configuration :
+[source,yaml]
+----
+version: '3'
+services:
+sonarqube:
+image: sonarqube:latest
+ports:
+- "9000:9000"
+environment:
+SONARQUBE_JDBC_USERNAME: sonar
+SONARQUBE_JDBC_PASSWORD: sonarpass
+SONARQUBE_JDBC_URL: jdbc:postgresql://db:5432/sonar
+db:
+image: postgres:15
+environment:
+POSTGRES_USER: sonar
+POSTGRES_PASSWORD: sonarpass
+POSTGRES_DB: sonar
+----
+
+2. *Authentification et configuration de projet* :
+- Un token SonarQube a été généré pour autoriser les analyses depuis GitLab.
+- Les règles d’analyse ont été personnalisées selon les besoins du projet, avec des seuils stricts sur les bugs critiques et les vulnérabilités.
+
+=====Intégration dans le pipeline CI/CD
+
+Un job dédié a été ajouté dans le fichier `.gitlab-ci.yml` pour exécuter l’analyse SonarQube :
+
+[source,yaml]
+----
+sonarqube-check:
+  stage: test
+  image: maven:3.8.1-jdk-11
+  variables:
+    SONAR_HOST_URL: "http://sonarqube:9000"
+    SONAR_TOKEN: "$SONAR_AUTH_TOKEN"
+  script:
+    - mvn clean verify sonar:sonar -Dsonar.projectKey=my-project -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+----
+
+===== Résultats de l’analyse
+
+Le rapport généré par SonarQube montre :
+- Une *réduction de 50 % de la dette technique*, principalement due à la correction de mauvaises pratiques et à l’élimination de code redondant.
+- Une amélioration des scores de qualité (bugs critiques corrigés, complexité cyclomatique réduite).
+- Une liste claire de recommandations pour maintenir un haut niveau de qualité.
+
+=== Automatisation des tests
+
+Décrire les tests automatisés (tests unitaires, tests d’intégration, etc.).
+Présenter l’outil utilisé pour l’automatisation des tests (JUnit, Jest, Selenium, etc.).
+
+Démontrer l'intégration des tests dans le pipeline CI/CD.
+
+* Comment l’intégrer dans le dossier :
+
+* Fournir un exemple de script de test avec explication.
+* Inclure un diagramme montrant l'exécution des tests dans le pipeline.
+* Ajouter un tableau ou un graphique des résultats des tests (succès/échecs).
+
+"Les tests unitaires ont été écrits avec Jest pour couvrir 80 % du code. Les résultats des tests sont automatiquement publiés dans le pipeline CI/CD."
+
+
+===  Scripts d’intégration
+
+Démontrer la création de scripts d’automatisation pour les builds, déploiements ou configurations spécifiques. Expliquer comment ces scripts s’intègrent dans le processus CI/CD.
+
+
+* Comment l’intégrer dans le dossier :
+
+** Fournir des exemples de scripts (par exemple, un script Bash ou un fichier YAML pour Jenkins/GitLab CI).
+** Décrire le rôle de chaque script dans le processus global.
+
+
+"Un script Bash a été créé pour déployer automatiquement les conteneurs sur le serveur de staging. Voici un extrait du script : [...]"
+
+=== Paramétrage du livrable et des tests dans un serveur d’automatisation
+
+Configurer un serveur d’automatisation (Jenkins, GitLab CI/CD, GitHub Actions). Montrer comment les tests sont paramétrés dans ce serveur.
+
+* Comment l’intégrer dans le dossier :
+** Fournir un fichier de configuration (ex. : `.gitlab-ci.yml`, `Jenkinsfile`)
+** Décrire les étapes de pipeline : build, test, déploiement.
+** Inclure une capture d’écran de l’interface du serveur avec le pipeline en action.
+
+"Un fichier .gitlab-ci.yml a été configuré pour gérer les étapes de build et de test de l'application. Voici le détail des étapes : [...]"
+
+
+La mise en place d’une démarche DevOps a permis d’automatiser efficacement les tests et le déploiement, réduisant ainsi les délais de mise en production. À l’avenir, l'intégration de tests de performance dans le pipeline pourrait encore renforcer la qualité du livrable
+
+
+== Conseils généraux :
+
+. Clarté visuelle : Inclure des schémas, graphiques, et captures d’écran pour illustrer vos propos.
+. Précision technique : Fournir des exemples concrets et bien documentés (scripts, configurations, résultats).
+. Personnalisation : Reliez chaque élément à votre projet pour montrer son utilité spécifique.
+. Révision et relecture : Vérifiez la syntaxe, la grammaire et la structure pour donner une impression de professionnalisme.

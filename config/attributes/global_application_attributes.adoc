@@ -18,10 +18,10 @@
 // Ce fichier ne doit contenir aucune ligne vide y compris à la fin du fichier
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //
-:_user_toc_title: Sommaire
-:_user_default_author: Bauer Baptiste
-:_document_author: Bauer Baptiste
-:_user_pdf_theme_filename: default-theme.yml
-// :_user_cover_logo_filename: logo-try-coach.png
-:_user_header_book_template_filename: book_template.adoc
-:_user_show_header_templates: 0
+// :_user_default_author: Votre nom
+// :_user_show_correction: 0
+// :_user_show_note_prof: 0
+// ici d'autres attributs commençant par "_user_" (voir la documentation)
+// ATTENTION,il ne doit y avoir aucune ligne vide ni avant ni après cette ligne.
+:_bloc_skill_label2: pass:q[*Savoir-faire*]
+:_bloc_skill_label3: pass:q[*Savoirs associés*]

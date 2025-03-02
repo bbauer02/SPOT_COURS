@@ -21,8 +21,10 @@ ifeval::["{_book}" == ""]
 include::{_file_path_book_start}[]
 //end eval _book
 endif::[]
-//le livre n'est composé que d'un seul chapitre
+//le livre n'est composé que d'un seul chapitre, il ne faut donc pas inclure le fichier correspondant à l'attribut "_file_path_book_start". Il faut laisser le seul chapitre inclus appeler run_app lui-même. Cela explique pourquoi le test ci-dessous ne contient rien. C'est pour indiquer de façon explicite que rien n'est fait dans le cas où il faut générer un livre à partir d'un chapitre unique.
 ifeval::["{_book}" == "lonely"]
+//ajout de cet attribut pour AsciidocPro Manager
+:_book_lonely:
 //end eval _book
 endif::[]
 //on ne fait rien. mais comme run_app va être appelé par un chapitre ou un exercice, il faut supprimer l'attribut qui indique un contexte de livre
