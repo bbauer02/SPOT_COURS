@@ -109,7 +109,7 @@ ifeval::["{_user_background_image_for_all_pages}" != ""]
 endif::[]
 endif::_global_page_image[]
 //
-//Si l'image est définie au niveau global et que le nom de l'image n'est pas le même après inclusion de la valeur définie localement, alors, c'est qu'il faut utiliser l'image dd'icône de logo locale (définie au niveau d'un livre)
+//Si l'image est définie au niveau global et que le nom de l'image n'est pas le même après inclusion de la valeur définie localement, alors, c'est qu'il faut utiliser l'image d'icône de logo locale (définie au niveau d'un livre)
 ifdef::_global_logo_icon_image[]
 ifeval::["{_global_logo_icon_image}" != "{_user_logo_icon_filename}"]
 :_local_logo_icon:
@@ -142,6 +142,10 @@ endif::_asciidocpromanager_21fcxe14[]
 //
 :_chapter_label: {_user_chapter_label}{_user_chapter_label}{_user_chapter_label}
 //
+:_changelog_label: {_user_changelog_label}
+//
+:_correction_label: {_user_correction_label}
+//
 :_cover_image_filename: {_user_cover_image_filename}
 //
 :_cover_logo_filename: {_user_cover_logo_filename}
@@ -163,6 +167,8 @@ endif::_asciidocpromanager_21fcxe14[]
 :_header_chapter_template_filename: {_user_header_chapter_template_filename}
 //
 :_header_exercise_template_filename: {_user_header_exercise_template_filename}
+//
+:_show_changelog: {_user_show_changelog}
 //
 :_show_correction: {_user_show_correction}
 //

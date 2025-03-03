@@ -1,2 +1,1 @@
-:_asciidocpro_version: 4.2.0
-:_asciidocpro_version_update_date: 10/09/2024 à 23:07
+:_asciidocpro_version: 4.6.0

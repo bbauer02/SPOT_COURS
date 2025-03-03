@@ -1,6 +1,6 @@
 //attributs d'entête de document
 {_version_number_text} {_version_date_text} {_document_author}
-{_type_support_text}{_duration_text} {_duration_of_correction_text}
+{_type_support_text}{_uid_support}{_duration_text} {_duration_of_correction_text}
 //cette ligne de commentaire est nécessaire pour séparer les attributs qui suivent.
 :doctype: book
 :icons: font
@@ -15,7 +15,10 @@ ifeval::[{_show_title_numbers} == 1]
 //end eval _show_title_numbers
 endif::[]
 :chapter-signifier: {_chapter_label}
+//afin de permettre la personnalisation du rendu prévisualisé avec une feuille de style, je n'utilise rouge que pour la génération pdf
+ifeval::["{backend}" == "pdf"]
 :source-highlighter: rouge
+endif::[]
 // :rouge-style: monokai
 :experimental:
 // :backend: html5

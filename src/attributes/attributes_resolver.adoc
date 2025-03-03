@@ -33,27 +33,6 @@ endif::[]
 // POur des raisons pratiques, je construis le chemin (dynamique en fonction du fichier depuis lequel est généré le pdf) vers le dossier de thème d'AsciidocPro et celui de l'utilisateur
 :_path_to_folder_theme_framework: {docdir}/{_current_depth}{_foldername_container_src}/{_foldername_container_themes}/
 :_path_to_folder_theme_user: {docdir}/{_current_depth}{_foldername_container_config_user}/{_foldername_container_themes}/
-//il faut remonter jusqu'au dossier racine du projet depuis le fichier header_attributes.adoc
-//todo avant 1
-////
-:_pdf_theme_file_to_use: {_current_depth}{_file_path_themes_default}
-//si aucun fichier de thème n'est spécifié mais qu'une image de couverture l'est, il faut prendre l'autre thème par défaut
-ifeval::["{_pdf_theme_filename}" == ""]
-//si une image de couverture est spécifiée, on utilise le thème qui permet de déplacer le titre
-ifeval::["{_cover_image_filename}" != ""]
-:_pdf_theme_file_to_use: {_current_depth}{_file_path_themes_default_with_cover_image}
-//end eval _cover_image_filename
-endif::[]
-//end eval _pdf_theme_filename
-endif::[]
-ifeval::["{_pdf_theme_filename}" != ""]
-:_pdf_theme_file_to_use: {_current_depth}{_folder_path_themes_user}{_pdf_theme_filename}
-//end eval _pdf_theme
-endif::[]
-////
-//todo fin_avant 1
-//
-//todo après 1
 //si aucun fichier de thème n'a été défini par l'utilisateur, le thème intégré à AsciidocPro est utilisé (situé dans src/themes) . En fonction de la présence ou non d'image et/ou d'un logo sur la page de couverture, la disposition du titre évolue pour garder une page de garde harmonieuse sans contrainte l'utilisateur à créer son propre fichier de thème.
 ifeval::["{_pdf_theme_filename}" == ""]
 //chemin du répertoire de thème du framework
@@ -63,14 +42,14 @@ ifeval::["{_pdf_theme_filename}" == ""]
 //il y a une image de couverture, il faut remonter le titre pour ne pas qu'il s'affiche par dessus l'image. Celle-ci est positionnée en "bottom" depuis header_attributes.adoc
 ifeval::["{_cover_logo_filename}" != ""]
 :_pdf_theme_file_to_use: adp-logo-only-theme.yml
-//end eval _logo_icon_filename
+//end eval _cover_logo_filename
 endif::[]
 ifeval::["{_cover_image_filename}" != ""]
 :_pdf_theme_file_to_use: adp-cover-image-only-theme.yml
 //s'il y a une icône de page de garde, il faut mettre le titre un peu plus bas mais toujours au-dessus de l'image
 ifeval::["{_cover_logo_filename}" != ""]
 :_pdf_theme_file_to_use: adp-cover-image-with-logo-theme.yml
-//end eval _logo_icon_filename
+//end eval _cover_logo_filename
 endif::[]
 //end eval _cover_image_filename
 endif::[]
@@ -83,7 +62,6 @@ ifeval::["{_pdf_theme_filename}" != ""]
 :_pdf_theme_file_to_use: {_pdf_theme_filename}
 //end eval _pdf_theme_filename
 endif::[]
-//todo fin_après 1
 //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Auteur
@@ -113,9 +91,8 @@ endif::_author[]
 // Type de support (affiché sur la couverture)
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Pas de type de support (correspond au cas où l'utilisateur à spécifié une valeur vide pour le _type_support)
+// Pas de type de support (correspond au cas où l'utilisateur a spécifié une valeur vide pour le _type_support)
 :_type_support_text:
-//
 // si le type de support est personnalisé par l'utilisateur, on utilise sa valeur
 ifeval::["{_type_support}" != ""]
 ifeval::["{_type_support}" != "auto"]
@@ -140,6 +117,20 @@ ifeval::["{_context}" == "exercise"]
 endif::[]
 //end eval _type_support
 endif::[]
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Identifiant du support
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+ifndef::_uid_support[]
+:_uid_support:
+endif::_uid_support[]
+ifdef::_uid_support[]
+ifeval::["{_uid_support}" != ""]
+:_uid_support:  {_uid_support}
+//end eval _uid
+endif::[]
+endif::_uid_support[]
 //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Durée de réalisation
@@ -212,6 +203,19 @@ ifeval::[{_enable_cache_diagrams}==0]
 endif::[]
 //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Identifiant du support
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ifndef::_persist_uid_support[]
+:_persist_uid_support:
+ifdef::_uid_support[]
+ifeval::["{_uid_support}" != ""]
+:_persist_uid_support: {_uid_support} 
+//end eval _uid_support
+endif::[]
+endif::_uid_support[]
+endif::_persist_uid_support[]
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Image de fond sur la première page
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ifeval::["{_cover_image_filename}" != ""]
@@ -268,11 +272,11 @@ endif::_local_logo_icon[]
 ifndef::_local_logo_icon[]
 ifeval::["{_logo_icon_filename}"!= "none"]
 //l'image d'icône à utiliser est l'image globale placée dans le dossier config/images
-:_logo_icon: {docdir}/../../../{_foldername_container_config_user}/{_foldername_container_images}/{_logo_icon_filename}
+:_logo_icon: {docdir}/{_current_depth}{_foldername_container_config_user}/{_foldername_container_images}/{_logo_icon_filename}
 //end eval _logo_icon_filename
 endif::[]
 endif::_local_logo_icon[]
-//end eval _user_logo_icon_filename
+//end eval _logo_icon_filename
 endif::[]
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Image de fond sur toutes les pages (sauf la couverture)
@@ -298,3 +302,14 @@ ifeval::["{_version_number}" != ""]
 //end eval _version_number
 endif::[]
 endif::_version_number[]
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Définition du label de correction à afficher en fonction du statut
+// d'affichage de la correction
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//si la correction n'est pas affiché, le label de correction doit être vide
+ifeval::[{_show_correction} != 1]
+:_correction_label:
+//end eval _show_correction
+endif::[]
+// ATTENTION : il ne doit y avoir aucune ligne vide ni avant, ni après cette ligne !!!

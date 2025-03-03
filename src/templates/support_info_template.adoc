@@ -9,10 +9,12 @@
 //indication du besoin d'un séparateur entre la métadonnées analysée et la précédente
 :!_need_of_separator:
 
+// ----------------------------------------------------------------------------
+// Préparation de la ligne 1 contenant le numéro de version, l'identifiant
+// et la date de dernière mise à jour
+// ----------------------------------------------------------------------------
 
-// ----------------------------------------------------------------------------
 // Préparation du texte contenant le numéro de version / révision
-// ----------------------------------------------------------------------------
 :_version_number_text:
 ifdef::_version_number[]
 ifeval::["{_version_number}" != ""]
@@ -25,10 +27,19 @@ endif::_need_of_separator[]
 endif::[]
 endif::_version_number[]
 
-//
-// ----------------------------------------------------------------------------
+// Préparation du texte contenant l'identifiant
+:_uid_support_text:
+ifdef::_uid_support[]
+ifeval::["{_uid_support}" != ""]
+:_uid_support_text: Identifiant {_uid_support}
+ifdef::_need_of_separator[]
+:_uid_support_text:  | {_uid_support_text}
+endif::_need_of_separator[]
+:_need_of_separator:
+endif::[]
+endif::_uid_support[]
+
 // Préparation du texte contenant la date de version / révision
-// ----------------------------------------------------------------------------
 :_version_date_text:
 ifdef::_version_date[]
 ifeval::["{_version_date}" != ""]
@@ -41,11 +52,44 @@ endif::_need_of_separator[]
 endif::[]
 endif::_version_date[]
 
-//
+:!_need_of_separator:
+
 // ----------------------------------------------------------------------------
+// Préparation de la ligne 2 contenant les durées de réalisation et de
+// correction
+// ----------------------------------------------------------------------------
+
+// Préparation du texte contenant la durée de réalisation
+:_duration_text:
+ifdef::_duration[]
+ifeval::["{_duration}" != ""]
+:_duration_text: Durée de réalisation : {_duration}
+:_need_of_separator:
+//end eval _duration
+endif::[]
+endif::_duration[]
+
+// Préparation du texte contenant la durée de correction
+:_duration_of_correction_text:
+ifdef::_duration_of_correction[]
+ifeval::["{_duration_of_correction}" != ""]
+:_duration_of_correction_text: Durée de correction : {_duration_of_correction}
+ifdef::_need_of_separator[]
+:_duration_of_correction_text:  | {_duration_of_correction_text}
+endif::_need_of_separator[]
+:_need_of_separator:
+//end eval _duration_of_correction
+endif::[]
+endif::_duration_of_correction[]
+
+:!_need_of_separator:
+
+// ----------------------------------------------------------------------------
+// Préparation de la ligne 3 contenant l'auteur
+// ----------------------------------------------------------------------------
+
 // Préparation du texte contenant l'auteur
-// ----------------------------------------------------------------------------
-//
+
 // si l'attribut auteur est déclaré mais vide, on n'affiche pas l'auteur. S'il est déclaré et vide, on affiche l'auteur par défaut s'il est défini, sinon on n'affiche rien. Si un auteur spécifique est déclaré, c'est ce dernier qui est affiché.
 :_author_text:
 // l'attribut _author est défini ce qui indique que l'auteur doit être affiché
@@ -71,79 +115,115 @@ ifeval::["{_author_text}" != ""]
 ifdef::_need_of_separator[]
 :_author_text:  | {_author_text}
 endif::_need_of_separator[]
-
+:_need_of_separator:
 //end eval _author_text
 endif::[]
 
-//
 
 :!_need_of_separator:
 
 // ----------------------------------------------------------------------------
-// Préparation du texte concernant la durée du support
+// Affectation des lignes
 // ----------------------------------------------------------------------------
-//
-:_duration_text:
-ifdef::_duration[]
-ifeval::["{_duration}" != ""]
-:_duration_text: Durée de réalisation : {_duration}
-:_need_of_separator:
-//end eval _duration
-endif::[]
-endif::_duration[]
-//
-//
-// ----------------------------------------------------------------------------
-// Préparation du texte de la durée de correction
-// ----------------------------------------------------------------------------
-//
-:_duration_of_correction_text:
-ifdef::_duration_of_correction[]
-ifeval::["{_duration_of_correction}" != ""]
-:_duration_of_correction_text: Durée de correction : {_duration_of_correction}
-ifdef::_need_of_separator[]
-:_duration_of_correction_text:  | {_duration_of_correction_text}
-endif::_need_of_separator[]
-//end eval _duration_of_correction
-endif::[]
-endif::_duration_of_correction[]
-
-:_line_1: {_version_number_text}{_version_date_text}{_author_text}
+:_line_1: {_version_number_text}{_uid_support_text}{_version_date_text}
 :_line_2: {_duration_text}{_duration_of_correction_text}
+:_line_3: {_author_text}
 
 //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Affichage des informations du support
+// Affichage des informations du support avec 3 lignes
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
 
-// s'il n'y a que la ligne 1
-ifeval::["{_line_2}" == ""]
+// Si seule la ligne 1 est présente
 ifeval::["{_line_1}" != ""]
+ifeval::["{_line_2}" == ""]
+ifeval::["{_line_3}" == ""]
 [.metadata]#_{_line_1}_#
-//end eval _line_1
+//end eval _line_3
 endif::[]
 //end eval _line_2
 endif::[]
-
-//s'il n'y a que la ligne 2
+//end eval _line_1
+endif::[]
+//
+// Si seule la ligne 2 est présente
 ifeval::["{_line_1}" == ""]
 ifeval::["{_line_2}" != ""]
+ifeval::["{_line_3}" == ""]
 [.metadata]#_{_line_2}_#
+//end eval _line_3
+endif::[]
 //end eval _line_2
 endif::[]
 //end eval _line_1
 endif::[]
 
-//s'il y a la ligne 1 et 2
-ifeval::["{_line_1}" != ""]
-ifeval::["{_line_2}" != ""]
-[.metadata]#_{_line_1}_# +
-[.metadata]#_{_line_2}_#
+// Si seule la ligne 3 est présente
+ifeval::["{_line_1}" == ""]
+ifeval::["{_line_2}" == ""]
+ifeval::["{_line_3}" != ""]
+[.metadata]#_{_line_3}_#
+//end eval _line_3
+endif::[]
 //end eval _line_2
 endif::[]
 //end eval _line_1
 endif::[]
+
+// Si les lignes 1 et 2 sont présentes
+ifeval::["{_line_1}" != ""]
+ifeval::["{_line_2}" != ""]
+ifeval::["{_line_3}" == ""]
+[.metadata]#_{_line_1}_# +
+[.metadata]#_{_line_2}_#
+//end eval _line_3
+endif::[]
+//end eval _line_2
+endif::[]
+//end eval _line_1
+endif::[]
+
+// Si les lignes 1 et 3 sont présentes
+ifeval::["{_line_1}" != ""]
+ifeval::["{_line_2}" == ""]
+ifeval::["{_line_3}" != ""]
+[.metadata]#_{_line_1}_# +
+[.metadata]#_{_line_3}_#
+//end eval _line_3
+endif::[]
+//end eval _line_2
+endif::[]
+//end eval _line_1
+endif::[]
+
+// Si les lignes 2 et 3 sont présentes
+ifeval::["{_line_1}" == ""]
+ifeval::["{_line_2}" != ""]
+ifeval::["{_line_3}" != ""]
+[.metadata]#_{_line_2}_# +
+[.metadata]#_{_line_3}_#
+//end eval _line_3
+endif::[]
+//end eval _line_2
+endif::[]
+//end eval _line_1
+endif::[]
+
+// Si les trois lignes sont présentes
+ifeval::["{_line_1}" != ""]
+ifeval::["{_line_2}" != ""]
+ifeval::["{_line_3}" != ""]
+[.metadata]#_{_line_1}_# +
+[.metadata]#_{_line_2}_# +
+[.metadata]#_{_line_3}_#
+//end eval _line_3
+endif::[]
+//end eval _line_2
+endif::[]
+//end eval _line_1
+endif::[]
+
 
 //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -166,3 +246,4 @@ endif::[]
 //laisser une ligne vide avant la présente ligne
 //laisser une ligne vide avant la présente ligne
 //laisser une ligne vide avant la présente ligne
+

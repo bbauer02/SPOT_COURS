@@ -1,0 +1,4 @@
+:_exercise:
+[[bases_reseau_local_protocoles_qcm1]]
+= QCM de validation des principes de base de la communication en réseau
+include::../../../../../run_app.adoc[]
