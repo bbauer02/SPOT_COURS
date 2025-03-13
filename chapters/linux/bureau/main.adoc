@@ -1,0 +1,80 @@
+:_chapter:
+:_author: Bauer Baptiste
+:_duration: 3
+:_version_number: 1.0.0
+:_version_date: 20/01/2025
+[[bureau-linux-]]
+= Les environnements de bureau Linux
+include::../../../run_app.adoc[]
+
+
+== Fondements conceptuels des environnements de bureau sous Linux
+
+Il convient d'établir une compréhension précise de la notion d'environnement de bureau dans le contexte des systèmes Linux.
+
+La définition d'un environnement de bureau peut être formulée ainsi : il s'agit de l'interface visuelle présentée à l'écran. Cet environnement graphique s'inspire de la métaphore du bureau physique, comprenant des éléments tels que des dossiers, des fichiers et une corbeille.
+
+Cette interface utilisateur graphique réagit aux interactions effectuées via les périphériques d'entrée, notamment le clavier et la souris, permettant par exemple la fermeture d'une fenêtre par un clic sur l'icône appropriée.
+
+En synthèse, un environnement de bureau constitue l'espace de travail numérique affiché à l'écran, comparable aux interfaces proposées par Windows ou macOS. Néanmoins, les environnements de bureau Linux présentent des différences structurelles fondamentales.
+
+Quelles sont les raisons de cette différenciation ?
+
+Dans le cas des systèmes d'exploitation Windows ou macOS, un type unique d'environnement de bureau est fourni, intégrant généralement :
+
+* une interface d'authentification requérant des identifiants de connexion ;
+
+* un espace graphique couvrant l'intégralité de la surface d'affichage, généralement personnalisé par un fond d'écran ;
+
+* un système de fenêtres avec des attributs configurables (bordures, typographies, colorimétrie) ;
+
+* un mécanisme de lancement d'applications, tel que le menu "Démarrer" sous Windows ;
+
+* au minimum un gestionnaire de fichiers intégré, permettant la navigation dans la hiérarchie du système, comparable au "Finder" de macOS.
+
+Contrairement aux systèmes Windows ou macOS où ces composants sont intégrés par défaut, l'écosystème Linux adopte une approche modulaire. Chaque élément constitutif de l'environnement graphique fonctionne de manière autonome. Cette architecture reflète le principe fondamental UNIX : concevoir des programmes spécialisés et optimisés pour une fonction spécifique.
+
+[NOTE]
+====
+Par conséquent, l'environnement de bureau Linux se compose de plusieurs programmes distincts, chacun responsable d'une fonctionnalité précise. L'utilisateur dispose de la liberté de sélectionner et d'assembler ces composants selon ses préférences.
+====
+
+== Présentation des principaux environnements de bureau
+
+Est-il nécessaire de procéder à l'installation manuelle d'un environnement de bureau ?
+
+Cette intervention n'est généralement pas requise, car les distributions Linux intègrent des environnements de bureau complets, préalablement configurés et immédiatement opérationnels.
+
+Parmi les environnements de bureau notables, on peut distinguer :
+
+* https://www.gnome.org/[GNOME] : cet environnement figure parmi les plus reconnus. À l'époque où Linux cherchait à concurrencer Windows sur le marché, GNOME constituait une interface privilégiée. Caractérisé par son ergonomie et sa modernité, cet environnement intègre diverses fonctionnalités d'animation. Cette richesse fonctionnelle implique une consommation significative de ressources systèmes, à tel point qu'une conférence annuelle est organisée par la communauté afin d'optimiser ses performances.
+
+* https://kde.org/fr/[KDE] : ce second environnement majeur de l'écosystème Linux a adopté une approche inspirée de l'interface Windows, facilitant ainsi la transition des utilisateurs provenant de cet environnement. Pour les personnes envisageant une migration depuis Windows, KDE représente une option particulièrement adaptée.
+
+* https://www.xfce.org/[XFCE] : cet environnement se distingue par sa philosophie minimaliste associée à une efficacité opérationnelle. Particulièrement adapté aux configurations matérielles limitées, XFCE se caractérise par une consommation de ressources optimisée et offre d'importantes possibilités de personnalisation.
+
+Ces trois environnements majeurs sont généralement disponibles dans la plupart des distributions. Certaines distributions ont néanmoins développé leurs propres environnements spécifiques, notamment :
+
+* https://projects.linuxmint.com/cinnamon/[Cinnamon] : initialement conçu pour la distribution Linux Mint, cet environnement a bénéficié d'une réception favorable au sein de la communauté, conduisant à son adoption par approximativement 30 distributions différentes ;
+
+* https://elementary.io/fr/[Pantheon] : développé exclusivement pour la distribution Elementary OS, cet environnement vise à reproduire une expérience utilisateur comparable à celle proposée par macOS ;
+
+* https://www.deepin.org/en/[Deepin] : créé spécifiquement pour la distribution éponyme Deepin Linux ;
+
+* https://doc.ubuntu-fr.org/unity[Unity] : précédemment l'environnement de bureau officiel de la distribution Ubuntu. Il convient de noter que depuis 2017, Ubuntu a procédé à la migration vers l'environnement GNOME.
+
+Face à cette diversité d'options, il est légitime de s'interroger sur l'environnement par défaut associé à la distribution Ubuntu.
+
+Dans le cadre de ce cours, l'environnement de bureau GNOME, fourni par défaut avec la distribution Ubuntu, sera utilisé comme référence pour les travaux pratiques.
+
+== Synthèse
+
+* Les environnements de bureau Linux sont caractérisés par leur architecture modulaire.
+
+* Chaque module assume une responsabilité fonctionnelle spécifique (authentification, gestion des fenêtres, personnalisation de l'interface, etc.).
+
+* GNOME, KDE et XFCE constituent les trois environnements de bureau prédominants dans l'écosystème Linux.
+
+* Certaines distributions proposent également des environnements de bureau développés spécifiquement pour leurs besoins.
+
+* GNOME représente l'environnement de bureau standard de la distribution Ubuntu.

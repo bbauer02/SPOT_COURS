@@ -1,0 +1,694 @@
+:_chapter:
+:_author: Bauer Baptiste
+:_duration: 3
+:_version_number: 1.0.0
+:_version_date: 20/01/2025
+[[cli-linux]]
+= Introduction à l'Interface en Ligne de Commande Linux
+include::../../../run_app.adoc[]
+
+== Introduction
+
+Ce document constitue une ressource pédagogique complète dédiée à l'apprentissage de l'interface en ligne de commande (CLI) sous Linux. Cette approche méthodique permettra aux apprenants de développer progressivement leurs compétences, en commençant par les concepts fondamentaux pour ensuite aborder des manipulations plus complexes.
+
+== Premiers pas dans l'environnement de console
+
+=== Présentation générale
+
+L'interface en ligne de commande représente un moyen puissant et efficace d'interagir avec le système d'exploitation Linux. Contrairement aux interfaces graphiques, le CLI offre un contrôle précis et une automatisation avancée des tâches système.
+
+Pour commencer cette exploration, il convient de se connecter au système Linux puis d'ouvrir un terminal de commande. Sous Ubuntu ou Debian, cela peut être réalisé soit en lançant l'application Terminal, soit en utilisant la combinaison de touches Ctrl+Alt+t.
+
+Une fois le terminal ouvert, l'utilisateur observe une ligne similaire à celle-ci :
+
+[source,shell]
+----
+user@machine:~$
+----
+
+Cette ligne d'invite (prompt) fournit plusieurs informations essentielles :
+
+* L'identifiant de l'utilisateur actuellement connecté
+* Le nom de la machine sur laquelle s'exécute la session
+* L'emplacement actuel dans l'arborescence du système de fichiers
+* Le symbole $ qui indique que l'utilisateur dispose de privilèges standards
+
+Il est également possible d'obtenir ces informations via des commandes spécifiques :
+
+* `whoami` : affiche l'identité de l'utilisateur actif
+* `pwd` : affiche le chemin absolu du répertoire de travail courant (Present Working Directory)
+
+[NOTE]
+====
+Le symbole `~` visible dans l'invite correspond au répertoire personnel de l'utilisateur connecté. Ainsi, `~` est équivalent à `/home/user`. Cette notation concise constitue un raccourci particulièrement utile à mémoriser.
+====
+
+=== Navigation dans le système de fichiers
+
+La capacité à se déplacer efficacement dans l'arborescence du système de fichiers constitue une compétence fondamentale. Pour cela, la commande `cd` (Change Directory) est indispensable.
+
+[source,shell]
+----
+cd /etc
+----
+
+Cette commande permet de se déplacer vers le répertoire `/etc`, ce qui se reflète immédiatement dans l'invite de commande :
+
+[source,shell]
+----
+user@machine:/etc$
+----
+
+L'utilisateur peut vérifier sa position à tout moment grâce à la commande `pwd`.
+
+La commande `cd` peut être utilisée pour accéder à d'autres répertoires système importants comme `/var` ou `/usr`.
+
+=== Exploration de la racine du système
+
+L'architecture d'un système Linux s'articule autour d'une structure hiérarchique dont l'origine est le répertoire racine, symbolisé par `/`.
+
+Pour s'y déplacer, il suffit d'exécuter :
+
+[source,shell]
+----
+cd /
+----
+
+Pour visualiser le contenu de ce répertoire fondamental, la commande `ls` (List) permet d'afficher les dossiers et fichiers qu'il contient :
+
+[source,shell]
+----
+ls
+----
+
+Cette exploration révèle plusieurs répertoires essentiels :
+
+* `/home` : contient les répertoires personnels de tous les utilisateurs
+* `/etc` : stocke les fichiers de configuration du système et des applications
+* `/root` : constitue le répertoire personnel de l'administrateur système (superutilisateur)
+* `/usr` : abrite les programmes et bibliothèques installés par l'utilisateur
+* `/opt` : destiné à accueillir les logiciels tiers non intégrés aux dépôts officiels
+* `/proc` : système de fichiers virtuel présentant des informations sur les processus en cours d'exécution
+* `/dev` : contient les fichiers spéciaux représentant les périphériques matériels
+
+== Documentation et syntaxe des commandes
+
+=== Consultation du manuel intégré
+
+L'interface en ligne de commande Linux offre une documentation complète, accessible via la commande `man` (Manual). Cette ressource s'avère indispensable pour comprendre précisément le fonctionnement des commandes.
+
+Par exemple, pour obtenir des informations détaillées sur la commande `ls` :
+
+[source,shell]
+----
+man ls
+----
+
+Dans la documentation affichée, on peut identifier la syntaxe générale :
+
+[source,shell]
+----
+ls [OPTION]... [FILE]...
+----
+
+Cette notation indique que :
+
+* `ls` peut être utilisée avec différentes options (paramètres modifiant son comportement)
+* La commande peut recevoir plusieurs arguments de type FILE (chemins de fichiers ou répertoires)
+
+En l'absence d'argument FILE, `ls` examine par défaut le répertoire courant. Cela équivaut à la commande `ls .` où le symbole `.` désigne le répertoire actuel.
+
+[IMPORTANT]
+====
+Dans la documentation du manuel :
+
+* Les paramètres entre crochets [PARAM] sont optionnels
+* Les points de suspension (...) indiquent la possibilité de spécifier plusieurs occurrences du paramètre précédent
+====
+
+[TIP]
+====
+L'acronyme RTFM (Read The Fucking Manual) constitue une référence courante dans la communauté Linux. Il rappelle l'importance de consulter la documentation avant de solliciter de l'aide externe. Une bonne pratique consiste à vérifier le manuel, puis à effectuer des recherches sur internet avant de poser une question sur un forum ou un canal d'assistance.
+====
+
+=== Utilisation des options de commande
+
+Les options permettent de préciser le comportement d'une commande. Elles suivent généralement le format :
+
+[source,shell]
+----
+commande -option1 -option2 -option3 paramètre
+----
+
+Alternativement, certaines options peuvent être combinées :
+
+[source,shell]
+----
+commande -option1option2option3 paramètre
+----
+
+Pour illustrer l'utilité des options, expérimentons quelques variations de la commande `ls` :
+
+* `ls -l` : affiche les détails des fichiers (permissions, propriétaire, taille, date de modification)
+* `ls -a` : affiche tous les fichiers, y compris les fichiers cachés (commençant par un point)
+* `ls -la` : combine les deux options précédentes
+
+Les options peuvent significativement modifier le fonctionnement d'une commande. Par exemple, dans le cas de la commande `ping`, des options spécifiques permettent de restreindre les requêtes à IPv4 ou IPv6, ou de définir des types particuliers de requêtes.
+
+=== Chemins absolus et relatifs
+
+La référence aux fichiers et répertoires dans Linux s'effectue via deux types de chemins :
+
+*Chemins absolus* : Ils commencent toujours par le répertoire racine (/) et identifient un emplacement de manière univoque, indépendamment de la position actuelle de l'utilisateur dans l'arborescence.
+
+Exemples : `/home/user`, `/usr/lib`, `/var/www`
+
+*Chemins relatifs* : Ils sont interprétés par rapport à la position courante de l'utilisateur dans le système de fichiers. Ils ne commencent pas par le symbole `/`.
+
+Exemples : `Documents/rapport.txt`, `../configuration/paramètres.conf`
+
+Pour illustrer cette distinction, considérons un utilisateur situé dans le répertoire `/home/user`, qui contient un sous-répertoire `Documents`. Pour afficher le contenu de ce dernier, deux approches sont possibles :
+
+* Chemin absolu : `ls /home/user/Documents`
+* Chemin relatif : `ls Documents`
+
+[TIP]
+====
+Le symbole `..` désigne le répertoire parent. Ainsi :
+
+* `../` fait référence au répertoire parent immédiat
+* `../../` pointe vers le parent du parent
+* Et ainsi de suite pour les niveaux supérieurs
+====
+
+[IMPORTANT]
+====
+Les chemins absolus présentent l'avantage d'être universellement valides, quelle que soit la position courante dans l'arborescence. En revanche, les chemins relatifs sont généralement plus concis, mais dépendent du contexte d'exécution.
+====
+
+== Manipulation des fichiers et répertoires
+
+=== Création de structures de données
+
+La gestion efficace des fichiers et répertoires constitue une compétence fondamentale dans l'environnement Linux. Pour débuter, positionnez-vous dans votre répertoire personnel (`/home/<utilisateur>`).
+
+*Création de répertoires*
+
+La commande `mkdir` (Make Directory) permet de créer des répertoires :
+
+[source,shell]
+----
+mkdir répertoire-exemple
+----
+
+*Création de fichiers*
+
+La commande `touch` génère des fichiers vides :
+
+[source,shell]
+----
+cd répertoire-exemple && touch fichier-exemple.txt
+----
+
+[NOTE]
+====
+Le symbole `&&` permet d'enchaîner l'exécution de plusieurs commandes successives. La seconde commande ne s'exécute que si la première s'est terminée avec succès.
+====
+
+=== Édition de contenu textuel
+
+L'édition de fichiers texte peut s'effectuer selon deux approches principales :
+
+*Utilisation d'éditeurs de texte en ligne de commande*
+
+Plusieurs éditeurs sont disponibles, chacun avec ses particularités :
+
+* `vim` : éditeur puissant et complet, doté de nombreuses fonctionnalités
+* `emacs` : environnement d'édition extensible et personnalisable
+* `nano` : éditeur simple et accessible pour les débutants
+
+La syntaxe générale est :
+
+[source,shell]
+----
+éditeur-de-texte fichier
+----
+
+Exemple : `nano fichier-exemple.txt`
+
+Chaque éditeur possède ses propres raccourcis clavier pour les opérations courantes (sauvegarde, sortie, recherche, etc.).
+
+*Redirection de flux*
+
+La commande `echo` permet d'afficher du texte dans la console :
+
+[source,shell]
+----
+echo "Exemple de texte"
+----
+
+Cette sortie peut être redirigée vers un fichier à l'aide des opérateurs suivants :
+
+* `>` : remplace le contenu existant du fichier cible
+* `>>` : ajoute la sortie à la fin du fichier cible
+
+Exemples :
+
+[source,shell]
+----
+echo "Contenu initial" > fichier-exemple.txt
+echo "Ligne supplémentaire" >> fichier-exemple.txt
+----
+
+Pour afficher le contenu d'un fichier, la commande `cat` (concatenate) est utilisée :
+
+[source,shell]
+----
+cat fichier-exemple.txt
+----
+
+=== Duplication et déplacement
+
+*Copie de fichiers*
+
+La commande `cp` (copy) permet de dupliquer des fichiers :
+
+[source,shell]
+----
+cp fichier-source.txt fichier-destination.txt
+----
+
+Pour copier des répertoires avec leur contenu, l'option `-R` (récursif) est nécessaire :
+
+[source,shell]
+----
+cp -R répertoire-source répertoire-destination
+----
+
+*Renommage et déplacement*
+
+La commande `mv` (move) permet deux opérations distinctes :
+
+1. Déplacer un fichier ou répertoire vers un autre emplacement
+2. Renommer un fichier ou répertoire
+
+[source,shell]
+----
+mv ancien-nom.txt nouveau-nom.txt
+mv fichier.txt /chemin/vers/destination/
+----
+
+Il est intéressant de noter que Linux ne dispose pas de commande spécifique pour le renommage. Cette opération est conceptuellement considérée comme un déplacement vers le même emplacement mais avec un nom différent.
+
+=== Suppression de données
+
+*Suppression de fichiers*
+
+La commande `rm` (remove) permet de supprimer des fichiers :
+
+[source,shell]
+----
+rm fichier-inutile.txt
+----
+
+*Suppression de répertoires*
+
+Deux approches sont possibles selon que le répertoire est vide ou non :
+
+* Pour un répertoire vide : `rmdir répertoire-vide`
+* Pour un répertoire contenant des fichiers : `rm -R répertoire-avec-contenu`
+
+[CAUTION]
+====
+L'option `-R` (récursif) permet de supprimer un répertoire et tout son contenu, y compris les sous-répertoires. Cette opération est irréversible et doit être utilisée avec prudence.
+====
+
+== Gestion des utilisateurs et des droits
+
+=== Administration des comptes utilisateurs
+
+Les systèmes Linux sont conçus pour une utilisation multi-utilisateurs. Chaque utilisateur dispose d'un espace personnel et de droits spécifiques.
+
+*Création d'utilisateurs*
+
+La commande `adduser` permet de créer un nouveau compte utilisateur :
+
+[source,shell]
+----
+sudo adduser nom_utilisateur
+----
+
+Cette opération génère automatiquement :
+* Un répertoire personnel dans `/home/nom_utilisateur`
+* Un groupe nominal portant le même nom que l'utilisateur
+* Une entrée dans le fichier `/etc/passwd`
+
+*Suppression d'utilisateurs*
+
+La commande `deluser` permet de supprimer un compte utilisateur :
+
+[source,shell]
+----
+sudo deluser nom_utilisateur
+----
+
+Options importantes :
+* `--remove-home` : supprime également le répertoire personnel
+* `--remove-all-files` : supprime tous les fichiers dont l'utilisateur est propriétaire
+
+=== Gestion des groupes
+
+Un groupe constitue un ensemble d'utilisateurs partageant certains droits d'accès. Les groupes facilitent la gestion collective des permissions.
+
+*Opérations fondamentales sur les groupes*
+
+* Création : `sudo addgroup nom_groupe`
+* Suppression : `sudo delgroup nom_groupe` ou `sudo deluser --group nom_groupe`
+* Ajout d'un utilisateur : `sudo adduser utilisateur groupe`
+* Retrait d'un utilisateur : `sudo deluser utilisateur groupe`
+
+Les groupes sont répertoriés dans le fichier `/etc/group`.
+
+=== Système de permissions
+
+Le système de permissions Linux permet un contrôle précis des accès aux fichiers et répertoires.
+
+*Structure des permissions*
+
+L'affichage détaillé (`ls -l`) révèle la structure des permissions :
+
+[source,shell]
+----
+drwxr-xr-x  4 utilisateur groupe   4096 févr. 15 00:33 Images
+-rw-r--r--  1 utilisateur groupe   2406 févr. 15 00:34 lettre.txt
+----
+
+Cette notation se décompose en :
+* Premier caractère : type d'élément (`d` pour directory, `-` pour fichier régulier)
+* Neuf caractères suivants : permissions organisées en trois triades
+
+*Signification des permissions*
+
+Trois types de permissions existent :
+* `r` (read) : lecture
+* `w` (write) : écriture
+* `x` (execute) : exécution
+
+Ces permissions s'appliquent différemment selon qu'il s'agit d'un fichier ou d'un répertoire :
+
+Pour un fichier :
+* `r` : permet d'afficher le contenu
+* `w` : permet de modifier le contenu
+* `x` : permet d'exécuter le fichier comme un programme
+
+Pour un répertoire :
+* `r` : permet de lister le contenu (`ls`)
+* `w` : permet d'ajouter ou supprimer des éléments
+* `x` : permet d'accéder au répertoire (`cd`)
+
+*Organisation des permissions*
+
+Les neuf caractères de permissions se divisent en trois triades :
+1. Permissions pour le propriétaire
+2. Permissions pour le groupe propriétaire
+3. Permissions pour tous les autres utilisateurs
+
+*Notation octale des permissions*
+
+Les permissions peuvent également s'exprimer sous forme numérique :
+* `r` = 4
+* `w` = 2
+* `x` = 1
+
+Chaque triade est convertie en additionnant les valeurs des permissions actives.
+Exemple : `rwxr-xr-x` = 755 (4+2+1, 4+0+1, 4+0+1)
+
+*Modification des permissions*
+
+La commande `chmod` (change mode) permet de modifier les permissions :
+
+Notation symbolique :
+[source,shell]
+----
+chmod u=rwx,g=rx,o=rx fichier.txt
+----
+
+Notation octale :
+[source,shell]
+----
+chmod 755 fichier.txt
+----
+
+=== Modification de propriété
+
+La propriété des fichiers et répertoires peut être transférée :
+
+* Changer le propriétaire : `chown nouvel_utilisateur fichier.txt`
+* Changer le groupe propriétaire : `chgrp nouveau_groupe fichier.txt`
+
+== Privilèges administratifs et gestion des processus
+
+=== Le superutilisateur
+
+Dans l'environnement Linux, l'utilisateur `root` dispose de privilèges étendus lui permettant d'effectuer toutes les opérations système sans restriction. Ce compte administrateur, également appelé superutilisateur, doit être utilisé avec circonspection en raison des risques inhérents à ses prérogatives élevées.
+
+=== Élévation temporaire de privilèges
+
+Pour exécuter des commandes nécessitant des droits administratifs sans se connecter directement en tant que `root`, la commande `sudo` (Superuser Do) permet une élévation temporaire de privilèges :
+
+[source,shell]
+----
+sudo commande
+----
+
+L'accès à cette fonctionnalité est restreint aux utilisateurs membres du groupe `sudo`, également appelés "sudoers".
+
+=== Changement d'identité
+
+La commande `su` (Switch User) permet d'adopter l'identité d'un autre utilisateur :
+
+* `su` sans argument : devient superutilisateur (nécessite le mot de passe de root)
+* `su nom_utilisateur` : devient l'utilisateur spécifié (nécessite son mot de passe)
+
+Lorsqu'on est connecté en tant que superutilisateur, l'invite de commande est modifiée :
+
+[source,shell]
+----
+root@machine:/home/utilisateur#
+----
+
+Le symbole terminal `#` remplace le `$` habituel, signalant visuellement les privilèges étendus de la session.
+
+=== Supervision des processus
+
+La commande `top` affiche en temps réel les processus en cours d'exécution, ordonnés selon leur consommation de ressources. Cette interface présente :
+
+* L'identifiant unique de chaque processus (PID)
+* Le propriétaire du processus
+* La consommation CPU et mémoire
+* Le temps d'exécution
+* La commande associée
+
+Pour terminer un processus, deux méthodes sont disponibles :
+
+1. Via la commande `kill` suivie du PID : `kill 1234`
+2. Directement dans l'interface de `top` : appuyer sur `k`, entrer le PID, puis confirmer
+
+== Automatisation par scripts
+
+=== Introduction aux scripts shell
+
+Les scripts shell constituent un moyen puissant d'automatiser des séquences d'opérations sous Linux. Un script est essentiellement un fichier texte contenant une série de commandes qui s'exécutent séquentiellement.
+
+Voici un exemple élémentaire de script shell :
+
+[source,bash]
+----
+#!/bin/bash
+echo "Ceci est un script shell de démonstration."
+echo "Pour le rendre exécutable, utilisez : chmod u+x nom_du_script.sh"
+echo "Pour l'exécuter, utilisez : ./nom_du_script.sh"
+----
+
+La première ligne, appelée "shebang", indique quel interpréteur doit être utilisé pour exécuter le script.
+
+=== Cas pratique : configuration d'un système familial
+
+Considérons un scénario pratique : la configuration d'un système Linux pour une famille comportant des parents et leurs enfants.
+
+Objectifs du script :
+
+1. Créer un compte utilisateur pour chaque membre de la famille
+2. Ajouter dans chaque répertoire personnel les dossiers `Travail` et `Bazar`
+3. Créer un répertoire partagé accessible en lecture/écriture par tous les membres de la famille
+4. Créer un répertoire partagé exclusivement pour les parents
+5. Créer un répertoire partagé pour les enfants
+6. Configurer un compte invité avec des accès restreints
+
+Ce cas pratique permet d'appliquer les connaissances acquises en matière de :
+* Gestion des utilisateurs et groupes
+* Création de répertoires
+* Configuration des permissions
+* Automatisation des tâches répétitives
+
+== Installation de logiciels
+
+=== Concepts fondamentaux
+
+Dans l'environnement Linux, l'installation de logiciels repose sur un principe essentiel : "tout est fichier". Un programme n'est rien d'autre qu'un ensemble de fichiers correctement positionnés dans l'arborescence du système, avec les permissions appropriées.
+
+Deux approches principales existent pour l'installation de logiciels :
+
+1. Installation de programmes compilés
+2. Installation via un gestionnaire de paquets
+
+=== Installation manuelle de programmes compilés
+
+Cette méthode consiste à récupérer directement les fichiers binaires (précompilés) d'un logiciel, puis à les placer dans des emplacements accessibles du système.
+
+Procédure illustrative pour l'installation de MongoDB :
+
+1. Téléchargement de l'archive :
++
+[source,shell]
+----
+wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1604-3.6.2.tgz
+----
+
+2. Extraction des fichiers :
++
+[source,shell]
+----
+tar -zxf mongodb-linux-x86_64-ubuntu1604-3.6.2.tgz
+----
+
+3. Déplacement vers un emplacement approprié :
++
+[source,shell]
+----
+sudo mv mongodb-linux-x86_64-ubuntu1604-3.6.2 /opt/mongo
+----
+
+4. Création des répertoires de données requis :
++
+[source,shell]
+----
+sudo mkdir -p /data/db
+----
+
+5. Ajout du chemin des exécutables à la variable PATH :
++
+[source,shell]
+----
+PATH=$PATH:/opt/mongo/bin && export PATH
+----
+
+[NOTE]
+====
+La variable d'environnement PATH contient la liste des répertoires où le système recherche les exécutables lorsqu'une commande est invoquée. L'ajout d'un répertoire à PATH permet d'exécuter les programmes qu'il contient sans spécifier leur chemin complet.
+====
+
+=== Installation via gestionnaires de paquets
+
+Les gestionnaires de paquets simplifient considérablement l'installation et la maintenance des logiciels en gérant automatiquement les dépendances et les configurations.
+
+Chaque famille de distributions Linux utilise son propre système de paquets :
+
+* Debian/Ubuntu : APT avec paquets .deb
+* Red Hat/Fedora : YUM/DNF avec paquets .rpm
+* Arch Linux : Pacman
+* SUSE : Zypper
+
+Pour les distributions basées sur Debian (comme Ubuntu), le gestionnaire APT offre une interface cohérente :
+
+1. Mise à jour de la base de données des paquets :
++
+[source,shell]
+----
+sudo apt-get update
+----
+
+2. Recherche d'un paquet :
++
+[source,shell]
+----
+apt-cache search terme_recherche
+----
+
+3. Installation d'un paquet :
++
+[source,shell]
+----
+sudo apt-get install nom_paquet
+----
+
+4. Suppression d'un paquet :
++
+[source,shell]
+----
+sudo apt-get remove nom_paquet         # Supprime le paquet mais conserve la configuration
+sudo apt-get purge nom_paquet          # Supprime le paquet et sa configuration
+sudo apt-get autoremove --purge        # Supprime le paquet, sa configuration et ses dépendances inutilisées
+----
+
+5. Mise à jour de tous les paquets installés :
++
+[source,shell]
+----
+sudo apt-get upgrade
+----
+
+== Gestion avancée des systèmes de fichiers
+
+=== Montage de périphériques
+
+Dans la philosophie Linux, les périphériques de stockage sont représentés par des fichiers spéciaux situés dans le répertoire `/dev`. Pour accéder au contenu d'un périphérique, il est nécessaire de le "monter" sur un point de montage (un répertoire du système de fichiers).
+
+Procédure de montage manuel d'une clé USB :
+
+1. Identification du périphérique dans `/dev` (généralement `/dev/sdXY` où X est une lettre et Y un chiffre)
+2. Création d'un point de montage :
++
+[source,shell]
+----
+sudo mkdir /media/cle_usb
+----
+
+3. Montage du périphérique :
++
+[source,shell]
+----
+sudo mount /dev/sdXY /media/cle_usb
+----
+
+4. Le contenu du périphérique est désormais accessible via le répertoire `/media/cle_usb`
+
+[NOTE]
+====
+Les systèmes modernes effectuent généralement un montage automatique des périphériques amovibles. La procédure manuelle reste cependant utile dans certains cas particuliers ou pour les systèmes sans environnement graphique.
+====
+
+=== Partitionnement et installation de système
+
+La structuration de l'espace disque en partitions distinctes permet une organisation optimale des données et facilite la maintenance du système.
+
+Lors de l'installation d'un système Linux, il est recommandé de créer plusieurs partitions avec des points de montage spécifiques :
+
+* Une partition pour `/` (racine) contenant les fichiers système
+* Une partition pour `/home` contenant les données des utilisateurs
+* Une partition de swap servant de mémoire virtuelle
+
+Cette séparation présente plusieurs avantages :
+
+1. Isolation des données utilisateurs des fichiers système
+2. Possibilité de réinstaller le système d'exploitation sans affecter les données personnelles
+3. Optimisation des performances selon les caractéristiques de chaque partition
+
+Procédure de mise à niveau d'un système tout en préservant les données utilisateurs :
+
+1. Lors de la réinstallation, sélectionner le partitionnement manuel
+2. Identifier la partition racine existante et la marquer pour formatage
+3. Spécifier la partition `/home` existante comme point de montage `/home` sans la formater
+4. Procéder à l'installation
+
+Cette approche permet de mettre à jour le système d'exploitation tout en conservant intactes les données et configurations personnelles des utilisateurs.

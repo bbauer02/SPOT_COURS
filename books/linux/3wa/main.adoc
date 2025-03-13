@@ -1,0 +1,25 @@
+:_use_local_application_attributes:
+:_book:
+:_user_show_correction: 0
+:_show_correction: 0
+[[reseau_3wa]]
+= Initiation Linux - 3WA
+include::../../../run_app.adoc[]
+
+:_chapter_folder_path: chapters/linux/introduction
+include::{_add_chapter}[]
+
+:_chapter_folder_path: chapters/linux/distribution
+include::{_add_chapter}[]
+
+:_chapter_folder_path: chapters/linux/bureau
+include::{_add_chapter}[]
+
+:_chapter_folder_path: chapters/linux/installation
+include::{_add_chapter}[]
+
+:_chapter_folder_path: chapters/linux/premiers-pas
+include::{_add_chapter}[]
+
+:_chapter_folder_path: chapters/linux/cli-linux
+include::{_add_chapter}[]
