@@ -25,3 +25,4 @@
 // ATTENTION,il ne doit y avoir aucune ligne vide ni avant ni après cette ligne.
 :_bloc_skill_label2: pass:q[*Savoir-faire*]
 :_bloc_skill_label3: pass:q[*Savoirs associés*]
+:_user_pdf_theme_filename: default-theme.yml

@@ -1,15 +1,41 @@
 :_use_local_application_attributes:
 :_book:
-:_user_show_correction: 0
-:_show_correction: 0
 [[reseau_3wa]]
 = Réseau - 3WA
 include::../../../run_app.adoc[]
 
-:_chapter_folder_path: chapters/reseau/02_principes_adressage_ip
+:_show_correction: 0
+
+
+:_chapter_folder_path: chapters/reseau/principes-bases
 include::{_add_chapter}[]
 
 //ajout du premier exercice du chapitre
+:_exercise_folder_name: QCM1
+include::{_add_exercise}[]
+
+:_chapter_folder_path: chapters/reseau/principes-adressage-ipv4
+include::{_add_chapter}[]
+
 :_exercise_folder_name: exo_adressage_ip
 include::{_add_exercise}[]
+
+
+:_chapter_folder_path: chapters/reseau/routage
+include::{_add_chapter}[]
+
+:_exercise_folder_name: reencapsulation
+include::{_add_exercise}[]
+
+:_exercise_folder_name: table_routage
+include::{_add_exercise}[]
+
+:_chapter_folder_path: chapters/reseau/protocoles-reseau-local
+include::{_add_chapter}[]
+
+:_exercise_folder_name: QCM1
+include::{_add_exercise}[]
+
+:_chapter_folder_path: chapters/reseau/client-server-architecture
+include::{_add_chapter}[]
 
