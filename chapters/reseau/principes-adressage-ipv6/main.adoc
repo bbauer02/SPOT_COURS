@@ -1,0 +1,63 @@
+:_chapter:
+:_author: Bauer Baptiste
+:_duration: 4
+:_version_number: 1.0.0
+:_version_date: 19/02/2025
+[[principes-ip]]
+= Principes de l'adressage IPv6
+include::../../../run_app.adoc[]
+
+== Introduction à IPv6
+
+IPv4, avec un espace d’adressage de *32 bits* (≈4,3 milliards d’adresses), est arrivé à saturation : depuis 2011 au niveau mondial (IANA) et 2019 en Europe (RIPE NCC) plus aucun bloc d’adresses IPv4 n’était disponible.
+
+Cette pénurie d’IPv4 menaçait la croissance d’Internet et a motivé la conception d’*IPv6*. La principale amélioration d’IPv6 est l’augmentation massive de l’espace d’adressage : les adresses passent à 128 bits, soit un nombre d’adresses pratiquement illimité.
+
+En plus de résoudre la pénurie d’adresses, *IPv6* apporte d’autres avantages :
+
+* *Auto-configuration facilitée* : *IPv6* permet aux machines de se configurer automatiquement sans serveur *DHCP* (mécanisme *SLAAC*, voir plus loin).
+
+* **Meilleure sécurité native **: IPv6 intègre nativement `IPsec` pour l’authentification et le chiffrement des communications.
+
+* **Efficacité et performance **: L’en-tête IPv6 est simplifié (taille fixe, moins de champs) ce qui accélère le traitement des paquets par les routeurs. De plus, l’absence de broadcast réduit les trafics inutiles (plus de « _broadcast storms_ »).
+
+* *Multicast et mobilités améliorées* : IPv6 prend en charge plus efficacement le multicast (utilisé à la place du broadcast) et facilite certaines fonctionnalités comme la mobilité ou la qualité de service.
+
+
+[.question]
+****
+*Q{counter:_question})*
+Citez trois avantages d’IPv6 par rapport à IPv4.
+//end question
+****
+
+// ---------- answer
+ifeval::[{_show_correction} == 1]
+[.answer]
+****
+_Correction de Q{_question}_
+
+* Un espace d’adressage beaucoup plus grand en IPv6, éliminant la pénurie d’adresses​
+*  La configuration automatique des postes sans DHCP est possible (SLAAC).
+* Des améliorations au niveau de la sécurité (*IPsec* obligatoire) et un en-tête plus simple entraînant de meilleures performances. On peut aussi mentionner l’absence de NAT grâce à la profusion d’adresses publiques, ce qui rétablit une connectivité de bout-en-bout.
+
+****
+endif::[]
+ifeval::[{_show_correction} == 0]
+[.discreet]#_réponse *{_question}* disponible._#
+endif::[]
+//  end answer ----------
+
+== Adressage IPv6
+=== Structure et notation des adresses IPv6
+
+Une adresse IPv6 est un identifiant unique de *128 bits* attribué à une interface réseau (comme une machine ou un routeur). Elle est généralement représentée en notation hexadécimale : 8 groupes de 4 chiffres hexadécimaux (chaque groupe représentant 16 bits) séparés par des deux-points (:).
+
+Par exemple :
+
+[source,bash]
+
+----
+2001:0DB8:AC10:FE01:0000:0000:0000:0001
+----
+

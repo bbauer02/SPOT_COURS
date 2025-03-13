@@ -1,13 +1,12 @@
 :_chapter:
-
-[[protocoles-reseau-local]]
-= Protocoles mise en œuvre dans un réseau local
 :_author: Bauer Baptiste
 :_duration: 3 heures
 :_version_number: 1.0.0
 :_version_date: 20/01/2025
 :_show_correction: 0
-:_show_teacher: 1
+:_show_teacher: 0
+[[protocoles-reseau-local]]
+= Protocoles mise en œuvre dans un réseau local
 include::../../../run_app.adoc[]
 
 == Préambule
