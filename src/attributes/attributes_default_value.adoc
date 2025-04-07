@@ -183,7 +183,7 @@
 //
 // Valeur par défaut : 1
 // ----------------------------------------------------------------------------
-:_user_show_correction: 1
+:_user_show_correction: 0
 //
 // ----------------------------------------------------------------------------
 // Affichage des notes de version (à la condition d'utiliser le pattern de la documentation)

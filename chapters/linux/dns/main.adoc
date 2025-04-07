@@ -1,0 +1,193 @@
+:_chapter:
+:_author: Bauer Baptiste
+:_duration: 4
+:_version_number: 1.0.0
+:_version_date: 20/01/2025
+[[dns-linux]]
+= Configuration détaillée de Bind9 pour deux URL spécifiques sur Ubuntu 24.04
+include::../../../run_app.adoc[]
+
+
+[.skill]
+****
+{_bloc_skill_label}
+
+* [ ] Installer *Bind9* sur _Ubuntu 24.04_.
+* [ ] Configurer *Bind9* pour gérer deux noms de domaine spécifiques :
+** projet1.symfony.3wa
+** projet2.symfony.3wa
+
+//end skill
+****
+
+== Introduction au DNS
+
+=== Définition du DNS
+Le DNS (Domain Name System) est un système distribué permettant de traduire des noms de domaines compréhensibles par les humains (ex. : www.exemple.com) en adresses IP numériques (ex. : 192.168.1.10). Il joue un rôle crucial pour la navigation sur Internet, facilitant l'accès aux ressources en ligne sans que les utilisateurs aient à mémoriser des adresses numériques complexes.
+
+=== Fonctionnement général du DNS
+Lorsqu'un utilisateur tape une URL dans un navigateur web :
+
+. Le navigateur interroge un serveur DNS configuré sur le réseau local ou fourni par le fournisseur d'accès internet.
+. Ce serveur DNS vérifie s'il possède déjà en cache la correspondance URL/IP.
+. Si la correspondance n'existe pas localement, il contacte les serveurs DNS racine pour trouver l'autorité compétente sur le domaine demandé.
+. Le serveur d'autorité répond ensuite avec l'adresse IP associée au domaine demandé.
+. Enfin, l'adresse IP est retournée au navigateur, permettant la connexion au serveur web correspondant.
+
+=== Importance du DNS
+
+Facilite la mémorisation des adresses web
+
+Centralise la gestion des noms de domaines
+
+Permet une gestion simplifiée des changements d’adresses IP
+
+== Objectifs
+
+Installer le serveur DNS Bind9.
+
+Configurer précisément deux domaines locaux :
+
+** projet1.symfony.3wa
+** projet2.legacy.3wa
+
+== Pré-requis
+
+Système Ubuntu Server 24.04 opérationnel
+
+Accès administrateur (root ou sudo)
+
+== Étape 1 : Installation et vérification initiale
+
+=== 1.1 Installation du paquet Bind9
+
+[source,bash]
+
+sudo apt update
+sudo apt install -y bind9
+
+==== Explication détaillée
+
+apt update : Actualise la liste des paquets disponibles.
+
+apt install bind9 : Installe le serveur DNS Bind9.
+
+=== 1.2 Vérification du service Bind9
+
+[source,bash]
+
+sudo systemctl status bind9
+
+==== Explication détaillée
+
+Vérifie l'état du service Bind9, assurant qu'il est actif et configuré pour démarrer automatiquement.
+
+== Étape 2 : Configuration des zones DNS
+
+=== 2.1 Modifier la configuration locale des zones Bind9
+
+Éditez le fichier local :
+
+[source,bash]
+
+sudo nano /etc/bind/named.conf.local
+
+Ajoutez les entrées suivantes :
+
+[source,bind]
+
+zone "projet1.symfony.3wa" {
+type master;
+file "/etc/bind/db.projet1.symfony.3wa";
+};
+
+zone "projet2.legacy.3wa" {
+type master;
+file "/etc/bind/db.projet2.legacy.3wa";
+};
+
+==== Explication détaillée
+
+Chaque entrée définit une zone DNS dont ce serveur est responsable (maître).
+
+== Étape 3 : Création détaillée des fichiers de zone DNS
+
+=== 3.1 Configuration pour projet1.symfony.3wa
+
+[source,bash]
+
+sudo cp /etc/bind/db.local /etc/bind/db.projet1.symfony.3wa
+sudo nano /etc/bind/db.projet1.symfony.3wa
+
+[source,bind]
+
+;
+; Zone DNS pour projet1.symfony.3wa
+;
+$TTL    604800
+@       IN      SOA     ns.projet1.symfony.3wa. root.projet1.symfony.3wa. (
+1          ; Serial
+604800     ; Refresh
+86400      ; Retry
+2419200    ; Expire
+604800 )   ; TTL négatif
+;
+@       IN      NS      ns.projet1.symfony.3wa.
+@       IN      A       192.168.1.10
+ns      IN      A       192.168.1.10
+www     IN      A       192.168.1.10
+
+=== 3.2 Configuration pour projet2.legacy.3wa
+
+[source,bash]
+
+sudo cp /etc/bind/db.local /etc/bind/db.projet2.legacy.3wa
+sudo nano /etc/bind/db.projet2.legacy.3wa
+
+[source,bind]
+
+;
+; Zone DNS pour projet2.legacy.3wa
+;
+$TTL    604800
+@       IN      SOA     ns.projet2.legacy.3wa. root.projet2.legacy.3wa. (
+1          ; Serial
+604800     ; Refresh
+86400      ; Retry
+2419200    ; Expire
+604800 )   ; TTL négatif
+;
+@       IN      NS      ns.projet2.legacy.3wa.
+@       IN      A       192.168.1.10
+ns      IN      A       192.168.1.10
+www     IN      A       192.168.1.10
+
+== Étape 4 : Vérification finale
+
+=== 4.1 Vérification de Bind9
+
+[source,bash]
+
+sudo named-checkconf
+sudo named-checkzone projet1.symfony.3wa /etc/bind/db.projet1.symfony.3wa
+sudo named-checkzone projet2.legacy.3wa /etc/bind/db.projet2.legacy.3wa
+
+=== 4.2 Appliquer les modifications
+
+[source,bash]
+
+sudo systemctl restart bind9
+
+=== 4.3 Tests DNS
+
+[source,bash]
+
+dig @localhost projet1.symfony.3wa
+dig @localhost projet2.legacy.3wa
+
+== Livrables finaux attendus
+
+Captures ou logs des résultats des tests DNS.
+
+Rapport détaillé des configurations appliquées.
+

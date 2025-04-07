@@ -3,23 +3,33 @@
 :_user_show_correction: 0
 :_show_correction: 0
 [[reseau_3wa]]
-= Initiation Linux - 3WA
+= Serveur DNS - 3WA
 include::../../../run_app.adoc[]
 
-:_chapter_folder_path: chapters/linux/introduction
-include::{_add_chapter}[]
 
-:_chapter_folder_path: chapters/linux/distribution
-include::{_add_chapter}[]
+// :_chapter_folder_path: chapters/linux/introduction
+// include::{_add_chapter}[]
 
-:_chapter_folder_path: chapters/linux/bureau
-include::{_add_chapter}[]
+// :_chapter_folder_path: chapters/linux/distribution
+// include::{_add_chapter}[]
 
-:_chapter_folder_path: chapters/linux/installation
-include::{_add_chapter}[]
+// :_chapter_folder_path: chapters/linux/bureau
+// include::{_add_chapter}[]
 
-:_chapter_folder_path: chapters/linux/premiers-pas
-include::{_add_chapter}[]
+// :_chapter_folder_path: chapters/linux/installation
+// include::{_add_chapter}[]
 
-:_chapter_folder_path: chapters/linux/cli-linux
+// :_chapter_folder_path: chapters/linux/premiers-pas
+// include::{_add_chapter}[]
+
+// :_chapter_folder_path: chapters/linux/cli-linux
+// include::{_add_chapter}[]
+
+
+
+
+// :_chapter_folder_path: chapters/linux/lamp
+// include::{_add_chapter}[]
+
+:_chapter_folder_path: chapters/linux/dns
 include::{_add_chapter}[]
