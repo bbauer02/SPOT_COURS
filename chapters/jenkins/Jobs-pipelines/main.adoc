@@ -1,0 +1,797 @@
+:_chapter:
+:_author: Bauer Baptiste
+:_duration: 4 heures
+:_version_number: 1.0.0
+:_version_date: 02/09/2025
+[[jobs-pipelines]]
+= Jobs et Pipelines avec JENKINS
+include::../../../run_app.adoc[]
+
+== Etape 1 : Création du dépôt d'application GIT.
+
+Rendez-vous sur le dépôt de l'application https://github.com/bbauer02/jenkins-calculatrice[Calculatrice Jenkins] et cliquez sur "Use this template" pour créer votre propre dépôt à partir de ce template.
+
+image::images/01.png[]
+
+Il faut ensuite installer et configurer GIT localement dans la machine virtuelle.
+
+[source,bash]
+----
+sudo apt update && sudo apt install git -y
+----
+
+image::images/02.png[]
+
+
+Il faut ensuite configurer son identité GIT :
+
+* Cette configuration est utilisée pour les commits :
++
+.Modifier les commandes en fonction de vos informations
+[source,bash]
+----
+git config --global user.name "bbauer02"
+git config --global user.email "bbauer02@gmail.com"
+----
++
+* Vérification de la configuration :
++
+[source,bash]
+----
+git config --list
+----
++
+Ensuite il faut configurer une clé SSH pour pouvoir cloner le dépôt GIT sans avoir à saisir vos identifiants à chaque fois.
++
+[source,bash]
+----
+ssh-keygen -t ed25519 -C "bbauer02@gmail.com"
+----
++
+Démarrer l’agent SSH et ajouter la clé :
++
+[source,bash]
+----
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+----
++
+Afficher la clé publique :
++
+[source,bash]
+----
+cat ~/.ssh/id_ed25519.pub
+----
++
+Copier la *clé publique* et l’ajouter dans les paramètres SSH de votre compte *GitHub*.
++
+* https://github.com/settings/keys
+
+image::images/03.png[]
+
+image::images/04.png[]
+
+Dans un dossier `/home/<utilisateur>/app`, cloner le dépôt GIT de l'application :
+
+[source,bash]
+----
+mkdir -p ~/app/calculatrice-jenkins
+cd ~/app/calculatrice-jenkins
+----
+
+Initialiser le dépôt GIT localement et ajouter le dépôt distant :
+
+[source,bash]
+----
+git init
+git branch -m main
+git config --global init.defaultBranch main
+git remote add origin https://github.com/<votre_compte_github>/jenkins-calculatrice.git
+git pull origin main
+----
+
+[IMPORTANT]
+====
+*Remarque* : Votre nom d'utilisateur _GitHub_ est sensible à la casse.
+====
+
+Parfait ! nous avons maintenant notre serveur distant qui contient Jenkins d'installé ainsi que l'application `calculatirice-jenkins` lié à un dépôt *GITHUB*.
+
+== Etape 2 : Création de l'image Docker de l'application calculatrice-jenkins
+
+Nous allons maintenant créer l'image Docker de l'application `calculatrice-jenkins` et la pousser sur *Docker Hub*.
+
+[.question]
+****
+*Q{counter:_question})*
+Rédiger un `Dockerfile` pour construire l'image Docker.
+//end question
+****
+
+// ---------- answer
+ifeval::[{_show_correction} == 1]
+[.answer]
+****
+_Correction de Q{_question}_
+
+[source, php]
+----
+include::code/Dockerfile-calculatrice[]
+----
+****
+endif::[]
+
+ifeval::[{_show_correction} == 0]
+[.discreet]#_réponse *{_question}* disponible._#
+endif::[]
+//  end answer ----------
+
+[.question]
+****
+*Q{counter:_question})*
+Rédiger un `docker-compose.yaml` : grâce à ce fichier chaque nouvelle version de l'image pourra être montée facilement :   `docker-compose up -d`
+//end question
+****
+
+
+// ---------- answer
+ifeval::[{_show_correction} == 1]
+[.answer]
+****
+_Correction de Q{_question}_
+
+[source, yaml]
+----
+include::code/docker-compose-calculatrice.yaml[]
+----
+
+****
+endif::[]
+ifeval::[{_show_correction} == 0]
+[.discreet]#_réponse *{_question}* disponible._#
+endif::[]
+//  end answer ----------
+
+
+Il faut maintenant push les 2 fichiers sur le dépot GIT distant :
+
+Sur ma machine locale la commande : `git status` me permet de voir les fichiers modifiés.
+
+image::images/05.png[]
+
+Je peux ensuite ajouter les fichiers au commit :
+
+[source,bash]
+----
+git add Dockerfile docker-compose-calculatrice.yaml
+ou
+git add .
+----
+
+Puis je peux faire mon commit :
+[source,bash]
+----
+git commit -m "Ajout du Dockerfile et du docker-compose"
+git push --set-upstream origin main
+----
+
+Maintenant que les fichiers sont dans le dépôt distant, nous allons pouvoir construire l'image Docker depuis notre serveur Jenkins.
+
+image::images/07.png[]
+
+[CAUTION]
+====
+Vérifier que votre dépôt Git est mis à jour sur le site *GitHub*. Vous devriez voir votre nouveau message
+(Ajout du Dockerfile et du docker-compose) (l’horodatage de validation a été mis à jour).
+====
+
+
+
+Pour cela, il faut se connecter en `SSH` sur le serveur Jenkins et faire un `git pull` pour récupérer la dernière version du dépôt GIT.
+
+[source,bash]
+----
+cd /home/jenkins/app/calculatrice-jenkins
+----
+image::images/06.png[]
+
+ensuite :
+
+[source,bash]
+----
+git pull origin main
+----
+
+
+== Etape 3 : Utilisation de Jenkins pour exécuter une version de notre application
+
+=== Configuration de Docker dans le conteneur Jenkins
+L'unité fondamentale de Jenkins est le Job (également connu sous le nom de projet). Vous pouvez créer des
+tâches qui effectuent diverses tâches, notamment les suivantes :
+
+* Récupérer du code à partir d'un référentiel de gestion de code source tel que GitHub, GitLab ….
+* Créer une application à l'aide d'un script ou d'un outil de construction.
+* Créer un package d’une application et l'exécuter sur un serveur
+
+Dans cette partie, nous allons créer un Job Jenkins simple qui récupère la dernière version de votre Calculatrice-jenkins à partir de GitHub et exécute un script de construction. Dans Jenkins, nous pourrons ensuite tester notre application et l'ajouter à un pipeline de développement.
+
+Nous devons donc paramétrer le Socket de Docker pour que Jenkins puisse exécuter des commandes Docker.
+
+
+* Vérifions si le socket est bien monté
++
+[source,bash]
+----
+docker inspect jenkins --format '{{json .HostConfig.Binds}}' | jq .
+----
+* Récupérer le GID du groupe docker (sur l’hôte)
++
+[source,bash]
+----
+getent group docker | cut -d: -f3
+----
+Exemple : `988` pour ma machine
++
+* Vérification/ajustement des droits du socket sur l’hôte (important) :
++
+[source,php]
+----
+ls -l /var/run/docker.sock
+# doit idéalement être: srw-rw---- 1 root docker ... /var/run/docker.sock
+sudo chgrp docker /var/run/docker.sock
+sudo chmod 660 /var/run/docker.sock
+----
++
+* Créer/ajuster le groupe docker dans le conteneur, remplacez XXX par le GID du groupe docker
++
+[source,php]
+----
+# Sur l’hôte : récupérer le GID (ex: 988)
+HOST_DOCKER_GID=$(getent group docker | cut -d: -f3); echo "$HOST_DOCKER_GID"
+
+# Dans le conteneur : aligner le GID du groupe 'docker' sur celui de l’hôte
+docker exec -u root jenkins groupadd -f -g "$HOST_DOCKER_GID" docker || true
+docker exec -u root jenkins groupmod -g "$HOST_DOCKER_GID" docker 2>/dev/null || true
+
+# Ajouter l’utilisateur jenkins au groupe docker
+docker exec -u root jenkins usermod -aG docker jenkins
+----
++
+* Installer le client Docker dans le conteneur Jenkins
++
+Par défaut, l’image `jenkins/jenkins:lts-jdkXX` n’a pas la commande docker. Il faut l'installer.
++
+[NOTE]
+====
+🔍*Docker socket = API REST Unix*
+
+* Le fichier `/var/run/docker.sock` est un socket Unix exposé par le daemon Docker (`dockerd`).
+* Ce socket est en fait une *API REST locale* : par exemple : `curl --unix-socket /var/run/docker.sock http://localhost/containers/json` permet de lister les conteneurs sans docker d'installé.
+
+Donc en théorie : pas besoin du client docker si nous souhaitons appeler l’API directement.
+
+⚡** Mais alors pourquoi installer docker (le client) ?**
+
+* Le binaire docker n’est qu’un client CLI qui parle à ce socket.
+
+* Jenkins ou les jobs peuvent appeler l’API REST directement (plugins spécifiques, scripts en curl, librairies).
+
+*Mais dans la pratique :*
+
+Beaucoup de pipelines Jenkins utilisent des étapes comme `sh 'docker build …'`.
+
+Sans le binaire docker, ces commandes échoueront (_docker: command not found_).
+
+====
++
+[source,php]
+----
+docker exec -u root jenkins bash -lc 'apt-get update && apt-get install -y docker.io && rm -rf /var/lib/apt/lists/*'
+----
++
+* Redémarrer le conteneur Jenkins
++
+[source,php]
+----
+docker restart jenkins
+----
++
+* Vérifier que le client docker fonctionne
++
+[source,php]
+----
+# Vérifier l’appartenance groupe & GID
+docker exec jenkins id jenkins         # doit montrer ... 988(docker) chez toi
+docker exec jenkins getent group docker
+
+# Vérifier les droits vus DANS le conteneur
+docker exec jenkins ls -l /var/run/docker.sock
+# doit être root docker et rw pour le groupe
+----
++
+Nous devons voir docker dans la liste des groupes.
++
+image::images/08.png[]
++
+Testons maintenant la commande docker dans le conteneur Jenkins :
++
+[source,php]
+----
+docker exec jenkins docker version
+----
++
+[NOTE]
+====
+🧠 Pourquoi toutes ces manipulations ?
+
+* Le *noyau* se base sur les *numéros (GID)*, pas les noms.
+
+* Tant que le groupe docker dans le conteneur n’a pas *le même GID que le socket monté* (côté hôte), nous aurons l'erreur :  `permission denied`.
+
+* S’assurer aussi que le socket est bien `root:docker` et `0660` côté hôte.
+====
+
+
+=== Création d'un Webhook GitHub
+
+Un webhook est un mécanisme qui permet à GitHub de prévenir automatiquement une application externe (ici Jenkins) lorsqu’un événement survient dans un dépôt (ex. un push, une pull request, une release…).
+
+👉 Plutôt que Jenkins vérifie toutes les minutes si ton code a changé (polling), GitHub envoie directement une notification HTTP (un message JSON) à Jenkins.
+
+* *Automatisation* : déclencher un job Jenkins dès qu’il y a un commit sur GitHub.
+
+* *Réduction de la charge* : évite à Jenkins d’interroger GitHub en boucle (poll SCM).
+
+* *Rapidité* : la compilation/lancement de tests démarre immédiatement après un git push.
+
+* *Cohérence DevOps* : intègre GitHub (gestion du code) et Jenkins (CI/CD) de façon fluide.
+
+
+Pour créer un webhook dans github, il faut aller dans les paramètres du dépôt (Settings)
+
+
+Puis cliquez sur Webhooks :
+
+image::images/16.png[]
+
+Puis cliquez sur `Add Webhook`
+
+image::images/17.png[]
+
+Remplissez le formulaire comme suit :
+
+image::images/18.png[]
+
+Une fois le webhook créé, nous pourrons brancher ce webhook dans le job Jenkins que nous allons créer.
+Github enverra une notification à Jenkins à chaque fois qu’un push sera effectué sur le dépôt vers l'URL enregistrée dans le webhook.
+
+Pour ma part, il s'agit de : `http://52.47.185.227:8080/github-webhook/`
+
+Créons maintenant une GitHub App pour Jenkins.
+
+=== Création d'un GitHub App
+
+Une *GitHub App* est une application déclarée dans GitHub, qui peut interagir avec les dépôts d’un utilisateur ou d’une organisation.
+
+Elle utilise une authentification par App ID et clé privée, au lieu d’un mot de passe ou d’un token personnel.
+
+*Pourquoi créer une GitHub App pour Jenkins ?*
+
+* *Sécurité renforcée* : au lieu de donner ton compte GitHub à Jenkins, tu crées une App qui a ses propres identifiants.
+
+* *Permissions fines* : tu choisis exactement ce que l’App peut faire (ex. lire le code, gérer les PR, etc.).
+
+* *Scalabilité* : une App peut être installée sur plusieurs dépôts ou organisations.
+
+* *Bonne pratique DevOps* : séparation claire entre ton compte GitHub personnel et l’accès machine de Jenkins.
+
+
+* Allez dans les settings de GitHub ( clique sur votre photo de profil en haut à gauche) → `Developer settings` → `GitHub Apps` → `New GitHub App`
+
+image::images/19.png[]
+
+* Cliquez sur `New GitHub App` et remplissez le formulaire comme suit :
+
+image::images/20.png[]
+
+
+image::images/21.png[]
+
+Ensuite dans les permissions, il faut configurer les permissions comme suit :
+
+Laisser les autres permissions par défaut.
+
+image::images/22.png[]
+image::images/23.png[]
+image::images/24.png[]
+
+Puis, nous allons souscrire à des événements :
+
+image::images/25.png[]
+
+Avant de finaliser, cochez la case "Only allow this GitHub App to be installed on private repositories" si votre dépôt est privé.
+
+image::images/26.png[]
+
+image::images/27.png[]
+
+Après avoir créé l’application, vous serez redirigé vers la page de l’application. Vous devez générer une clé privée pour l’application.
+
+La clé privé sera utilisée par Jenkins pour s’authentifier auprès de GitHub.
+Toutefois, le format de la clé est au format : *PKCS#1* (`BEGIN RSA PRIVATE KEY`) alors que le plugin Jenkin exige le format *PKCS#8* (`BEGIN PRIVATE KEY`).
+
+Voici une solution rapide pour convertir la clé au format *PKCS#8* :
+
+* Copier le contenu de la clé privée générée par GitHub dans un fichier `private_key_jenkins.pem` sur votre machine Ubuntu.
+
+[source,bash]
+.Exemple de contenu de la clé .PEM à copier
+----
+-----BEGIN RSA PRIVATE KEY-----
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+-----END RSA PRIVATE KEY-----
+----
+
+Allez dans le dossier `.ssh` de votre machine jenkins (ici `/home/jenkins/.ssh`) et créez le fichier `private_key_jenkins.pem` avec le contenu copié précédemment.
+
+Puis convertissez la clé au format PKCS#8 avec la commande suivante :
+
+[source,bash]
+----
+sudo openssl pkcs8 -topk8 -inform PEM -outform PEM   -in VOTRE_FICHIER_FORMAT_PKCS1.pem -out FICHIER_FORMAT_PKCS8.pem -nocrypt
+----
+
+Affichez le contenu du fichier `FICHIER_FORMAT_PKCS8.pem` et copiez-le, nous en aurons besoin pour Jenkins.
+
+Commande :
+[source,bash]
+----
+cat FICHIER_FORMAT_PKCS8.pem
+----
+
+Vous pouvez supprimer les fichiers `FICHIER_FORMAT_PKCS8.pem` et `VOTRE_FICHIER_FORMAT_PKCS1.pem` ensuite (Si vous avez bien copié le contenu de la clé privée au format PKCS#8 sur votre machine Windows).
+
+=== Installer l'application Github dans le dépôt
+
+Il faut maintenant installer l’application GitHub que nous venons de créer dans le dépôt `calculatrice-jenkins`.
+
+* Allez dans la page de votre GitHub App et cliquez sur `Install App` dans le menu de gauche.
+* Cliquez sur `Install` à côté de votre compte utilisateur (ou organisation si vous avez créé l’application dans une organisation).
+* Sélectionnez le dépôt `calculatrice-jenkins` et cliquez sur `Install`.
+
+
+=== Création d'un Credentials dans Jenkins
+
+Il faut maintenant configurer Jenkins pour qu'il puisse utiliser cette GitHub App afin d'accéder au dépôt et capter les événements du webhook.
+
+* Cliquez sur l'*engrenage* en haut à gauche pour accéder à la configuration de *Jenkins* puis sur *Credentials*
+
+image::images/28.png[]
+
+Cliquez sur `System` :
+
+image::images/29.png[]
+
+Puis sur Identifiants Globaux (illimité)
+
+image::images/30.png[]
+
+Add Credentials :
+
+image::images/31.png[]
+
+Sélectionnez `GitHub App` dans le menu déroulant `Kind` ou `Type` en français.
+
+
+image::images/32.png[]
+
+* *ID* : `Jenkins-GitHub-App` (ou un autre nom de votre choix)
+* *Description* : `GitHub App pour Jenkins`
+* *App ID* : Renseignez l'App ID de votre GitHub App (disponible dans la page de votre GitHub App)
+* Dans `Avancé` n'oubliez pas de spécifier votre nom de dépôt et répertoire.
+* *Private Key* : Collez le contenu de votre clé privée au format PKCS#8 (générée précédemment)
+
+Vous pouvez tester la connexion dans la partie "Test Connection".
+Saisissez le nom de votre compte Github (bbauer02 dans mon cas) et cliquez sur `Test Connection`.
+
+image::images/33.png[]
+
+=== Création du Job (projet) Jenkins
+
+Un *Job Jenkins* (aussi appelé Projet) est l’unité de travail fondamentale dans Jenkins.
+C’est une tâche automatisée que Jenkins va exécuter : compilation, tests, déploiement, analyse de code, etc.
+
+👉 On peut voir un Job comme une recette que Jenkins suit chaque fois qu’il doit lancer une action.
+
+Cliquer sur le lien `Créer un job` directement en dessous de la page *Bienvenue sur Jenkins!*.
+Vous pouvez également cliquer sur `Nouveau Item` dans le menu de gauche.
+
+🔹 Pourquoi utiliser des Jobs ?
+
+* *Automatiser* les tâches répétitives du cycle de vie logiciel.
+* *Standardiser* les étapes (même script pour toute l’équipe).
+* *Gagner du temps* (plus besoin d’exécuter manuellement).
+* *Réduire les erreurs humaines*.
+* *Intégrer le DevOps* : Jenkins sert de lien entre le code source, les tests, le déploiement.
+
+Il existe plusieurs types de Jobs Jenkins :
+
+* *Freestyle Project* : le type de job le plus simple et flexible. Permet d’exécuter des scripts shell, des commandes Windows, etc. Pour le configurer, une interface graphique est disponible.
+
+* *Pipeline* : permet de définir des workflows complexes en utilisant un langage de script (Groovy). Idéal pour les processus CI/CD avancés. La configuration se fait via un fichier `Jenkinsfile` versionné avec le code.
+
+* *Multibranch Pipeline* : similaire au Pipeline, mais permet de gérer automatiquement plusieurs branches d’un dépôt Git. Chaque branche peut avoir son propre `Jenkinsfile`. Jenkins détecte automatiquement les branches d’un repo Git contenant un `Jenkinsfile`. Utile pour tester chaque branche.
+
+* *Folder* : permet de regrouper plusieurs jobs dans un dossier pour une meilleure organisation.
+
+Concrètement, dans le cadre de notre application `calculatrice-jenkins`, nous allons créer un *Freestyle Project* pour récupérer le code source depuis GitHub et exécuter des commandes Docker pour construire et lancer l'application.
+
+
+image::images/09.png[]
+
+Dans le champ `Saisissez un nom` renseigner le nom `BuildCalculatriceJob`.
+
+image::images/10.png[]
+
+Cliquer sur l'onglet `General`, ajouter une description pour votre `Job`. Par exemple, "Mon premier Job
+Jenkins."
+
+image::images/11.png[]
+
+Cliquer sur l'onglet `Gestion de code Source` et cliquer sur le bouton radio `Git`. Dans le champ URL du
+référentiel, ajouter votre lien de référentiel GitHub pour l'exemple d'application en prenant soin de saisir
+votre nom d'utilisateur correctement, car sensible à la casse.
+
+
+
+image::images/12.png[]
+
+Cliquez maintenant sur "Etapes du build" afin d'ajouter un script bash à exécuter.
+
+Si votre script se trouve à la racine de votre code source présent dans le dépôt Git, le système Jenkins sera alors capable de le retrouver.
+
+Vous pouvez alors appeler le script par la commande :
+
+[source,bash]
+----
+bash ./calculatrice-app.sh
+----
+
+
+
+image::images/13.png[]
+
+
+Appliquez les modifications et sauvegardez.
+
+image::images/14.png[]
+
+Sur le côté gauche, cliquer sur Lancer un build pour démarrer le travail. Jenkins va télécharger votre dépôt Git et exécuter la command build `bash ./calculatrice-app.sh`. Votre construction devrait réussir parce que vous n'avez rien changé dans le code.
+
+Dans la section Historique des builds, cliquer sur votre numéro de build qui devrait être le `#2` sauf si vous avez créé l'application plusieurs fois.
+
+image::images/15.png[]
+
+Cliquez sur le numéro du build (ex. #2) pour voir les détails du build.
+
+image::images/34.png[]
+
+Cliquez sur `Console Output` pour voir les logs du build.
+
+Nous retrouvons ici les étapes d'exécution du script bash.
+
+* La récupération du code source depuis GitHub.
+* L'exécution des commandes de notre script bash.
+
+image::images/35.png[]
+
+
+=== Pipelines Jenkins
+
+Bien que vous puissiez actuellement exécuter les jobs en cliquant simplement sur le bouton `Build Now` pour le `BuildAppJob`, les projets de développement de logiciels sont généralement beaucoup plus complexes.
+
+Ces projets peuvent bénéficier grandement de l'automatisation des builds pour l'intégration continue des changements de code et la création continue de builds de développement prêts à être déployés. C'est l'essence même du `CI/CD`.
+
+Un *pipeline* peut être automatisé pour s'exécuter sur la base d'une variété de *déclencheurs*, y compris *périodiquement*, sur la base d'un sondage *GitHub* pour les changements, ou à partir d'un script exécuté à distance.
+
+Cependant, dans cette partie, vous allez scripter un pipeline dans Jenkins pour exécuter l'application chaque fois que vous cliquez sur le bouton Build Now du pipeline.
+
+*Tâche 1 : Modification du script bash*
+
+Nous allons modifier le script bash `calculatrice-app.sh` pour qu'il construise et exécute l'application dans un conteneur Docker.
+Nous avons déja dans le dépôt GIT le fichier `docker-compose.yaml` qui nous permettra de lancer l'application.
+
+[source,bash]
+.calculatrice-app.sh
+----
+#!/bin/bash
+
+echo "********************************"
+echo "CONSTRUCTION DE L'APPLICATION SUR LE PORT 3000"
+docker-compose up -d --build
+echo "********************************"
+date
+----
+
+Il faut maintenant `push` le script modifié sur le dépôt GIT distant.
+
+Puis lancer le build du `BuildCalculatriceJob` pour vérifier que tout fonctionne toujours correctement.
+
+L'application tourne sur le port `3000` de la machine virtuelle Jenkins.
+
+image::images/36.png[]
+
+*Tâche 2 : Création d'un Build qui teste si l'application tourne*
+
+Construire un nouveau Job qui se nommera : `TestCalculatriceJob`.
+
+Ce job aura pour but de tester si l'application tourne bien sur le port `3000`.
+
+* Aucune gestion de code source.
+* Cliquer sur l'onglet *Triggers* et cocher la case *Construire après le build sur d’autre projets*. Pour les Projects à surveiller, renseigner le nom `BuildCalculatriceJob`.
+
+image::images/38.png[]
+
+* Cliquez sur l'onglet "Etapes du build" et ajouter une étape "Exécuter un script shell".
++
+Entrer le script suivant. La commande `if` doit être sur une seule ligne, y compris le ; `then`. Cette commande (grep1) va parcourir la sortie retournée par la commande `cURL` pour voir si `Calculatrice d'Addition"` est retourné. Si c'est vrai, le script sort et retourne 0, ce qui signifie qu'il n'y a pas d'erreurs.
+
+[source,bash]
+----
+if curl http://35.180.46.161:3000 | grep "Calculatrice d'Addition"; then
+exit 0
+else
+exit 1
+fi
+----
+
+image::images/39.png[]
+
+
+*Tâche 3 : Création du pipeline Jenkins*
+
+* Cliquer sur le lien Jenkins en haut à gauche, puis sur `Nouveau Item`
+* Dans le champ Saisissez un nom, taper *CalculatricePipeline*.
+* Sélectionner *Pipeline* comme type de tâche.
+* Faire défiler jusqu'en bas et cliquer sur OK.
+
+image::images/37.png[]
+
+
+Voici le script du pipeline que vous devez saisir dans la section Pipeline :
+
+[source,groovy]
+----
+node {
+    stage('Preparation') {
+        catchError(buildResult: 'SUCCESS') {
+            sh 'docker stop calculatrice-app'
+            sh 'docker rm calculatrice-app'
+        }
+    }
+    stage ('Build') {
+        build 'BuildCalculatriceJob'
+    }
+    stage('Results') {
+        build 'TestCalculatriceJob'
+    }
+}
+----
+
+Ce script effectue les opérations suivantes :
+
+* Il crée une construction à un seul noeud par opposition à une configuration distribuée ou multi-noeuds. Les configurations distribuées ou multi-noeuds sont pour des pipelines plus grands que celui que vous construisez dans cet exercice et sont au-delà de la portée de ce cours.
+
+* Dans l'étape de préparation, `CalculatricePipeline` s'assure d'abord que toutes les instances précédentes du conteneur docker `BuildCalculatriceJob` sont arrêtées et supprimées. Mais s'il n'y a pas encore de conteneur en cours d'exécution, vous obtiendrez une erreur. Par conséquent, vous utilisez la fonction `catchError` pour attraper toutes les erreurs et renvoyer une valeur "*SUCCESS*". Cela permettra au pipeline de passer à l'étape suivante.
+
+* Dans l'étape Build, `CalculatricePipeline` va construire votre `BuildCalculatriceJob`.
+* Dans l'étape Results, `CalculatricePipeline` va construire votre `TestCalculatriceJob`.
+* Cliquer sur *Save*, vous êtes retournerez au tableau de bord Jenkins de la tâche `CalculatricePipeline`
+
+
+*Tâche 4 : Exécution du pipeline*
+
+Sur la gauche, cliquer sur Lancer un Build pour exécuter le job `CalculatricePipeline`.
+
+Si vous avez codé votre script Pipeline sans erreur, la vue des étapes devrait afficher trois cases vertes avec le nombre de secondes nécessaires à la construction de chaque étape.
+
+Sinon, cliquer sur Configure à gauche pour revenir à la configuration de `CalculatricePipeline` et vérifier votre script Pipeline.
+
+image::images/40.png[]
+
+*Tâche n°4 : Vérifier la sortie de la console  SamplePipeline*
+
+* Cliquer sur le lien de construction le plus récent, puis cliquer sur `Console Output`. Vous devriez voir un résultat similaire à ce qui suit :
+
+image::images/41.png[]
+
+[NOTE]
+====
+Une évolution souhaitable serait également de stocker le script contenant le pipeline directement dans Git. C’est très utile et il suffit de créer un fichier JenkinsFile et de le déposer sur Git pour que Jenkins le charge lors du pipeline.
+====
+
+*Défi* : Créer et utiliser JenkinsFile
+
+* Créer un fichier `Jenkinsfile` à la racine du dépôt GIT `calculatrice-jenkins` avec le contenu suivant :
+
+[source,groovy]
+----
+pipeline {
+    agent any
+    stages {
+        stage('Preparation') {
+            steps {
+                script {
+                    try {
+                        sh 'docker stop calculatrice-app'
+                        sh 'docker rm calculatrice-app'
+                    } catch (Exception e) {
+                        echo "No existing container to stop/remove."
+                    }
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                build job: 'BuildCalculatriceJob'
+            }
+        }
+        stage('Results') {
+            steps {
+                build job: 'TestCalculatriceJob'
+            }
+        }
+    }
+}
+----
+
+Modifier le job `CalculatricePipeline` pour qu'il utilise le `Jenkinsfile` dans la section Pipeline.
+* Dans la section Pipeline, sélectionner `Pipeline script from SCM` dans le menu déroulant *Definition*.
+* Sélectionner `Git` dans le menu déroulant SCM.
+* Dans le champ *Repository URL*, saisir l'URL de votre dépôt GIT.
+* Dans le champ *Credentials*, sélectionner les credentials GitHub App que vous avez créés précédemment.
+* Dans le champ *Branch Specifier*, saisir `*/main` (ou la branche que vous utilisez).
+* Dans le champ *Script Path*, saisir `Jenkinsfile`.
+* Cliquer sur *Save*.
+
+image::images/42.png[]
+
+* Lancer un build du job `CalculatricePipeline` et vérifier que tout fonctionne correctement.
+
+=== Automatisation du Job
+
+Nous allons maintenant automatiser le job `CalculatricePipeline` pour qu'il s'exécute automatiquement à chaque fois qu'un push est effectué sur le dépôt GitHub.
+
+Dans Jenkins, nous allons informer l’application qu’un build de `BuildCalculatriceJob` doit être réalisé à chaque modification du dépôt sur GitHub.
+
+`TestCalculatriceJob`, quant lui, est paramétré pour se déclencher à la suite de chaque Build de BuildAppJob.
+
+* Tâche 1 : Paramétrer `BuildCalculatriceJob` :
+
+Cliquer sur le job `BuildCalculatriceJob` dans le tableau de bord Jenkins.
+Cliquer sur `Configurer` dans le menu de gauche.
+
+image::images/43.png[]
+
+
+Paramétrer le déclencheur sur `BuildCalculatriceJob` en cliquant sur "Triggers" puis en sélectionnant « GitHub hook trigger for GITScm polling »
+
+image::images/44.png[]
+
+Sauvegarder en cliquant sur le bouton « Save » en bas de page « Save »
+
+* Tâche 2 : Vérifier le webhook GitHub
+
+Faire un `git commit` et `git push` sur le dépôt GIT pour déclencher le webhook.
+
+image::images/45.png[]

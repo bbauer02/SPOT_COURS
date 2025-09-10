@@ -1,0 +1,48 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam style strictuml
+
+class Salarie {
+  **+id : int**
+  +nom : string
+  +prenom : string
+  +email : string
+  #poste_id : int
+}
+
+class Poste {
+  **+id : int**
+  +nom : string
+  +coefficient : float
+}
+
+class Salaire {
+  **+id : int**
+  +base : float
+  +bonus : float
+  +prime : float
+}
+
+class Paiement {
+  **+id : int**
+  #salarie_id : int
+  #salaire_id : int
+  +date_versement : date
+  +montant_brut : float
+  +montant_net : float
+}
+
+class TempsTravail {
+  **+id : int**
+  #salarie_id : int
+  +mois : string
+  +heures_travaillees : float
+}
+
+' Relations avec cardinalité logique
+Salarie --> Poste : poste_id
+Paiement --> Salarie : salarie_id
+Paiement --> Salaire : salaire_id
+TempsTravail --> Salarie : salarie_id
+
+@enduml

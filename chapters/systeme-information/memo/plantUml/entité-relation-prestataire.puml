@@ -1,0 +1,46 @@
+@startuml
+skinparam style strictuml
+
+abstract class PersonnePayee {
+  **+id : int**
+  +nom : string
+  +email : string
+}
+
+class Salarie {
+  +poste_id : int
+}
+
+class Prestataire {
+  +siret : string
+  +type_structure : string
+}
+
+class Paiement {
+  **+id : int**
+  +date_versement : date
+  +montant : float
+  #payee_id : int
+  +type : enum {Salarie, Prestataire}
+}
+
+PersonnePayee <|-- Salarie
+PersonnePayee <|-- Prestataire
+Paiement --> PersonnePayee : payee_id
+
+class Poste {
+  **+id : int**
+  +nom : string
+  +coefficient : float
+}
+
+class Salaire {
+  **+id : int**
+  +base : float
+  +prime : float
+}
+
+Salarie --> Poste : poste_id
+Salarie --> Salaire : grille
+
+@enduml

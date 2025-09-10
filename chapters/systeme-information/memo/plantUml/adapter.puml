@@ -1,0 +1,56 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+interface FlightData {
+    +getFlightNumber(): string
+    +getDeparture(): string
+    +getArrival(): string
+    +getPrice(): float
+}
+
+class AirFranceFlightDTO {
+    +code: string
+    +from: string
+    +to: string
+    +cost: float
+}
+
+class AirFranceAdapter {
+    -dto: AirFranceFlightDTO
+    +getFlightNumber(): string
+    +getDeparture(): string
+    +getArrival(): string
+    +getPrice(): float
+}
+
+AirFranceAdapter ..> AirFranceFlightDTO
+AirFranceAdapter ..|> FlightData
+
+class ANAFlightDTO {
+    +flightNo: string
+    +origin: string
+    +destination: string
+    +ticket_price: float
+}
+
+class ANAAdapter {
+    -dto: ANAFlightDTO
+    +getFlightNumber(): string
+    +getDeparture(): string
+    +getArrival(): string
+    +getPrice(): float
+}
+
+ANAAdapter ..> ANAFlightDTO
+ANAAdapter ..|> FlightData
+
+class FlightAggregator {
+    -client: Client
+    +getAllFlights(): FlightData[]
+}
+
+FlightAggregator --> FlightData
+FlightAggregator --> Client
+
+class Client <<external>>
+@enduml

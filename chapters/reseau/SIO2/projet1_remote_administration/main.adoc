@@ -1,10 +1,9 @@
 :_book:
 [[projet1_remote_admin]]
 = Projet1 : Administration à distance et sauvegarde des fichiers de configuration via FTP
-include::../../../run_app.adoc[]
+include::../../../../run_app.adoc[]
 
 == Configuration des équipements du réseau
-
 === Schéma réseau détaillé
 image::images/schema.png[]
 === Serveur REZOLAB configuration

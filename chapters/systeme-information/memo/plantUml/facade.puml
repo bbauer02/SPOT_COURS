@@ -1,0 +1,19 @@
+@startuml
+class FlightService {
+    +create(data): Flight
+    +read(id): Flight
+    +update(id, data): Flight
+    +delete(id): void
+}
+
+class FlightRepository
+class FlightValidator
+class FlightMapper
+class Flight
+
+FlightService --> FlightRepository : délègue à
+FlightService --> FlightValidator : délègue à
+FlightService --> FlightMapper : délègue à
+FlightService --> Flight : retourne
+
+@enduml

@@ -1,15 +1,27 @@
 :_chapter:
 :_author: Bauer Baptiste
 :_duration: 3 heures
-:_version_number: 1.0.0
+:_version_number: 1.0.1
 :_version_date: 20/01/2025
-:_show_correction: 0
-:_show_teacher: 0
+
 [[client-server]]
 = TD : Modèle client-serveur et architectures n-tiers
 include::../../../run_app.adoc[]
+:_show_changelog: 1
+:_show_correction: 1
+:_show_teacher: 1
 
 
+ifeval::[{_show_changelog} == 1]
+*Notes de version*
+
+[.changelog]
+====
+* [.adpm-version-number]#1.0.1# du [.adpm-version-date]#14/04/2025 à 14:04#
+** Correction d'une erreur de saisie dans les adresses IP attribuées au service Marketing : `192.168.100.20` -> `192.168.200.20`
+====
+//end _show_changelog
+endif::[]
 == Préambule
 
 Ce cours a pour objectif de *mettre en place et d’observer le fonctionnement d’une architecture client-serveur* dans un environnement réseau. Il s'appuie sur des concepts théoriques et pratiques pour fournir une compréhension complète des mécanismes impliqués.
@@ -88,7 +100,7 @@ image::images/logo.png[]
 |192.168.200.0/24
 
 |*Adresses attribuées*
-|192.168.200.15 à 192.168.100.20
+|192.168.200.15 à 192.168.200.20
 
 |===
 
