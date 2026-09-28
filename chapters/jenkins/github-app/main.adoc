@@ -1,0 +1,230 @@
+:_chapter:
+:_author: Bauer Baptiste
+:_duration: 2 heures
+:_version_number: 2.0.0
+:_version_date: 28/09/2026
+[[github-app]]
+= Dépôt privé et GitHub App
+include::../../../run_app.adoc[]
+
+== Étape 9 : Dépôt privé et GitHub App (approfondissement)
+
+icon:bullseye[] *Objectif* : que Jenkins puisse cloner un dépôt *privé*, avec des identifiants dédiés et limités, plutôt qu'avec votre compte personnel.
+
+.Prérequis
+* Étape 8 validée : `./check.sh 8` sur l'instance EC2.
+
+icon:lightbulb-o[] *Comprendre*
+
+Jusqu'ici, votre dépôt était public : Jenkins pouvait le cloner sans s'authentifier. En entreprise, le code est presque toujours *privé*. Jenkins a alors besoin d'identifiants. Plusieurs solutions existent :
+
+[cols="1,2,2", options="header"]
+|===
+| Solution | Avantage | Inconvénient
+
+| Votre mot de passe ou un token personnel
+| Simple.
+| Jenkins agit *en votre nom*, avec *tous* vos droits, sur *tous* vos dépôts. Si vous quittez l'équipe, la CI s'arrête.
+
+| Une clé SSH de déploiement
+| Limitée à un dépôt.
+| Une clé par dépôt, pas d'accès à l'API GitHub (statuts de build…).
+
+| Une *GitHub App*
+| Identité « machine » propre, permissions fines, installable sur plusieurs dépôts, jetons de courte durée.
+| Un peu plus longue à configurer.
+|===
+
+Une *GitHub App* est une application déclarée dans GitHub. Elle s'authentifie avec un *App ID* et une *clé privée*, et n'a accès qu'aux dépôts sur lesquels vous l'installez, avec les permissions que vous choisissez.
+
+=== 9.1 Constater le problème
+
+icon:wrench[] *À faire*
+
+. Sur GitHub, rendez votre dépôt privé : *Settings* → *General* → *Danger Zone* → *Change visibility* → *Make private*.
+
+. Dans Jenkins, lancez `CalculatricePipeline`. Le build échoue dès la récupération du code :
++
+----
+ERROR: Error fetching remote repo 'origin'
+... Authentication failed / repository not found
+----
++
+GitHub refuse de donner le code d'un dépôt privé à un visiteur anonyme.
+
+=== 9.2 Créer la GitHub App
+
+icon:wrench[] *À faire*
+
+. Sur GitHub : cliquez sur votre photo de profil → *Settings* → *Developer settings* → *GitHub Apps* → *New GitHub App*.
++
+image::images/19.png[]
+
+. Remplissez le formulaire :
+** *GitHub App name* : un nom de votre choix (il doit être unique sur GitHub, ex. `jenkins-<votre_compte_github>`) ;
+** *Homepage URL* : l'URL de votre Jenkins, `http://<ip_publique>:8080/`.
++
+image::images/20.png[]
+
+. Dans la section *Webhook*, *décochez la case `Active`*.
++
+[WARNING]
+====
+Le webhook du dépôt (étape 8) prévient déjà Jenkins. Si le webhook de l'App restait actif avec la même URL, chaque push serait envoyé *deux fois* à Jenkins. L'App ne sert ici qu'à l'*authentification*.
+====
+
+. Dans *Repository permissions*, donnez l'accès en lecture au contenu du dépôt (*Contents* : _Read-only_) ; les autres permissions restent à leur valeur par défaut :
++
+image::images/22.png[]
+image::images/23.png[]
+image::images/24.png[]
+
+. Dans *Where can this GitHub App be installed?*, choisissez *Only on this account*, puis cliquez sur *Create GitHub App*.
++
+image::images/26.png[]
++
+image::images/27.png[]
+
+. Sur la page de l'App, *notez son App ID*.
+
+=== 9.3 Installer l'App sur votre dépôt
+
+. Sur la page de votre GitHub App, cliquez sur *Install App* dans le menu de gauche, puis sur *Install* à côté de votre compte.
+. Choisissez *Only select repositories*, sélectionnez `jenkins-calculatrice` et validez.
+
+=== 9.4 Générer et convertir la clé privée
+
+. Sur la page de l'App, section *Private keys*, cliquez sur *Generate a private key* : un fichier `.pem` est téléchargé sur votre poste.
+
+. GitHub fournit la clé au format *PKCS#1* (`BEGIN RSA PRIVATE KEY`), alors que Jenkins exige le format *PKCS#8* (`BEGIN PRIVATE KEY`). icon:cloud[] Sur l'instance EC2, créez un fichier temporaire et collez-y le contenu du `.pem` :
++
+[source,bash]
+----
+nano ~/github-app-pkcs1.pem
+----
+
+. icon:cloud[] Convertissez la clé, puis affichez le résultat :
++
+[source,bash]
+----
+openssl pkcs8 -topk8 -inform PEM -outform PEM -nocrypt \
+  -in ~/github-app-pkcs1.pem -out ~/github-app-pkcs8.pem
+cat ~/github-app-pkcs8.pem
+----
++
+icon:check-circle[] Le résultat commence par `-----BEGIN PRIVATE KEY-----`. Copiez l'intégralité du contenu.
+
+=== 9.5 Enregistrer l'identifiant dans Jenkins
+
+. Dans Jenkins : *Administrer Jenkins* → *Credentials* → *System* → *Identifiants globaux (illimité)* → *Add Credentials*.
++
+image::images/28.png[]
++
+image::images/29.png[]
++
+image::images/30.png[]
++
+image::images/31.png[]
+
+. Choisissez le type *GitHub App*, puis renseignez :
+** *ID* : `calculatrice-auth` ;
+** *Description* : `Authentification via GitHub App` ;
+** *App ID* : l'App ID noté précédemment ;
+** *Key* : la clé au format PKCS#8 ;
+** dans *Avancé* : *Owner* = `<votre_compte_github>`, *Repositories* = `jenkins-calculatrice`.
++
+image::images/32.png[]
+
+. Cliquez sur *Test Connection* : un message de succès indique le nombre de dépôts accessibles.
++
+image::images/33.png[]
+
+. icon:cloud[] Supprimez les fichiers temporaires, et le `.pem` téléchargé sur votre poste (ou rangez-le dans un gestionnaire de mots de passe) :
++
+[source,bash]
+----
+rm ~/github-app-pkcs1.pem ~/github-app-pkcs8.pem
+----
++
+[CAUTION]
+====
+Une clé privée ne doit *jamais* être déposée dans un dépôt Git, envoyée par messagerie ou laissée dans un dossier partagé. En cas de fuite, supprimez-la immédiatement dans la page de l'App (*Private keys* → *Delete*).
+====
+
+=== 9.6 Utiliser l'identifiant dans le pipeline
+
+. Dans `CalculatricePipeline` → *Configure* → *Pipeline* → *SCM*, sélectionnez le credential `calculatrice-auth` dans la liste *Credentials* (la capture ci-dessous montre le même champ dans un job free-style) :
++
+image::images/12.png[]
+
+. Sauvez, puis lancez un build : le dépôt privé est cloné, le pipeline est vert.
+
+. icon:desktop[] Poussez une modification : le webhook déclenche toujours le pipeline.
+
+icon:check-circle[] *Vérifier*
+
+icon:cloud[] *Instance EC2* :
+
+[source,bash]
+----
+cd ~/jenkins-calculatrice
+./check.sh 9
+----
+
+[NOTE]
+====
+Le dépôt étant maintenant privé, un `git pull` sur l'instance vous demandera de vous authentifier. Le plus simple est d'ajouter une clé SSH de l'instance à votre compte GitHub (`ssh-keygen -t ed25519`, puis ajout du contenu de `~/.ssh/id_ed25519.pub` sur https://github.com/settings/keys), et de passer le clone en SSH : `git remote set-url origin git@github.com:<votre_compte_github>/jenkins-calculatrice.git`.
+====
+
+icon:times-circle[] *En cas de problème*
+
+[cols="1,2", options="header"]
+|===
+| Symptôme | Cause probable / solution
+
+| `Test Connection` : `Failed to decode private key` ou erreur de format
+| La clé n'est pas au format PKCS#8 : elle doit commencer par `BEGIN PRIVATE KEY`, sans `RSA`.
+
+| `Test Connection` : `Could not find installation`
+| L'App n'est pas installée sur votre compte ou sur ce dépôt (9.3), ou le champ *Owner* est mal saisi.
+
+| Le build échoue toujours à la récupération du code
+| Le credential n'est pas sélectionné dans la configuration *SCM* du pipeline, ou l'App n'a pas la permission *Contents*.
+
+| Deux builds par push
+| Le webhook de la GitHub App est resté actif : décochez *Active* dans la section *Webhook* de l'App.
+|===
+
+[.question]
+****
+*Q{counter:_question})*
+Vous quittez l'équipe et votre compte GitHub est retiré de l'organisation. Que devient la CI si Jenkins utilisait votre token personnel ? Et s'il utilise une GitHub App ?
+//end question
+****
+
+// ---------- answer
+ifeval::[{_show_correction} == 1]
+[.answer]
+****
+_Correction de Q{_question}_
+
+Avec votre token personnel, Jenkins agissait en votre nom : dès que votre compte perd l'accès, tous les builds échouent. La GitHub App a sa propre identité, indépendante des personnes : la CI continue de fonctionner. Elle est en outre limitée aux dépôts sur lesquels elle est installée et aux permissions choisies, alors qu'un token personnel donne souvent accès à tous vos dépôts.
+****
+endif::[]
+
+ifeval::[{_show_correction} == 0]
+[.discreet]#_réponse *{_question}* disponible._#
+endif::[]
+//  end answer ----------
+
+== Pour aller plus loin
+
+* *Multibranch Pipeline* : un pipeline par branche et par pull request, créé automatiquement pour chaque branche qui contient un `Jenkinsfile`. En donnant à la GitHub App la permission *Checks* (_Read and write_), le résultat de chaque build s'affiche directement dans la pull request, et on peut interdire la fusion d'une PR dont le build est rouge.
+* *Publication de l'image* sur un registre (Docker Hub, GitHub Container Registry), avec un credential Jenkins : la même image testée peut alors être déployée sur plusieurs serveurs.
+* *Retour arrière* (_rollback_) : grâce au tag par commit (`calculatrice:<hash>`), relancer une version précédente en une commande.
+
+== Récapitulatif
+
+* icon:check-circle[] Le dépôt est privé.
+* icon:check-circle[] Jenkins s'authentifie auprès de GitHub avec une GitHub App, limitée à ce dépôt, en lecture seule.
+* icon:check-circle[] La clé privée n'existe plus en dehors de Jenkins.

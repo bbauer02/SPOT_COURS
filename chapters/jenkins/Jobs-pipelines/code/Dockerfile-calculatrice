@@ -1,10 +1,11 @@
-# Utiliser une image Node.js officielle comme base
-FROM node:18-alpine AS builder
+# ---------- Étape 1 : build + tests ----------
+# Image Node.js officielle (version LTS) comme base
+FROM node:22-alpine AS builder
 
 # Définir le répertoire de travail dans le conteneur
 WORKDIR /app
 
-# Copier les fichiers de dépendances
+# Copier d'abord les fichiers de dépendances (meilleure utilisation du cache Docker)
 COPY package*.json ./
 
 # Installer toutes les dépendances (incluant devDependencies pour les tests)
@@ -13,11 +14,11 @@ RUN npm ci
 # Copier tous les fichiers sources
 COPY . .
 
-# Exécuter les tests (optionnel - peut être commenté si vous préférez)
+# Exécuter les tests : si un test échoue, la construction de l'image échoue
 RUN npm test
 
-# Stage de production
-FROM node:18-alpine
+# ---------- Étape 2 : image de production ----------
+FROM node:22-alpine
 
 # Définir le répertoire de travail
 WORKDIR /app
@@ -26,21 +27,18 @@ WORKDIR /app
 COPY package*.json ./
 
 # Installer uniquement les dépendances de production
-RUN npm ci --production && npm cache clean --force
+RUN npm ci --omit=dev && npm cache clean --force
 
 # Copier le code de l'application depuis le stage builder
 COPY --from=builder /app/server.js ./
 COPY --from=builder /app/src ./src
 COPY --from=builder /app/public ./public
 
-# Créer un utilisateur non-root pour des raisons de sécurité
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
+# Utiliser un utilisateur non-root pour des raisons de sécurité
+# (l'image officielle node fournit déjà l'utilisateur "node")
+USER node
 
-# Changer pour l'utilisateur non-root
-USER nodejs
-
-# Exposer le port sur lequel l'application écoute
+# Documenter le port sur lequel l'application écoute
 EXPOSE 3000
 
 # Définir la commande de démarrage

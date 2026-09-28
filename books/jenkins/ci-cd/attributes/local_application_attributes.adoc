@@ -1,0 +1,3 @@
+:_author: Bauer Baptiste
+:_version_number: 2.0.0
+:_version_date: 28/09/2026

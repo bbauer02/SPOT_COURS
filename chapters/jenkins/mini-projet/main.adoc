@@ -1,0 +1,123 @@
+:_chapter:
+:_author: Bauer Baptiste
+:_duration: 6 heures
+:_version_number: 2.0.0
+:_version_date: 28/09/2026
+[[mini-projet]]
+= Mini-projet : votre propre chaîne CI/CD
+include::../../../run_app.adoc[]
+
+== Étape 10 : Mini-projet en autonomie (défi)
+
+icon:bullseye[] *Objectif* : mettre en place, *sans guide pas à pas*, une chaîne d'intégration continue complète pour une autre application que la calculatrice.
+
+Ce mini-projet vérifie que vous savez *transposer* ce que vous avez appris : les commandes ne sont plus données, à vous de retrouver dans les chapitres précédents (et dans le mémo) ce dont vous avez besoin.
+
+=== Choisir une application
+
+Choisissez *une* application parmi :
+
+* une application que vous avez développée dans un autre cours ou en projet personnel (Node.js, PHP, Python, Java…) ;
+* l'application Laravel du TD _Projet Laravel complexe et Docker_ du cours Docker ;
+* une petite API que vous écrivez pour l'occasion (par exemple une API de conversion d'unités), avec au moins trois tests automatisés.
+
+[IMPORTANT]
+====
+L'application doit posséder des *tests automatisés* qui se lancent en une commande (`npm test`, `php artisan test`, `pytest`, `mvn test`…). Si elle n'en a pas, écrivez-en au moins trois : c'est une partie du travail.
+====
+
+=== Cahier des charges
+
+[cols="1,4", options="header"]
+|===
+| # | Exigence
+
+| E1
+| Le code est dans un dépôt GitHub dont vous êtes propriétaire.
+
+| E2
+| Un `Dockerfile` *multi-stage* : un stage exécute les tests, l'image finale ne contient que le nécessaire à l'exécution et tourne avec un utilisateur non-root.
+
+| E3
+| Un fichier Compose (nom de projet fixé) lance l'application, et au besoin ses services (base de données…).
+
+| E4
+| Un `Jenkinsfile` versionné contient au moins les stages `Tests`, `Build`, `Déploiement` et `Smoke test`, et affiche les logs de l'application en cas d'échec (bloc `post`).
+
+| E5
+| Le pipeline se déclenche automatiquement à chaque push (scrutation en local, ou webhook sur le serveur).
+
+| E6
+| Vous avez démontré qu'un test en échec *bloque* le déploiement : un build rouge, suivi d'un build vert, apparaissent dans l'historique.
+
+| E7
+| Un `README.md` explique en quelques lignes comment lancer l'application et à quoi sert chaque fichier de la chaîne CI/CD.
+|===
+
+=== Livrables
+
+. L'URL de votre dépôt GitHub (public, ou partagé avec votre enseignant).
+. Une capture de la vue des stages du pipeline, avec au moins un build rouge et un build vert.
+. Une capture de la sortie console du build rouge, sur laquelle vous avez entouré la cause de l'échec.
+. Un court texte (10 lignes maximum) : les difficultés rencontrées et comment vous les avez résolues.
+
+=== Grille d'auto-évaluation
+
+Évaluez votre travail avant de le rendre. Votre enseignant utilisera la même grille.
+
+[cols="4,1,1", options="header"]
+|===
+| Critère | Points | Auto-évaluation
+
+| E2 — Le `Dockerfile` exécute les tests pendant la construction
+| 3
+|
+
+| E2 — Image finale sans outils de développement, utilisateur non-root
+| 2
+|
+
+| E3 — L'application se lance avec `docker compose up -d --build`
+| 2
+|
+
+| E4 — `Jenkinsfile` avec 4 stages cohérents, pipeline vert
+| 4
+|
+
+| E4 — Bloc `post` utile en cas d'échec
+| 1
+|
+
+| E5 — Déclenchement automatique à chaque push
+| 2
+|
+
+| E6 — Démonstration qu'un test en échec bloque le déploiement
+| 3
+|
+
+| E7 — `README.md` clair et exact
+| 1
+|
+
+| Livrable 4 — Analyse des difficultés
+| 2
+|
+
+| *Total*
+| *20*
+|
+|===
+
+=== Questions pour la soutenance
+
+Préparez-vous à répondre oralement à ces questions sur *votre* projet :
+
+. Montrez dans votre `Dockerfile` à quel moment les tests sont exécutés. Que se passe-t-il pour l'application en ligne si un test échoue ?
+. Pourquoi votre `Jenkinsfile` est-il dans le dépôt plutôt que saisi dans l'interface de Jenkins ?
+. Quelle est la différence entre vos tests automatisés et votre smoke test ?
+. Votre Jenkins a accès au socket Docker : quel risque cela représente-t-il, et comment le limiter ?
+. Si vous deviez déployer la même image sur trois serveurs, que faudrait-il ajouter à votre chaîne ?
+
+TIP: Bloqué ? Relisez l'étape correspondante du cours, et utilisez le mémo du dernier chapitre. Les rubriques icon:times-circle[] _En cas de problème_ couvrent la plupart des erreurs courantes.

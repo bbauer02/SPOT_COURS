@@ -1,10 +1,13 @@
-version: '3.8'
+# Nom de projet fixe : quel que soit le dossier (ou le workspace Jenkins)
+# depuis lequel on lance "docker compose", c'est toujours le même projet.
+name: calculatrice
 
 services:
   calculatrice:
     build:
       context: .
       dockerfile: Dockerfile
+    image: calculatrice:latest
     container_name: calculatrice-app
     ports:
       - "3000:3000"

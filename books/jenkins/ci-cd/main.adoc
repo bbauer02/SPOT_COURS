@@ -1,0 +1,24 @@
+:_use_local_application_attributes:
+:_book:
+[[jenkins_ci_cd]]
+= CI/CD avec Jenkins
+include::../../../run_app.adoc[]
+
+
+:_chapter_folder_path: chapters/jenkins/getting_started
+include::{_add_chapter}[]
+:_chapter_folder_path: chapters/jenkins/Jobs-pipelines
+include::{_add_chapter}[]
+:_chapter_folder_path: chapters/jenkins/aws-ssh
+include::{_add_chapter}[]
+:_chapter_folder_path: chapters/jenkins/deploiement-aws
+include::{_add_chapter}[]
+:_chapter_folder_path: chapters/jenkins/github-app
+include::{_add_chapter}[]
+:_chapter_folder_path: chapters/jenkins/mini-projet
+include::{_add_chapter}[]
+:_chapter_folder_path: chapters/jenkins/memo
+include::{_add_chapter}[]
+
+
+include::{_end_book}[]

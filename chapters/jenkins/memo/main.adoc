@@ -1,0 +1,258 @@
+:_chapter:
+:_author: Bauer Baptiste
+:_version_number: 2.0.0
+:_version_date: 28/09/2026
+[[memo-jenkins]]
+= Mémo et glossaire
+include::../../../run_app.adoc[]
+
+== Mémo des commandes
+
+=== Outils du TP
+
+[cols="2,3", options="header"]
+|===
+| Commande | Rôle
+
+| `./check.sh <étape>`
+| Vérifie l'étape indiquée (à lancer à la racine du dépôt).
+
+| `jenkins/init-env.sh`
+| Crée `jenkins/.env` : identifiants admin, port, URL, groupe du socket Docker.
+
+| `git fetch https://github.com/bbauer02/jenkins-calculatrice.git solution-etape-N` +
+`git checkout FETCH_HEAD -- .`
+| Récupère les fichiers de correction de l'étape N.
+|===
+
+=== Jenkins (dans le dossier `jenkins/`)
+
+[cols="2,3", options="header"]
+|===
+| Commande | Rôle
+
+| `docker compose up -d --build`
+| Construit l'image et démarre Jenkins.
+
+| `docker compose ps`
+| État du conteneur.
+
+| `docker logs -f jenkins`
+| Journal de Jenkins en direct (`Ctrl+C` pour quitter).
+
+| `docker compose restart`
+| Redémarre Jenkins.
+
+| `docker compose down`
+| Supprime le conteneur ; les données (volume `jenkins_home`) sont conservées.
+
+| `docker compose down -v`
+| Supprime le conteneur *et* toutes les données de Jenkins.
+
+| `docker exec jenkins docker version`
+| Vérifie que Jenkins peut piloter Docker.
+|===
+
+=== Application (à la racine du dépôt)
+
+[cols="2,3", options="header"]
+|===
+| Commande | Rôle
+
+| `docker compose up -d --build`
+| Construit l'image (tests compris) et (re)lance l'application.
+
+| `docker compose logs --tail=50`
+| Dernières lignes du journal de l'application.
+
+| `docker compose down`
+| Arrête et supprime le conteneur de l'application.
+
+| `docker build --target builder -t calculatrice:test .`
+| Construit uniquement le stage `builder` (exécute les tests).
+
+| `curl -fsS http://localhost:3000`
+| Vérifie que l'application répond.
+|===
+
+=== Git
+
+[cols="2,3", options="header"]
+|===
+| Commande | Rôle
+
+| `git status`
+| Fichiers modifiés, et commits non poussés.
+
+| `git add <fichier>` puis `git commit -m "message"`
+| Enregistre une modification.
+
+| `git commit -am "message"`
+| Enregistre toutes les modifications de fichiers déjà suivis.
+
+| `git push`
+| Envoie les commits sur GitHub (Jenkins ne voit que ce qui est sur GitHub).
+
+| `git revert --no-edit HEAD`
+| Crée un commit qui annule le dernier commit.
+
+| `git log --oneline -5`
+| Les 5 derniers commits.
+|===
+
+=== Syntaxe cron (scrutation)
+
+----
+┌───────────── minute (0-59)
+│ ┌─────────── heure (0-23)
+│ │ ┌───────── jour du mois (1-31)
+│ │ │ ┌─────── mois (1-12)
+│ │ │ │ ┌───── jour de la semaine (0-7, 0 et 7 = dimanche)
+│ │ │ │ │
+H/2 * * * *
+----
+
+[cols="1,2", options="header"]
+|===
+| Planning | Signification
+
+| `H/2 * * * *`
+| Toutes les 2 minutes environ.
+
+| `H/15 * * * *`
+| Toutes les 15 minutes environ.
+
+| `H 2 * * *`
+| Une fois par nuit, vers 2 h.
+
+| `H 8 * * 1-5`
+| Vers 8 h, du lundi au vendredi.
+|===
+
+Le `H` (_hash_) choisit une valeur fixe mais propre à chaque job, pour éviter que tous les jobs démarrent au même instant.
+
+=== Anatomie d'un Jenkinsfile déclaratif
+
+[source,groovy]
+----
+pipeline {
+    agent any                                   // où exécuter
+    triggers { githubPush() }                   // quand démarrer
+    options { disableConcurrentBuilds() }       // réglages
+    environment { APP_URL = 'http://…' }        // variables
+    stages {
+        stage('Tests') {
+            steps { sh 'commande' }             // une ou plusieurs étapes
+        }
+    }
+    post {
+        success { echo 'OK' }                   // selon le résultat
+        failure { sh 'docker compose logs --tail=50 || true' }
+        always  { sh 'docker image prune -f || true' }
+    }
+}
+----
+
+== Glossaire
+
+[cols="1,3", options="header"]
+|===
+| Terme | Définition
+
+| *Agent*
+| Machine (ou conteneur) sur laquelle Jenkins exécute des builds. Dans ce cours, Jenkins exécute tout lui-même (contrôleur).
+
+| *Build*
+| Une exécution d'un job, numérotée (`#1`, `#2`…), avec sa sortie console et son statut.
+
+| *CI / CD*
+| Intégration continue : chaque modification est construite et testée automatiquement. Livraison / déploiement continu : chaque version validée est prête à être déployée, ou déployée automatiquement.
+
+| *Credential*
+| Identifiant stocké de façon chiffrée par Jenkins (mot de passe, clé, GitHub App…), utilisé par les jobs sans être affiché.
+
+| *Déclencheur* (_trigger_)
+| Ce qui lance un build : un clic, une scrutation, un webhook, la fin d'un autre job.
+
+| *GitHub App*
+| Identité « machine » déclarée dans GitHub, avec ses propres permissions, utilisée par Jenkins pour accéder aux dépôts.
+
+| *Image multi-stage*
+| `Dockerfile` en plusieurs étapes (`FROM … AS nom`) : par exemple une étape de build et de test, puis une image finale légère.
+
+| *Jenkinsfile*
+| Fichier, versionné avec le code, qui décrit un pipeline.
+
+| *Job* (projet)
+| Tâche configurée dans Jenkins : free-style (configuré dans l'interface) ou pipeline (décrit par un script).
+
+| *Pipeline*
+| Job décrit par un script, découpé en stages.
+
+| *Plugin*
+| Extension de Jenkins (Git, GitHub, Pipeline…). Ceux du TP sont listés dans `jenkins/plugins.txt`.
+
+| *Scrutation* (_polling_)
+| Jenkins interroge régulièrement le dépôt pour détecter les nouveaux commits.
+
+| *Smoke test*
+| Test rapide, après déploiement, qui vérifie que l'application démarre et répond.
+
+| *Socket Docker*
+| Fichier `/var/run/docker.sock` par lequel on pilote le démon Docker. Y avoir accès équivaut à être administrateur de la machine.
+
+| *Stage*
+| Étape nommée d'un pipeline (Tests, Build…), affichée dans la vue des stages.
+
+| *Webhook*
+| Requête HTTP envoyée par GitHub à une URL (ici Jenkins) lorsqu'un événement se produit (un push).
+
+| *Workspace*
+| Dossier de travail d'un job, dans lequel Jenkins clone le code : `/var/jenkins_home/workspace/<job>`.
+|===
+
+== Index des problèmes fréquents
+
+[cols="2,1", options="header"]
+|===
+| Message ou symptôme | Voir
+
+| `Bind for 0.0.0.0:8080 failed: port is already allocated`
+| Étape 1
+
+| `permission denied while trying to connect to the Docker daemon socket`
+| Étape 1
+
+| `Couldn't find any revision to build`
+| Étape 3
+
+| `no configuration file provided: not found`
+| Étape 4
+
+| `docker-compose: not found`
+| Étape 4
+
+| `container name "/calculatrice-app" is already in use`
+| Étape 4
+
+| `curl: (7) Failed to connect to host.docker.internal`
+| Étape 5
+
+| `target stage "builder" could not be found`
+| Étape 6
+
+| `Connection timed out` (SSH)
+| Étape 7
+
+| `Permission denied (publickey)`
+| Étape 7
+
+| Webhook : `timed out`, `302`, `404`
+| Étape 8
+
+| Deux builds par push
+| Étapes 8 et 9
+
+| `Authentication failed` / `repository not found` au clonage
+| Étape 9
+|===
