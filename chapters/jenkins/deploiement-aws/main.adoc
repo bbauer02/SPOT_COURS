@@ -167,7 +167,7 @@ git push
 +
 image::images/pipeline-triggers.png[Déclencheur GitHub,width=90%]
 
-. icon:desktop[] Faites une modification visible, par exemple le numéro de version dans le titre de `public/index.html`, puis :
+. icon:desktop[] Faites une modification visible, par exemple le numéro de version dans le titre principal de `public/index.html` (la balise `<h1>`, « Calculatrice d'Addition VERSION 2.1 »), puis :
 +
 [source,bash]
 ----

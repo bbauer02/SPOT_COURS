@@ -227,4 +227,4 @@ endif::[]
 
 * icon:check-circle[] Le dépôt est privé.
 * icon:check-circle[] Jenkins s'authentifie auprès de GitHub avec une GitHub App, limitée à ce dépôt, en lecture seule.
-* icon:check-circle[] La clé privée n'existe plus en dehors de Jenkins.
+* icon:check-circle[] La clé privée n'est plus stockée que dans Jenkins (et, éventuellement, dans votre gestionnaire de mots de passe).

@@ -562,8 +562,14 @@ pipeline {
         }
     }
     post {
+        success {
+            echo "Version ${env.GIT_COMMIT.substring(0, 7)} déployée sur le port 3000"
+        }
         failure {
             sh 'docker compose logs --tail=50 || true'
+        }
+        always {
+            sh 'docker image prune -f || true'
         }
     }
 }
@@ -621,7 +627,7 @@ image::images/pipeline-config-scm.png[Pipeline script from SCM,width=90%]
 
 icon:check-circle[] *Vérifier*
 
-Les quatre stages sont verts, et la sortie console se termine par `Version xxxxxxx déployée sur le port 3000`.
+Les quatre stages sont verts, et la sortie console affiche, dans la partie `post`, la ligne `Version xxxxxxx déployée sur le port 3000` (les 7 premiers caractères du commit).
 
 image::images/pipeline-page.png[Vue des stages du pipeline,width=90%]
 
@@ -667,7 +673,12 @@ git commit -m "Exercice : Jenkinsfile à déboguer"
 git push
 ----
 
-. Lancez le pipeline. Repérez le stage en rouge, lisez la sortie console, corrigez, poussez… jusqu'à ce que le pipeline soit vert.
+. Lancez le pipeline. Repérez le stage en rouge, lisez la sortie console, corrigez, poussez, *relancez à la main*… jusqu'à ce que le pipeline soit vert.
++
+[IMPORTANT]
+====
+Ce `Jenkinsfile` ne contient *pas* de bloc `triggers` : dès sa première exécution, Jenkins retire la scrutation de la configuration du job. Pendant l'exercice, les push ne déclenchent donc plus rien : relancez le pipeline à la main après chaque correction.
+====
 
 . Une fois le pipeline vert, remettez le `Jenkinsfile` complet de l'étape 6.2 (celui de la correction) :
 +
@@ -678,6 +689,8 @@ git checkout FETCH_HEAD -- Jenkinsfile
 git commit -m "Retour au Jenkinsfile complet"
 git push
 ----
++
+Lancez ensuite *une fois à la main* `CalculatricePipeline` : ce build réenregistre le déclencheur `pollSCM`, et les push suivants redémarrent le pipeline tout seuls.
 
 TIP: Le pipeline s'arrête au premier stage en échec : les erreurs apparaissent une par une. Après chaque correction, relancez le pipeline pour découvrir la suivante.
 

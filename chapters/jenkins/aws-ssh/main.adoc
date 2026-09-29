@@ -74,7 +74,7 @@ RSA 4096 ≈ 150 bits
 Lourd sur petits appareils
 | Très rapide, constant-time (protège contre attaques par timing)
 
-| Robustesse future
+| Conception
 | Ancien, éprouvé, universellement supporté
 | Moderne, conçu pour éviter les erreurs d’implémentation
 
@@ -136,8 +136,9 @@ Cliquez sur *Launch instance*.
 ====
 *Adresse IP publique et coûts*
 
-* L'adresse IP publique d'une instance *change à chaque arrêt/redémarrage*. Or nous allons la déclarer dans GitHub (webhook). Pour qu'elle reste stable, associez une *Elastic IP* à l'instance (*EC2* → *Elastic IPs* → *Allocate* puis *Associate*).
+* L'adresse IP publique d'une instance *change chaque fois qu'on l'arrête puis la redémarre* (_Stop_ puis _Start_ ; un simple _Reboot_ la conserve). Or nous allons la déclarer dans GitHub (webhook). Pour qu'elle reste stable, associez une *Elastic IP* à l'instance (*EC2* → *Elastic IPs* → *Allocate* puis *Associate*).
 * Une `t3.medium` n'est *pas* couverte par l'offre gratuite. Pensez à *arrêter l'instance* à la fin de chaque séance (voir la dernière section de ce chapitre).
+* Depuis février 2024, AWS facture toute adresse IPv4 publique, Elastic IP comprise (quelques dixièmes de centime par heure), y compris lorsque l'instance est arrêtée.
 ====
 
 === Installer et vérifier le client SSH
@@ -321,7 +322,7 @@ Le script vérifie le système, Docker (utilisable sans `sudo`), Docker Compose,
 Une instance EC2 est facturée tant qu'elle est *en cours d'exécution* (_running_).
 
 * À la fin de chaque séance : *EC2* → *Instances* → sélectionnez l'instance → *Instance state* → *Stop instance*.
-* À la fin de la séquence : *Terminate instance*, puis *libérez l'Elastic IP* (*Elastic IPs* → *Release*). Une Elastic IP non associée à une instance démarrée est facturée.
+* À la fin de la séquence : *Terminate instance*, puis *libérez l'Elastic IP* (*Elastic IPs* → *Release*). Une Elastic IP est facturée tant qu'elle n'est pas libérée, même si l'instance est arrêtée ou supprimée.
 
 [NOTE]
 ====

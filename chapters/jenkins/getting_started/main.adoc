@@ -90,7 +90,7 @@ Ne passez à l'étape suivante que lorsque le script affiche `✔ Étape N valid
 
 [TIP]
 ====
-*Vous êtes bloqué ? Reprenez à partir de la correction.* Le dépôt modèle contient une branche de correction pour les étapes importantes (`solution-etape-4`, `solution-etape-6`, `solution-etape-8`). Pour récupérer les fichiers d'une étape dans votre dépôt, sans supprimer les vôtres :
+*Vous êtes bloqué ? Reprenez à partir de la correction.* Le dépôt modèle contient une branche de correction pour les étapes importantes (`solution-etape-4`, `solution-etape-6`, `solution-etape-8`). Pour récupérer les fichiers d'une étape dans votre dépôt (les fichiers de la correction *remplacent* ceux de même nom ; vos autres fichiers sont conservés) :
 
 [source,bash]
 ----
@@ -240,7 +240,7 @@ cd jenkins
 docker compose up -d --build
 ----
 +
-Le script vous demande un identifiant, un *mot de passe robuste* (8 caractères minimum), le port (laissez `8080` s'il est libre) et l'URL de Jenkins (laissez la valeur proposée).
+Le script vous demande un identifiant, un *mot de passe robuste* (8 caractères minimum, sans apostrophe ; la saisie ne s'affiche pas), le port (laissez `8080` s'il est libre) et l'URL de Jenkins (laissez la valeur proposée). Si vous relancez le script plus tard, il vous demande d'abord s'il doit écraser le fichier `.env` existant : répondez `o`.
 +
 La première construction de l'image prend quelques minutes (téléchargement de Jenkins et des plugins).
 
@@ -307,7 +307,7 @@ icon:times-circle[] *En cas de problème*
 | Démarrez Docker Desktop (ou `sudo systemctl start docker` sous Linux), puis recommencez.
 
 | `Bind for 0.0.0.0:8080 failed: port is already allocated`
-| Le port 8080 est déjà utilisé. Relancez `./init-env.sh` en choisissant un autre port (ex. `18080`), puis `docker compose up -d`.
+| Le port 8080 est déjà utilisé. Relancez `./init-env.sh` en choisissant un autre port (ex. `18080`), puis `docker compose up -d`. Jenkins est alors sur http://localhost:18080 : utilisez ce port partout où le cours indique `8080`.
 
 | `check.sh` : « Jenkins ne peut pas utiliser Docker » (`permission denied ... docker.sock`)
 | Le groupe du socket Docker n'est pas le bon. Relancez `./init-env.sh` (il le détecte automatiquement), puis `docker compose up -d`.
